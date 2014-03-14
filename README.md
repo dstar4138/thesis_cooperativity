@@ -1,12 +1,12 @@
-Thesis:
-=============
+# Thesis: #
+### Process Cooperativity as a Feedback Metric in Concurrent Message-Passing Languages
 
-This repository will hold the current working state of the reports for my thesis
+
+This repository will hold the current working state of the reports for my MSc thesis
 work (Preproposal, Proposal, Thesis, and a possibly Technical Report).
 
-### Project Description ###
 
-Process Cooperativity as a Feedback Metric in Concurrent Message-Passing Languages
+## Project Description ##
 
 Runtime systems for concurrent languages have begun to utilize feedback mechanisms
 to influence their scheduling behaviour as the application proceeds. These feedback
@@ -44,6 +44,6 @@ I will attempt to answer the following questions:
 * Is cooperativity a comparable metric for feedback scheduling?
 
 Links:
-* [ErLam](https://github.com/dstar4138/erlam) (The tool I'm working on for this thesis.)
+* [ErLam](https://github.com/dstar4138/erlam) (The tool I'm working on to aid in this thesis.)
 * [My Homepage](http://dstar4138.com) (Where I will blog about progress and interesting research.)
 * [Professor Fluet's Homepage](http://cs.rit.edu/~mtf) (My Chair for my MSc work.)
