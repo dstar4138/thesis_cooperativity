@@ -5,10 +5,7 @@
 \usepackage{enumitem}
 
 \title{RIT Department of Computer Science\\MSc Thesis Pre-Proposal:\\
-	%\emph{Interactivity of Cooperating Processes}
-	%\emph{Cooperativity of Processes as a Feedback Metric in Functional Languages}
-	%\emph{Process Cooperativity as a Feedback Metric in Functional Languages}
-	\emph{Process Cooperativity as a Feedback Metric in Concurrent Message-Passing Languages}
+	\emph{Process Cooperativity as a Feedback Metric in Message-Passing Concurrent Languages}
 }
 \author{Alexander Dean, Chair: Matthew Fluet}
 \date{\today}
@@ -18,79 +15,72 @@
 
 \section{Problem Description}
 
-Runtime systems for concurrent languages have begun to utilize feedback mechanisms to influence their 
-scheduling behaviour as the application proceeds. These feedback mechanisms rely on metrics by which to 
+Runtime systems for concurrent languages have begun to utilize feedback mechanisms to influence their
+scheduling behaviour as the application proceeds. These feedback mechanisms rely on metrics by which to
 grade any alterations made to the scheduling system. As the application's phase shifts, the feedback mechanism
 is tasked with modifying the scheduler to reduce it's overhead and increase the application's efficiency.
 
-For example, feedback mechanism could utilize the ratio of I/O to CPU bound processes within a set number 
+For example, feedback mechanism could utilize the ratio of I/O to CPU bound processes within a set number
 of rounds to be the metric by which it grades it's efficiency. If it is too high the runtime should give
 each process less time to compute, so it can get through more processes in a round, thus reducing the drag
 the CPU bound processes have on the system. The inverse would have the opposite effect.
 
-Cooperativity is another possible metric by which to grade a system. In biochemistry the term cooperativity 
-is defined as the increase or decrease in the rate of interaction between a reactant and a protein as 
-the reactant concentration increases. This definition translates well as an information theoretic definition 
-as: the increase or decrease in the rate of interaction between a process and a communication mode as the 
+Cooperativity is another possible metric by which to grade a system. In biochemistry the term cooperativity
+is defined as the increase or decrease in the rate of interaction between a reactant and a protein as
+the reactant concentration increases. This definition translates well as an information theoretic definition
+as: the increase or decrease in the rate of interaction between a process and a communication mode as the
 number of processes increase.
 
 %Communication mode in this sense would be a function of interprocess communication such as
-%asynchronous mail-boxes, synchronous channel or even shared memory. In any example the sending process will 
+%asynchronous mail-boxes, synchronous channel or even shared memory. In any example the sending process will
 %need to interact with this method as a means of interacting with a concurrent process.
 
 I will attempt to answer the following questions:
 \begin{itemize}[leftmargin=.5in]
-	\item Are the abstractions of a process and communication channel conducive to quantifying 
-		  cooperativity of a system? What generalizations can be made without obscuring important 
+	\item Are the abstractions of a process and communication channel conducive to quantifying
+		  cooperativity of a system? What generalizations can be made without obscuring important
 		  factors?
-	\item What factors effect the cooperativity of a runtime system? Also, what mechanisms can be used 
-		  to update the runtime system to positively improve cooperativity in a given phase?
+	\item What factors effect the cooperativity of a runtime system? Also, what mechanisms can be used
+		  to update the scheduling system to positively improve cooperativity in a given phase?
 	\item Is cooperativity a comparable metric for feedback scheduling?
 \end{itemize}
 
 \section{Related Work}
 
-Scheduling based on feedback from the running system is not new \cite{dietz1997use}. There have even been multiple 
-metrics explored, such as heap size \cite{white2012automated}, process locality \cite{debattista2002cache}, and interactivity \cite{reppy1993concurrent}. 
-In \cite{ritson2012multicore} they mention communication efficiency as a rational for their implementation of a runtime scheduler using process locality 
-as the primary metric. However, this differs from capturing the cooperativity in that, while communication efficiency is important, it misses the quantity 
+Scheduling based on feedback from the running system is not new \cite{dietz1997use}. There have even been multiple
+metrics explored, such as heap size \cite{white2012automated}, process locality \cite{debattista2002cache}, and interactivity \cite{reppy1993concurrent}.
+In \cite{ritson2012multicore} they mention communication efficiency as a rational for their implementation of a runtime scheduler using process locality
+as the primary metric. However, this differs from capturing the cooperativity in that, while communication efficiency is important, it misses the quantity
 of communication which could indicate needed changes in scheduling quantum.
 
 \section{Motivation for Research}
 
-The motivation is twofold. Current feedback scheduling implementations fail to take process-cooperativity 
-into account when applying feedback. A scheduler implementation and metric calculation would aid in future 
+The motivation is twofold. Current feedback scheduling implementations fail to take process-cooperativity
+into account when applying feedback. A scheduler implementation and metric calculation would aid in future
 feedback schedulers. However, this hints at other missing metrics that could be useful for adapting to
-application phases. A closer evaluation of current scheduling techniques on common language primitives 
-will allow for a constructive comparative analysis. This, as far as I'm aware, has not been done on the injected 
-runtime level but rather the OS or Application levels with job schedulers. 
-
-%Also, since runtime scheduler's introduce overhead which manifests itself by the act of context switching and the extra 
-%metric evaluation, minimizing this overhead is the goal of any good runtime system. 
+application phases. A closer evaluation of current scheduling techniques on common language primitives
+will allow for a constructive comparative analysis. This, as far as I'm aware, has not been done at the injected
+runtime level but rather only at the OS or Application levels with job schedulers.
 
 \section{Methodology}
 
-I have already begun to work on a compiler built with swappable scheduler's in mind. The language 
-is a simple lambda and process calculi with synchronous swap channels so as to minimize the language 
-characteristics which may mask the process-based metrics, such as differentiating between CPU, I/O, 
-and Channel bound processes. This compiler will also allow me to directly test multiple metrics and 
-scheduling techniques and visualize the system phases at any given point. I will attempt to do a 
-comparative analysis of several popular scheduling techniques against a new algorithm I will need to design 
-which uses cooperativity. This, in turn, will evaluate the effectiveness of the process and communication 
+I have already begun to work on a compiler built with swappable scheduler's in mind. The language
+is a simple lambda and process calculi with synchronous swap channels so as to minimize the language
+characteristics which may mask the process-based metrics, such as differentiating between CPU, I/O,
+and Channel bound processes. This compiler will also allow me to directly test multiple metrics and
+scheduling techniques and visualize the system phases at any given point. I will attempt to do a
+comparative analysis of several popular scheduling techniques against a new algorithm I will need to design
+which uses cooperativity. This, in turn, will evaluate the effectiveness of the process and communication
 channel abstractions utilized in the language.
 
 \section{Expected Outcomes}
 
-A new tool for comparative analysis of some current runtime schedulers will be available as well as a 
+A new tool for comparative analysis of some current runtime schedulers will be available as well as a
 set of high level language abstractions for future runtime scheduler testing.
 
-Using this analysis I expect to also contribute an original scheduling algorithm which takes cooperativity 
-of processes into account within it's feedback mechanism. This will also require an examination of fairness 
+Using this analysis I expect to also contribute an original scheduling algorithm which takes cooperativity
+of processes into account within it's feedback mechanism. This will also require an examination of fairness
 guarantees of both the communication mode and process selection.
-
-% * Develop a metric of cooperativity and interactivity in a running system.
-% * Utilize the metric as a feedback mechanism of a runtime scheduler.
-% * Compare scheduling efficiency against alternative metrics and scheduler designs.
 
 \nocite{*}
 \bibliographystyle{plain}
