@@ -1,6 +1,0 @@
-version=0.6.0
-typesetter=pdflatex
-steps=texpdf
-root=/home/darkstar/School/Thesis/Preproposal/preproposal.tex
-
-file=/home/darkstar/School/Thesis/Preproposal/preproposal.bib
