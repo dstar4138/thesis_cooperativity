@@ -1,0 +1,136 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% PROJECT PROPOSAL  DESCRIPTION:
+%   A concise description of the main concepts of the proposed project.
+%
+% RESEARCH:
+%   A list of research activities which led to this project.
+%
+% EXPERIMENTS:
+%   A list of the experiments performed which supported the research.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a single space environment (copied from doublespace.sty)
+% e.g. \begin{singlespace}
+%         single-spaced text
+%      \end{singlespace}
+
+\documentclass[12pt,american]{article}
+\usepackage{fullpage}
+\usepackage{bbm}
+\usepackage{url}
+\usepackage{subfigure}
+\usepackage{babel}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{lscape}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{setspace}
+
+
+\begin{document}
+\thispagestyle{empty} 
+\begin{center}
+{\em MS Thesis Proposal}\\
+\vspace{.5in}
+{\large \bf Process Cooperativity as a Feedback Metric \\
+            in Concurrent Message-Passing Languages }\\
+\vspace{.5in}
+{\bf Alexander Dean}\\
+\vfill
+\
+{\em Committee Chair:} Matthew Fluet\\
+\vspace{0.1in}
+{\em Reader: } The Second Dude\\
+ \vspace{0.1in}
+Department of Computer Science\\
+B. Thomas Golisano College of Computing and Information Sciences \\
+Rochester Institute of Technology \\
+Rochester, New York \\ [0.3in]
+\vspace{0.5in}
+\today{}\\
+\end{center}
+\vfill
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Collection of useful abbreviations.
+\newcommand{\etc} {\emph{etc.\/}}
+\newcommand{\etal}{\emph{et~al.\/}}
+\newcommand{\eg}  {\emph{e.g.\/}}
+\newcommand{\ie}  {\emph{i.e.\/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abstract
+\section*{Abstract}
+This should be a short description of the work and the results: a paragraph 
+or two summarizing your project proposal. Note that an abstract is meant to be read 
+independently from the rest of the project report so you cannot cite your 
+paper or other papers in it. It would be useful to examine other abstracts 
+in the many papers you have read to understand what an abstract really is.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vfill{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is where the main body of the capstone proposal starts
+\setcounter{page}{0} 
+\newpage{}
+
+\section{Introduction}
+This part of the proposal should be a couple of paragraphs that
+describe the reason for your proposal and your project/thesis area at
+high level.
+
+\section{Background}
+This section should be sufficient for the reader to understand the
+project area and the relevance of your efforts in the world of
+computer science. The description here should be provide the
+motivation to the reader that you are exploring a problem area that is
+relevant to the CS community.
+
+
+\section{Related Work}
+Describe what work others have already done in this area. You do need
+several citations, and this is how you cite a book by
+Silberschatz~\cite{Silberschatz05-text} or a paper by
+Dumont~\cite{Dumont2007-robots}.
+
+\section{Hypothesis}
+Summarize what you think the problem is, and what your hypothesis
+is. Here is a small example based on a successful project by Priyanka
+Sinha: ''Using one technique for schema matching does not seem
+adequate. The hypothesis underlying this sproject is that a holistic
+approach to schema matching based on the three techniques described
+earlier would do an effective approach to schema matching.''
+
+Additional description to circumscribe the work so that the reader
+knows what you plan to do to establish your hypothesis.
+
+\section{Solution Design and Implementation}
+Describe how you plan to design and implement a solution. 
+
+You must also describe how you would use your solution to establish the validity of your hypothesis. Explain the measurements you plan to conduct and how these would establish the validity (or invalidity) of your hypothesis.
+
+\section{Roadmap}
+
+Here you need to describe your project plan, with dates and deliverables. 
+
+You must review the CS graduate handbook for details, and yes, make
+sure you also address all of the handbook's requirements for a
+proposal.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{plain}
+% Single space the bibliography to save space.
+\singlespacing
+\bibliography{Proposal}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
