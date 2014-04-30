@@ -6,4 +6,5 @@ proposal:
 	-cp proposal.pdf DeanAlexanderProposal.pdf
 
 clean:
-	-rm *.blg *.pdf *.bbl *.aux *.log 
+	-rm *.blg *.bbl *.aux *.log
+	-rm proposal.pdf

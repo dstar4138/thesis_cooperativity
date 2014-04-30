@@ -15,7 +15,7 @@
 %         single-spaced text
 %      \end{singlespace}
 
-\documentclass[11pt,american]{article}
+\documentclass[11pt,american,draft]{article}
 \usepackage{fullpage}
 \usepackage{bbm}
 \usepackage{url}
@@ -23,7 +23,7 @@
 \usepackage{color}
 \usepackage{babel}
 \usepackage{times}
-\usepackage{graphicx}
+\usepackage[final]{graphicx}
 \usepackage{amssymb}
 \usepackage{lscape}
 \usepackage{verbatim}
@@ -34,7 +34,9 @@
 \usepackage{paralist} %% inline lists
 \usepackage{tikz,tikz-qtree}
 
+\pdfcompresslevel0 % Fix blurry JPGs
 \graphicspath{ {./pics/} }
+
 \begin{document}
 \thispagestyle{empty} 
 \begin{center}
@@ -57,6 +59,10 @@ Rochester Institute of Technology \\
 Rochester, New York \\ [0.3in]
 \vspace{0.5in}
 \today{}\\
+%%%%%%%%%%%%%%%%XXX: REMOVE WHEN DONE %%%%%%%%%%%%%%%%
+		\vspace{0.25in}
+		{\bf\em DRAFT MODE: PLEASE BE HARSH! }\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{center}
 \vfill
 
@@ -83,9 +89,10 @@ the reactant concentration increases. This definition translates well as an info
 as: the increase or decrease in the rate of interaction between a process and a communication mode as the
 number of processes increase. 
 
-This work proposes a unique feedback mechanism and scheduling algorithm which takes advantage of this behavior.
+This work proposes a unique feedback mechanism and scheduling algorithm which takes advantage of cooperative behavior.
 It further compares this algorithm to other feedback metrics via a custom extensible runtime system developed to
-support swappable scheduling mechanisms.
+support swappable scheduling mechanisms, around a minimalistic language with interesting characteristics, which 
+lend themselves to easier statistical metric accumulation.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vfill{}
 
@@ -125,7 +132,7 @@ There is a big distinction though, which can be made between the effects of cont
 versus that of run-time systems. This is primarily in the adaptation of the controller in the generic feedback 
 loop (figure~\ref{fig:controller}).
 In typical mechanical feedback loops there are two scenarios which need to be avoided: resonance 
-and extreme compensation. It can be seen that most controller models will attempt to damp the adjustments to reduce 
+and rapid compensation. It can be seen that most controller models will attempt to damp the adjustments to reduce 
 oscillation which could cause resonance or sharp spikes in behavior based on its output. This is due to the  
 limitations of the physical space in which they are having to deal with. 
 
@@ -142,26 +149,26 @@ theory.
 \label{fig:controller}
 \end{figure}
 
-Run-time systems tend to extend to more than just the process-scheduling systems though. They also encompass  
+Also, note that run-time systems tend to extend to more than just the process-scheduling systems. They also encompass  
 garbage collection, dynamic type checking, statistical collection and other debugging mechanisms, and general 
 resource allocation (\eg~I/O). For the purposes of this paper we will be exclusively talking about the process
 scheduling system and intentionally ignore the effects of these other, albeit important, sub-systems. This 
 distinction must be made however, as some scheduling systems also take into account the effects of these other
 systems on the placement and order of process evaluation. For example, White \etal~\cite{white2012automated}
-discuss heap size as a metric for process selection as a means of curtailing garbage collection times.
+discuss heap size as a metric for process selection as a means of curtailing garbage collection effects.
 
 \subsection{Classical Run-Time Scheduling}
 
-Another distinction must be made as far as the level of foresight the scheduling systems, within this paper, have.
-There is a spectrum of clairvoyance in classical job-scheduling, in that on one end job-schedulers have full foresight
+Another distinction must be made as far as the level of foresight the scheduling systems have, at least, within this paper.
+There is a spectrum of clairvoyance in classical job-scheduling, in that on one end, job-schedulers have full foresight
 over the jobs which will enter the queue and their order. These schedulers have the opportunity to optimize for future
-events, which is a luxury the scheduling systems, in this paper, do not have. 
+events, which is a luxury the scheduling systems, this paper discusses, do not have. 
 
-However, as it is a spectrum, there is a single educated guess this subrange of schedulers can make. Namely, the first 
-job will always be the last, and all other jobs will spawn from it. Thus there will always be a single process in the 
-queue at the beginning. This is true as the runtime will always require an initial primary process (\eg~the `main' 
-function), and once that function is completed, the system is terminated (despite the cases of unjoined children). 
-Apart from this all other insights will need to be gleaned from the evaluation of this initial process.
+However, as it is a spectrum, there is a single point of knowledge this subrange of schedulers can assume. Namely, 
+that the first job will always be the last, and all other jobs will spawn from it. Thus there will always be a single 
+process in the queue at the beginning. This is true as the runtime will always require an initial primary process 
+(\eg~the `main' function), and once that function is completed, the system is terminated (despite the cases of unjoined
+children). Apart from this all other insights will need to be gleaned from the evaluation of this initial process.
 
 
 \subsection{Message Passing}
@@ -187,7 +194,7 @@ scheduling the method of their implementation is often of some consequence.
 \label{fig:mptax}
 \end{figure}
 
-In asynchronous message passing a process can either be provided a rendezvous point or a identifier for another process.
+In asynchronous message passing a process can either be provided a rendezvous point or an identifier for another process.
 To send a message in either case requires pushing/copying the message into a shared or global memory space for another
 process to access (possibly) at a later time. This push/copy can be done in a lock free manner with some lower level
 atomic data structures such as a double-ended queue. But in either a locked or lock-free manner, the process performing
@@ -203,39 +210,63 @@ same data.
 
 In synchronous message passing, a process must meet another at a provided rendezvous point but can either be symmetrical
 or asymmetrical. Note that the rendezvous point is not a requirement in the sense that direct synchronous messaging isn't 
-possible. Instead we think of a rendezvous point in synchronous communication time bound rather than location bound (\ie~two
+possible. Instead we think of a rendezvous point in synchronous communication to be time bound rather than location bound (\ie~two
 processes are blocked until communication occurs, the implementation of this passing is irrelevant to this 
 classification).
 
-However there is a further classification of synchronous message passing, that of symmetrical vs asymmetrical message passing. 
+However there is a further classification of synchronous message passing; that of symmetrical vs asymmetrical message passing. 
 Asymmetrical message passing is synonymous with Milner's Calculus of Communicating Systems \cite{milner1982calculus} 
-or the standard $\pi$-Calculus \cite{palamidessi1997comparing}, in that you have a sender and a receiver which will 
+or standard $\Pi$-Calculus \cite{palamidessi1997comparing}, in that you have a sender and a receiver which will 
 block on their respective functions around an anonymous channel until the pass has been completed. This differs from a 
 symmetrical message passing only in that the only operation on the channel is a blocking swap-values with the
-process on the other end. Note, it has been shown possible to implement symmetrical message passing on asymmetrical
-message channels \cite{}.%TODO: FIND A CITATION FOR ASYMMETRICAL PROOF: Show CML swap channel??
+process on the other end. 
 
-In terms of scheduling of synchronizing processes, order is now a factor that needs to be considered. On top of this 
-directionality can also be a factor which complicates the channel implementation. Namely, the internal queuing of senders or
-receivers may not percolate hints up to the scheduler regarding their queue position. For the alternative, symmetrical message
-passing or swap channels, the order is directly handled by the scheduling of the system (\ie the order at which the channels 
-evaluate the $swap$ command can be directly governed).
-
-%%%%%%TODO: MAKE THIS BETTER... IT NEEDS TO BE SAID AS IT LEADS TO MOTIVATION, BUT NO MOTIVATION IN THIS SECTION JUST BACKGROUND
-%However, there is a distinction which must be made between uni- and bi-directional channels in terms of process
-%operation. Or is it???? Part of the desired research is a study of channels with  uni- and bi-directionality. It is 
-%obvious that middle-man can facilitate the
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Note, it is possible to simulate symmetrical message passing on asymmetrical message channels, but in terms of scheduling of
+synchronizing processes, order is now a factor that needs to be considered. On top of this, directionality can also be a factor
+which complicates the channel implementation. Namely, the internal queuing of senders or receivers may not percolate hints up to
+the scheduler regarding their queue position. For the alternative, symmetrical message passing or swap channels, the order is
+directly handled by the scheduling of the system (\ie~the order at which the channels evaluate the $swap$ command can be 
+directly governed).
 
 \subsection{Cooperativity as a Metric}
 
+As explained above, there is quite a literature behind the types of metrics used. Yet statistical collection is 
+only a third of the feedback loop. A classification of the system must be made by a control mechanism based on the 
+recorded state, and then a modification must be made to the scheduler which should positively 
+effect the state of the system's future. The key is to make sure this effect is transparent and results in minimal
+overhead, while still achieving the objective function.
 
-%However, this differs from capturing the cooperativity in that, while communication efficiency is important, 
-% it misses the quantity of communication which could indicate needed changes in scheduling quantum.
+This objective function, for the purposes of simplicity is typically execution time. However, it can also take into
+account resource utilization, process/channel fairness, fulfillment of real-time guarantees, \etc~to rate the 
+scheduler as a whole. Note that this function is an external measure (evaluation) of the schedulers effectiveness,
+which will be brought up further in section~\ref{sec:workevaluation}. For now however, note that the objective 
+function and control metrics are separate and evaluate two different things.
 
+Interactivity is one metric which evaluates the system's current scheduler. It looks at the ratio of communication
+to computation currently taking place in the system as a whole. One scheduling system which utilizes this metric 
+indirectly is in CML \cite{reppy1993concurrent}.
 
+It's method by which it grades the system is the recognition of {\em computation}-bound processes versus
+{\em communication}-bound processes. A {\em communication}-bound process is one which has previous blocked itself
+without using it's entire scheduled quantum, the rational for this is only a synchronizing thread would be willing
+to block; thus a {\em computation}-bound process is the opposite (\ie~one that always uses its full quantum). 
 
+However, this metric looks only at the ratio of {\em communication}-bound processes to {\em computation}-bound
+processes and misses the quantity of communication on a per-process level which could indicate needed changes in
+scheduling quantum or process locality with those which are frequently in touch.
 
+This hints at a need to look for some level of cooperation between processes in the phases of an application's
+life-time. Rather than a ratio of {\em communication} to {\em computation}, instead we need to look at a 
+frequency of communication and between which processes (\ie~rate at which a process communicates with a particular
+channel). One method this can be achieved by is, in addition to recording which threads are {\em communication} and 
+{\em computation}-bound, the scheduler can also tag the process with it's frequency of communication on each 
+channel it touches over time. By doing so, the scheduler can calculate a process's cooperativity with one or more
+processes by comparing frequency counts on particular channels, perhaps by a sum of ratios.
+
+%Thus for a decent generic definition, Abeliovich \cite{abeliovich2005empirical} defines positive cooperativity as: 
+%\begin{quote}
+%A process involving multiple identical incremental steps, in which intermediate states are statistically underrepresented relative to a hypothetical standard system (null hypothesis) where the steps occur independently of each other. Likewise, a definition of negative cooperativity would be a process involving multiple identical incremental steps, in which the intermediate states are overrepresented relative to a hypothetical standard state in which individual steps occur independently.
+%\end{quote}
 
 \section{Motivation}
 %%TODO:
@@ -244,19 +275,16 @@ evaluate the $swap$ command can be directly governed).
 %% - Metric calculation and scheduler comparisons have yet to have a good framework implementation for doing so.
 %%
 
+The motivation is twofold. I believe there is an additional feedback metric that has gotten little publicity 
+despite it's apparent usefulness. Current feedback scheduling implementations fail to take process-cooperativity
+into account when applying feedback. A scheduler implementation using this metric calculation would aid in future
+feedback schedulers.
 
-It has become a matter of analysis and experimentation to discover which metrics are of value, and to which criterion.
-There has been work on metrics such as heap size \cite{white2012automated}, process locality 
-\cite{debattista2002cache,ritson2012multicore}, and interactivity \cite{reppy1993concurrent} to name a few.
+However, this hints at other missing metrics that could be useful for adapting to
+application phases. A closer evaluation of current scheduling techniques on a core set of common language 
+primitives would allow for a positive comparative analysis. Thus the first step would be to synthesize a subset
+of primitives useful for metric creation without introducing as much noise as possible.
 
-The motivation is twofold. Current feedback scheduling implementations fail to take process-cooperativity
-into account when applying feedback. A scheduler implementation and metric calculation would aid in future
-feedback schedulers. However, this hints at other missing metrics that could be useful for adapting to
-application phases. A closer evaluation of current scheduling techniques on common language primitives
-will allow for a constructive comparative analysis. This, as far as I'm aware, has not been done at the 
-injected runtime level but rather only at the OS or Application levels with job schedulers.
-
-Thus there would be a desire 
 
 \section{Proposed Work} % Solution Design and Implementation
 %%TODO:
@@ -288,15 +316,35 @@ Thus there would be a desire
 
 
 I have already begun to work on a compiler built with swappable scheduler's in mind. The language
-is a simple lambda and process calculi with synchronous swap channels so as to minimize the language
-characteristics which may mask the process-based metrics, such as differentiating between CPU, I/O,
-and Channel bound processes. This compiler will also allow me to directly test multiple metrics and
-scheduling techniques and visualize the system phases at any given point. I will attempt to do a
-comparative analysis of several popular scheduling techniques against a new algorithm I will need to design
-which uses cooperativity. This, in turn, will evaluate the effectiveness of the process and communication
-channel abstractions utilized in the language.
+is a simple concurrent lambda and process calculi with synchronous swap channels so as to minimize 
+the language characteristics which may mask the process-based metrics, such as differentiating between CPU, I/O,
+and Channel bound processes. 
+
+This compiler will also allow me to directly test multiple metrics and scheduling techniques and visualize the 
+system phases at any given point. I will attempt to do a comparative analysis of several popular scheduling 
+techniques against a new algorithm I will need to design which uses cooperativity. This, in turn, will evaluate 
+the effectiveness of the process and communication channel abstractions utilized in the language.
+
+Thus this section is divided into four sections: first, section~\ref{sec:erlamlang} will discuss the language, the
+abstractions made and the rational for these decisions; next, section~\ref{sec:schedwork} explains the scheduling
+interface the compiler will provide and what schedulers I intend to port for use the ErLam run-time system; then, 
+section~\ref{sec:workevaluation} will discuss the evaluation techniques I intend to use for evaluation of the
+cooperativity scheduler and all ported schedulers; finally, section~\ref{sec:outcomes} will finalize what the 
+outcomes are for this thesis as well as the required deliverables.
 
 \subsection{The ErLam Language}
+\label{sec:erlamlang}
+
+To compare multiple scheduling systems, we would require a language with minimal overhead but which would easily 
+mimic common process behaviors. That being said, there are three primary qualities of a process which we would 
+like to extract during its evaluation:
+\begin{inparaenum}[\itshape a\upshape)]
+\item the likelihood of communication from this process;
+\item whether the process has children; and
+\item whether two processes have a chance of communicating.
+\end{inparaenum} 
+
+The rational for us to specify these qualities in particular is that these are common metrics which 
 
 \begin{figure} %% THE ERLAM LANGUAGE BNF WITHOUT SYNTAX SUGAR %%
 \centering
@@ -315,17 +363,18 @@ channel abstractions utilized in the language.
 \label{fig:grammer}
 \end{figure}
 
-To compare multiple scheduling systems, we would require a language with minimal overhead but which would easily 
-mimic common process behaviors. That being said, there are three primary qualities of a process which we would like to extract during its evaluation:
-\begin{inparaenum}[\itshape a\upshape)]
-\item the likelihood of communication from this process;
-\item whether the process has children; and
-\item whether two processes have a chance of communicating.
-\end{inparaenum} 
-The
 
+\subsection{Scheduler Comparisons}
+\label{sec:schedwork}
+TODO
 
-\subsection{Expected Outcomes and Deliverables}
+\subsection{Evaluation}
+\label{sec:workevaluation}
+TODO
+
+\pagebreak
+\subsection{Outcomes and Deliverables}
+\label{sec:outcomes}
 
 The end goal will be to have, at minimum, the scheduling algorithm based on process cooperativity and 
 the ErLam compilation framework for testing it along-side other algorithms, completely implemented. The 
@@ -342,10 +391,8 @@ Based on the layout of the $10$-week Summer session of $2138$, where the tenth w
 is the defense. It will primarily be a top-heavy load that will shift as needed
 with the inevitability of roadblocks:\\
 
-    April\\
-        $4/28$ - Submission of Proposal with road-map.\\
-
     May\\
+    	$4/28$ - $5/02$ - Thesis Proposal\\
         $5/25$ - $5/31$ - Finish base ErLam Compiler and Plug-in Scheduler Interface \\
 
     June \\
@@ -365,8 +412,11 @@ with the inevitability of roadblocks:\\
         $8/03$ - $8/09$ - {\em(Backup Defense dates)}
 
 \begin{itemize}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
 \item[$*$]{\small\em Stretch goal to implement a batching Occam-Pi scheduler also.}
-\item[$**$]{\small\em The goal is to get the thesis to the readers as far ahead of time as possible, this week is buffer.}\\
+\item[$**$]{\small\em The goal is to get the thesis to the readers as far ahead of time as possible, this week is buffer.}
 \end{itemize}
 
 Every week will contain at least one meeting with my chair and every two weeks
