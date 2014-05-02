@@ -25,6 +25,7 @@
 \usepackage{times}
 \usepackage[final]{graphicx}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{lscape}
 \usepackage{verbatim}
 \usepackage{fancyvrb}
@@ -34,8 +35,13 @@
 \usepackage{paralist} %% inline lists
 \usepackage{tikz,tikz-qtree}
 
+%%%%%%%%XXX: ONLY ON DRAFT, REMOVE ME %%%%%%%%%%%%%%%%%%%%%%
+\usepackage{todonotes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \pdfcompresslevel0 % Fix blurry JPGs
 \graphicspath{ {./pics/} }
+
 
 \begin{document}
 \thispagestyle{empty} 
@@ -47,16 +53,17 @@
 \vspace{.5in}
 {\bf Alexander Robert Dean}\\
 {\footnotesize \url{ard4138@cs.rit.edu}}\\
-\vfill
+\vspace{0.25in}
 \
-{\em Committee Chair:} Dr. Matthew Fluet Ph.D.\\
+{\em Committee Chair:} Dr. Matthew Fluet, Ph.D.\\
 \vspace{0.05in}
-{\em Reader: } Dr. James Heliotis Ph.D.\\
- \vspace{0.15in}
+{\em Reader: } Dr. James Heliotis, Ph.D.\\
+ \vspace{0.25in}
+ {\small
 Department of Computer Science\\
 B. Thomas Golisano College of Computing and Information Sciences \\
 Rochester Institute of Technology \\
-Rochester, New York \\ [0.3in]
+Rochester, New York }\\ [0.3in]
 \vspace{0.5in}
 \today{}\\
 %%%%%%%%%%%%%%%%XXX: REMOVE WHEN DONE %%%%%%%%%%%%%%%%
@@ -148,6 +155,7 @@ theory.
 \caption{A classical feedback loop representation.}
 \label{fig:controller}
 \end{figure}
+\todo{Not sure why the image is blurry}
 
 Also, note that run-time systems tend to extend to more than just the process-scheduling systems. They also encompass  
 garbage collection, dynamic type checking, statistical collection and other debugging mechanisms, and general 
@@ -274,16 +282,42 @@ processes by comparing frequency counts on particular channels, perhaps by a sum
 %%		- At least from the literature review I've done. However, their definitions might differ from our own.
 %% - Metric calculation and scheduler comparisons have yet to have a good framework implementation for doing so.
 %%
+There are a few motivating examples based on conceptually common scenarios. The first is a Ring based structure 
+where a token and possibly more data is passed predictively around a set of $n$ processes across a set of logical
+processing units.
 
-The motivation is twofold. I believe there is an additional feedback metric that has gotten little publicity 
-despite it's apparent usefulness. Current feedback scheduling implementations fail to take process-cooperativity
-into account when applying feedback. A scheduler implementation using this metric calculation would aid in future
-feedback schedulers.
+In this scenario there is a distinct structure to the process layout and the order of evaluation. However a 
+simplistic work-stealing scheduler may have any notion of this and the current token-owning process may randomly
+jump from one processing unit to any other without regard for possible inefficiencies. A cooperativity conscious
+scheduler may find that a single core running them in sequential order is preferable.
 
-However, this hints at other missing metrics that could be useful for adapting to
-application phases. A closer evaluation of current scheduling techniques on a core set of common language 
-primitives would allow for a positive comparative analysis. Thus the first step would be to synthesize a subset
-of primitives useful for metric creation without introducing as much noise as possible.
+Another scenario could be the Map-Reduce based structure where a parent spawns several children (possibly 
+communicates with them) and then waits for their return (which is another round of communication). This 
+demonstrates the effect of phases within an application. A scheduler targeted for interactivity, for the sake
+of example, might continuously check the parent on each run through it's queue despite having a lack of 
+cooperativity in the present.
+
+The overall motivation is thusly, twofold. I believe there is an additional feedback metric that has gotten little
+publicity despite it's apparent usefulness. Current feedback scheduling implementations fail to take 
+process-cooperativity into account when applying feedback. A scheduler implementation using this metric calculation 
+would aid in future feedback schedulers, as well as possibly introduce simplistic but beneficial modifications to 
+current scheduling systems.
+
+However, this hints at other missing metrics that could be useful for adapting to application phases. A closer 
+evaluation of current scheduling techniques on a core set of common language primitives would allow for a positive
+comparative analysis. Thus the first step would be to synthesize a subset of primitives useful for metric gathering 
+while introducing as little noise as possible. 
+
+From the examples given, the internal characteristics provided by most message passing systems can still look 
+synchronous to the scheduler and seem to give little leeway as far as order of evaluation and priority. Otherwise,
+there may be bottle necks in asynchronous message passing as the run time system accesses the underlying channel
+representation (\eg~share memory space, message box, \etc). In either event it seems likely that a simplified 
+symmetric synchronous message passing primitive would lead to interesting techniques as far as scheduling is 
+concerned.
+
+Given this messaging primitive, cooperativity metrics should follow from monitoring frequency of interaction 
+with these channels between partners of processes. Yet, as mentioned, these assumptions need to be tested on an 
+even playing field among other scheduling techniques and using a diverse set of example application simulations.
 
 
 \section{Proposed Work} % Solution Design and Implementation
@@ -320,31 +354,30 @@ is a simple concurrent lambda and process calculi with synchronous swap channels
 the language characteristics which may mask the process-based metrics, such as differentiating between CPU, I/O,
 and Channel bound processes. 
 
-This compiler will also allow me to directly test multiple metrics and scheduling techniques and visualize the 
-system phases at any given point. I will attempt to do a comparative analysis of several popular scheduling 
-techniques against a new algorithm I will need to design which uses cooperativity. This, in turn, will evaluate 
+This compiler will also allow me to directly test multiple metrics and scheduling techniques as well as visualize the 
+system phases at any given point. I will attempt to do a comparative analysis of one or more popular scheduling 
+techniques against a new algorithm I am designing which uses cooperativity. This, in turn, will evaluate 
 the effectiveness of the process and communication channel abstractions utilized in the language.
 
-Thus this section is divided into four sections: first, section~\ref{sec:erlamlang} will discuss the language, the
-abstractions made and the rational for these decisions; next, section~\ref{sec:schedwork} explains the scheduling
-interface the compiler will provide and what schedulers I intend to port for use the ErLam run-time system; then, 
-section~\ref{sec:workevaluation} will discuss the evaluation techniques I intend to use for evaluation of the
-cooperativity scheduler and all ported schedulers; finally, section~\ref{sec:outcomes} will finalize what the 
-outcomes are for this thesis as well as the required deliverables.
+Thus this section is divided into four sections: first, section~\ref{sec:erlamlang} will discuss the language some
+initial assumptions about it's implementation, the abstractions made and the rational for these decisions; next, 
+section~\ref{sec:schedwork} explains the scheduling interface the compiler will provide and what schedulers I intend 
+to port for use the ErLam run-time system; then, section~\ref{sec:workevaluation} will discuss the evaluation 
+techniques I intend to use for on the cooperativity scheduler and all ported schedulers; finally, 
+section~\ref{sec:outcomes} will finalize what the outcomes are for this thesis as well as the required deliverables.
 
 \subsection{The ErLam Language}
 \label{sec:erlamlang}
 
-To compare multiple scheduling systems, we would require a language with minimal overhead but which would easily 
-mimic common process behaviors. That being said, there are three primary qualities of a process which we would 
-like to extract during its evaluation:
-\begin{inparaenum}[\itshape a\upshape)]
-\item the likelihood of communication from this process;
-\item whether the process has children; and
-\item whether two processes have a chance of communicating.
-\end{inparaenum} 
+The ErLam Language is based on Lambda Calculus, with first-class single variable functions, but deviates somewhat
+in that it provides other first-class entities. It deviates from Church representation to provide Integers, this is
+purely for ease of use, and also provides symmetric synchronous Channels for interprocess communication. This 
+language can also be called a Simply-Typed Lambda Calculus.
 
-The rational for us to specify these qualities in particular is that these are common metrics which 
+ErLam also makes a number of ease-of-use decisions like providing a default branch operator and has some useful
+syntactic sugar such as SML style $let$ expressions and multi-variable function definitions. There is also a set of
+built in functions for numeric operations, type checking, and standard functional behaviors (\eg~combinators, \etc)
+which are ignored in this write up.
 
 \begin{figure} %% THE ERLAM LANGUAGE BNF WITHOUT SYNTAX SUGAR %%
 \centering
@@ -363,6 +396,11 @@ The rational for us to specify these qualities in particular is that these are c
 \label{fig:grammer}
 \end{figure}
 
+The hope is that now it should be easy to recognize {\em computation}-bound processes (as they do not block
+before a set number of reductions), {\em communication}-bound processes (as they will synchronize and block
+on a swap channel), level of cooperativity between processes (\ie~from keeping track of which processes swap with
+which others), and any other metric we can think of (as we still have stack, process locality, channel
+information, \etc).
 
 \subsection{Scheduler Comparisons}
 \label{sec:schedwork}
@@ -372,7 +410,7 @@ TODO
 \label{sec:workevaluation}
 TODO
 
-\pagebreak
+%\pagebreak
 \subsection{Outcomes and Deliverables}
 \label{sec:outcomes}
 
@@ -422,7 +460,7 @@ with the inevitability of roadblocks:\\
 Every week will contain at least one meeting with my chair and every two weeks
 must result in an update to my website to lay out my progress and future work. 
 I intend to update my Thesis report as the session progresses, my Chair will be 
-able to view the progress through a shared version controlled repository. The
+able to view the progress through a shared version-controlled repository. The
 Readers will get two weeks with the draft (without finalized results) to make
 suggestions before accepting a defense date. I will have three weeks concurrent
 to this time for testing and report generation.
