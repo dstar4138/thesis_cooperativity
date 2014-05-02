@@ -168,7 +168,9 @@ discuss heap size as a metric for process selection as a means of curtailing gar
 \subsection{Classical Run-Time Scheduling}
 
 Another distinction must be made as far as the level of foresight the scheduling systems have, at least, within this paper.
-There is a spectrum of clairvoyance in classical job-scheduling, in that on one end, job-schedulers have full foresight
+There is a spectrum of clairvoyance 
+\todo{Citation needed, taxonomy paper?}
+in classical job-scheduling, in that on one end, job-schedulers have full foresight
 over the jobs which will enter the queue and their order. These schedulers have the opportunity to optimize for future
 events, which is a luxury the scheduling systems, this paper discusses, do not have. 
 
@@ -184,7 +186,7 @@ children). Apart from this all other insights will need to be gleaned from the e
 In concurrent systems, there are a number of methods for inter-process communication. Arguably though, one 
 of the more popular abstractions is the idea of message passing. Message passing in general can be broken down into 
 two types, asynchronous or synchronous, and then further by how they are implemented. However, when discussing process
-scheduling the method of their implementation is often of some consequence.
+scheduling the method of their implementation is often of some consequence \todo{Needs citation?}.
 
 \begin{figure}[htp]
 \centering
@@ -237,6 +239,9 @@ directly handled by the scheduling of the system (\ie~the order at which the cha
 directly governed).
 
 \subsection{Cooperativity as a Metric}
+
+\todo[inline]{This section feels off, I wish I had referenced a "generic" definition by which to base all assumptions
+and initial observations off of.}
 
 As explained above, there is quite a literature behind the types of metrics used. Yet statistical collection is 
 only a third of the feedback loop. A classification of the system must be made by a control mechanism based on the 
@@ -294,6 +299,7 @@ scheduler may find that a single core running them in sequential order is prefer
 Another scenario could be the Map-Reduce based structure where a parent spawns several children (possibly 
 communicates with them) and then waits for their return (which is another round of communication). This 
 demonstrates the effect of phases within an application. A scheduler targeted for interactivity, for the sake
+\todo{This example is not worded as well as I had wanted it to, revisit.}
 of example, might continuously check the parent on each run through it's queue despite having a lack of 
 cooperativity in the present.
 
@@ -402,13 +408,46 @@ on a swap channel), level of cooperativity between processes (\ie~from keeping t
 which others), and any other metric we can think of (as we still have stack, process locality, channel
 information, \etc).
 
+\todo[inline]{Reference a figure to show an example ErLam application, perhaps an implementation of a Ring program
+or MapReduce style, as those were the examples used above?}
+
 \subsection{Scheduler Comparisons}
 \label{sec:schedwork}
-TODO
+
+Ultimately it would be interesting to test a large collection of scheduling mechanisms and metrics within the same 
+framework. However with time constraints I will limit it to the most promising and comparable feedback scheduler
+in use.
+
+The first is CML's interactivity-based scheduler. \todo{cite?}
+This scheduling system uses a simple but very effective two-queue method for segregating {\em computation} and 
+{\em communication}-bound processes so as to have preferential treatment of the communication in the system without
+sacrificing too much computation time.
+
+The last is Occam-$\pi$'s process locality-based scheduler which attempts to catch a portion of cooperation by
+batching processes into groups and only work-stealing groups. Their scheduler looks very promising as it has 
+been shown to take much more advantage of the cache than simple work-stealing schedulers. However, the implementation
+complexity of this scheduler may push this to being a stretch goal rather than a required deliverable.
+
+These two schedulers will need to be ported along side the new cooperativity scheduler for side-by-side testing. It
+would also be required to have a baseline for these tests so a simple non-feedback enabled work-stealing scheduler
+will also be implemented.
 
 \subsection{Evaluation}
 \label{sec:workevaluation}
-TODO
+
+There are two steps for evaluation, scheduler comparison and language abstraction (evaluation??).
+
+\begin{itemize}
+\item[{\bf Scheduler Comparisons:}] This can be done in one or more of three ways: %%%%TODO: LOOK AT EVALUATION PAPER!
+
+\item[{\bf Language Abstraction Evaluation:}] After the schedulers have been compared there's now the objective
+	evaluation of each scheduler on the language itself. It may be possible that the scheduling systems
+	exhibit interesting behaviors within the abstractions I enforced (namely swap channels and it's 
+	implementation). This step can be performed during the implementation and testing phases of the 
+	timeline and will primarily be summarized in weekly blog posts and in the language implementation
+	section of the final report.
+
+\end{itemize}
 
 %\pagebreak
 \subsection{Outcomes and Deliverables}
@@ -417,7 +456,7 @@ TODO
 The end goal will be to have, at minimum, the scheduling algorithm based on process cooperativity and 
 the ErLam compilation framework for testing it along-side other algorithms, completely implemented. The 
 framework will have two parts: A new tool for comparative analysis of the inner workings of concurrent 
-schedulers, and a set of high level language abstractions for future run-time scheduler testing.
+schedulers, and a set of high level language abstractions for future run-time scheduler testing.\todo{I feel as though I'm reiterating too much, this section might work better as just a bulleted list.}
 
 Thus, there are two deliverables expected alongside the Thesis Report; the source code for a new compiler 
 and runtime framework, and the implementation and design description of a new scheduling algorithm. Both
@@ -463,7 +502,12 @@ I intend to update my Thesis report as the session progresses, my Chair will be
 able to view the progress through a shared version-controlled repository. The
 Readers will get two weeks with the draft (without finalized results) to make
 suggestions before accepting a defense date. I will have three weeks concurrent
-to this time for testing and report generation.
+to this time for testing and report generation.\\
+
+\todo[inline]{I want to make sure that everyone on the committee has access to
+all previous versions of the Thesis report far in advance of July 1st. In fact
+I want to make sure there are at least something available at the end of May,
+the middle of June and the end of June.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -474,6 +518,8 @@ to this time for testing and report generation.
 \singlespacing
 \bibliography{proposal}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\todo[inline]{I believe I need more references to more recent research for balance. 
+Currently I feel the proposal gives to much previous history. I will grab some of the
+references from my Independent study with Fluet during the summer (for starters).}
 
 \end{document}
