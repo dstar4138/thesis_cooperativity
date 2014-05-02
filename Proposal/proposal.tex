@@ -36,7 +36,7 @@
 \usepackage{tikz,tikz-qtree}
 
 %%%%%%%%XXX: ONLY ON DRAFT, REMOVE ME %%%%%%%%%%%%%%%%%%%%%%
-\usepackage{todonotes}
+\usepackage[disable]{todonotes}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \pdfcompresslevel0 % Fix blurry JPGs
@@ -58,13 +58,15 @@
 {\em Committee Chair:} Dr. Matthew Fluet, Ph.D.\\
 \vspace{0.05in}
 {\em Reader: } Dr. James Heliotis, Ph.D.\\
- \vspace{0.25in}
+\vspace{0.05in}
+{\em Observer: } Dr. Rajendra K. Raj, Ph.D.\\
+ \vspace{0.20in}
  {\small
 Department of Computer Science\\
 B. Thomas Golisano College of Computing and Information Sciences \\
 Rochester Institute of Technology \\
 Rochester, New York }\\ [0.3in]
-\vspace{0.5in}
+\vspace{0.28in}
 \today{}\\
 %%%%%%%%%%%%%%%%XXX: REMOVE WHEN DONE %%%%%%%%%%%%%%%%
 		\vspace{0.25in}
@@ -411,7 +413,7 @@ information, \etc).
 \todo[inline]{Reference a figure to show an example ErLam application, perhaps an implementation of a Ring program
 or MapReduce style, as those were the examples used above?}
 
-\subsection{Scheduler Comparisons}
+\subsection{Ported Schedulers}
 \label{sec:schedwork}
 
 Ultimately it would be interesting to test a large collection of scheduling mechanisms and metrics within the same 
@@ -435,21 +437,24 @@ will also be implemented.
 \subsection{Evaluation}
 \label{sec:workevaluation}
 
-There are two steps for evaluation, scheduler comparison and language abstraction (evaluation??).
+There are two portions of this proposal which will require evaluation: the schedulers and the language abstractions:
 
 \begin{itemize}
-\item[{\bf Scheduler Comparisons:}] This can be done in one or more of three ways: %%%%TODO: LOOK AT EVALUATION PAPER!
+\item[{\bf Scheduler Comparisons:}] The schedulers will be compared directly using quanatative analysis of several
+metrics. Namely I will be looking at each schedulers' queues, the number of blocked/running/waiting processes, and
+the timeframes in which each of the processes are being evaluated. Using a consistent set of tests, such as the 
+Ring and MapReduce examples given previously, it should be possible to evaluate what consistent behaviors each 
+scheduling algorithm produces over multiple runs.
 
 \item[{\bf Language Abstraction Evaluation:}] After the schedulers have been compared there's now the objective
 	evaluation of each scheduler on the language itself. It may be possible that the scheduling systems
 	exhibit interesting behaviors within the abstractions I enforced (namely swap channels and it's 
 	implementation). This step can be performed during the implementation and testing phases of the 
-	timeline and will primarily be summarized in weekly blog posts and in the language implementation
+	road-map and will primarily be summarized in weekly blog posts and in the language implementation
 	section of the final report.
 
 \end{itemize}
 
-%\pagebreak
 \subsection{Outcomes and Deliverables}
 \label{sec:outcomes}
 
@@ -462,6 +467,7 @@ Thus, there are two deliverables expected alongside the Thesis Report; the sourc
 and runtime framework, and the implementation and design description of a new scheduling algorithm. Both
 of which will be made available for public use after completion.
 
+\pagebreak
 \section{Roadmap}
 
 Based on the layout of the $10$-week Summer session of $2138$, where the tenth week
