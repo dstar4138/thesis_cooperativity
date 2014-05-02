@@ -148,8 +148,6 @@ limitations of the physical space in which they are having to deal with.
 However, in run-time scheduling systems we would very much like to do the opposite. We would prefer tight oscillations or 
 consistent behavior of our runtime so as to achieve minimal overhead from our modifications. We can also compensate, 
 to reach our reference signal, as quickly as we need to as there are no physical restrictions for our modifications. 
-But this is only to note that we need to take an opposite approach to our scheduler implementations than classical 
-theory.
 
 \begin{figure}[htp]
 \centering
@@ -163,8 +161,8 @@ Also, note that run-time systems tend to extend to more than just the process-sc
 garbage collection, dynamic type checking, statistical collection and other debugging mechanisms, and general 
 resource allocation (\eg~I/O). For the purposes of this paper we will be exclusively talking about the process
 scheduling system and intentionally ignore the effects of these other, albeit important, sub-systems. This 
-distinction must be made however, as some scheduling systems also take into account the effects of these other
-systems on the placement and order of process evaluation. For example, White \etal~\cite{white2012automated}
+distinction must be made however, as some scheduling systems also take into account the effects of other
+sub-systems on the placement and order of process evaluation. For example, White \etal~\cite{white2012automated}
 discuss heap size as a metric for process selection as a means of curtailing garbage collection effects.
 
 \subsection{Classical Run-Time Scheduling}
@@ -180,7 +178,7 @@ However, as it is a spectrum, there is a single point of knowledge this subrange
 that the first job will always be the last, and all other jobs will spawn from it. Thus there will always be a single 
 process in the queue at the beginning. This is true as the runtime will always require an initial primary process 
 (\eg~the `main' function), and once that function is completed, the system is terminated (despite the cases of unjoined
-children). Apart from this all other insights will need to be gleaned from the evaluation of this initial process.
+children). Apart from this, all other insights will need to be gleaned from the evaluation of this initial process.
 
 
 \subsection{Message Passing}
@@ -210,8 +208,7 @@ In asynchronous message passing a process can either be provided a rendezvous po
 To send a message in either case requires pushing/copying the message into a shared or global memory space for another
 process to access (possibly) at a later time. This push/copy can be done in a lock free manner with some lower level
 atomic data structures such as a double-ended queue. But in either a locked or lock-free manner, the process performing
-the send still blocks (if only for a moment) on the operation. However, one difference to note is that the rendezvous 
-point allows for the potential of many processes of accessing the message buffer at once.
+the send still blocks (if only for a moment) on the operation.
 
 In terms of scheduling, a language with asynchronous message passing can ignore the effects of blocking operations, but
 will need to look closer at process placement to take advantage of possible gains in cache affinity \cite{debattista2002cache}.
@@ -226,12 +223,11 @@ possible. Instead we think of a rendezvous point in synchronous communication to
 processes are blocked until communication occurs, the implementation of this passing is irrelevant to this 
 classification).
 
-However there is a further classification of synchronous message passing; that of symmetrical vs asymmetrical message passing. 
 Asymmetrical message passing is synonymous with Milner's Calculus of Communicating Systems \cite{milner1982calculus} 
 or standard $\Pi$-Calculus \cite{palamidessi1997comparing}, in that you have a sender and a receiver which will 
 block on their respective functions around an anonymous channel until the pass has been completed. This differs from a 
-symmetrical message passing only in that the only operation on the channel is a blocking swap-values with the
-process on the other end. 
+symmetrical message passing in that the only operation on the channel is a blocking function which swaps values 
+with the process at the other end.
 
 Note, it is possible to simulate symmetrical message passing on asymmetrical message channels, but in terms of scheduling of
 synchronizing processes, order is now a factor that needs to be considered. On top of this, directionality can also be a factor
@@ -253,7 +249,7 @@ overhead, while still achieving the objective function.
 
 This objective function, for the purposes of simplicity is typically execution time. However, it can also take into
 account resource utilization, process/channel fairness, fulfillment of real-time guarantees, \etc~to rate the 
-scheduler as a whole. Note that this function is an external measure (evaluation) of the schedulers effectiveness,
+schedule as a whole. Note that this function is an external measure (evaluation) of the schedulers effectiveness,
 which will be brought up further in section~\ref{sec:workevaluation}. For now however, note that the objective 
 function and control metrics are separate and evaluate two different things.
 
@@ -294,7 +290,7 @@ where a token and possibly more data is passed predictively around a set of $n$ 
 processing units.
 
 In this scenario there is a distinct structure to the process layout and the order of evaluation. However a 
-simplistic work-stealing scheduler may have any notion of this and the current token-owning process may randomly
+simplistic work-stealing scheduler may have no notion of this and the current token-owning process may randomly
 jump from one processing unit to any other without regard for possible inefficiencies. A cooperativity conscious
 scheduler may find that a single core running them in sequential order is preferable.
 
@@ -325,7 +321,7 @@ concerned.
 
 Given this messaging primitive, cooperativity metrics should follow from monitoring frequency of interaction 
 with these channels between partners of processes. Yet, as mentioned, these assumptions need to be tested on an 
-even playing field among other scheduling techniques and using a diverse set of example application simulations.
+even playing field among other scheduling techniques and using a diverse set of example simulations.
 
 
 \section{Proposed Work} % Solution Design and Implementation
@@ -367,11 +363,11 @@ system phases at any given point. I will attempt to do a comparative analysis of
 techniques against a new algorithm I am designing which uses cooperativity. This, in turn, will evaluate 
 the effectiveness of the process and communication channel abstractions utilized in the language.
 
-Thus this section is divided into four sections: first, section~\ref{sec:erlamlang} will discuss the language some
+Thus this section is divided into four sub-sections: first, section~\ref{sec:erlamlang} will discuss the language, some
 initial assumptions about it's implementation, the abstractions made and the rational for these decisions; next, 
 section~\ref{sec:schedwork} explains the scheduling interface the compiler will provide and what schedulers I intend 
-to port for use the ErLam run-time system; then, section~\ref{sec:workevaluation} will discuss the evaluation 
-techniques I intend to use for on the cooperativity scheduler and all ported schedulers; finally, 
+to port for use in the ErLam run-time system; then, section~\ref{sec:workevaluation} will discuss the evaluation 
+methods I intend to use on the cooperativity scheduler and all ported schedulers; finally, 
 section~\ref{sec:outcomes} will finalize what the outcomes are for this thesis as well as the required deliverables.
 
 \subsection{The ErLam Language}
@@ -379,8 +375,8 @@ section~\ref{sec:outcomes} will finalize what the outcomes are for this thesis a
 
 The ErLam Language is based on Lambda Calculus, with first-class single variable functions, but deviates somewhat
 in that it provides other first-class entities. It deviates from Church representation to provide Integers, this is
-purely for ease of use, and also provides symmetric synchronous Channels for interprocess communication. This 
-language can also be called a Simply-Typed Lambda Calculus.
+purely for ease of use. It also provides a symmetric synchronous Channel type for interprocess communication. As a
+note, this language can also be classified as a Simply-Typed Lambda Calculus.
 
 ErLam also makes a number of ease-of-use decisions like providing a default branch operator and has some useful
 syntactic sugar such as SML style $let$ expressions and multi-variable function definitions. There is also a set of
@@ -417,7 +413,7 @@ or MapReduce style, as those were the examples used above?}
 \label{sec:schedwork}
 
 Ultimately it would be interesting to test a large collection of scheduling mechanisms and metrics within the same 
-framework. However with time constraints I will limit it to the most promising and comparable feedback scheduler
+framework. However with time constraints I will limit it to the most promising and comparable feedback schedulers
 in use.
 
 The first is CML's interactivity-based scheduler. \todo{cite?}

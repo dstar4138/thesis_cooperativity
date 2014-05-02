@@ -17,16 +17,16 @@ ET
 endstream
 endobj
 17 0 obj <<
-/Length 10835     
+/Length 11090     
 >>
 stream
 0 g 0 G
 0 g 0 G
 BT
-/F43 14.3462 Tf 72 709.041 Td [(1)-1000(Backgr)18(ound)]TJ/F46 10.9091 Tf 0 -24.84 Td [(Since)-384(the)-385(form)1(alization)-385(of)-384(feedback)-384(dri)25(v)15(en)-385(sys)1(tems)-385(and)-384(the)-384(adv)15(ent)-385(of)-384(Cybernetics,)-418(multiple)-384(\002elds)-384(ha)20(v)15(e)]TJ 0 -13.549 Td [(attempted)-342(to)-342(mold)-341(these)-342(principles)-342(to)-342(their)-342(o)25(wn)-342(models;)-387(and)-342(run-time)-342(schedulers)-342(are)-342(no)-342(e)15(xception.)-585(This)]TJ 0 -13.549 Td [(is)-316(due,)-333(in)-316(part,)-333(from)-316(process)-316(scheduling)-317(in)-316(parallel)-316(systems)-316(being)-316(fundamentally)-317(a)-316(NP-Complete)-316(problem)]TJ 0 -13.55 Td [([1].)-544(Instead,)-347(focus)-328(has)-328(been)-328(more)-327(fruitful)-328(when)-328(pursuing)-328(the)-328(optimization)-328(of)-328(v)25(arious)-327(metrics)-328(using)-328(some)]TJ 0 -13.549 Td [(particular)-306(objecti)25(v)15(e)-307(function)-306([4])-307(to)-306(tune)-307(for)-306(particular)-307(edge)-306(cases.)-480(As)-306(such,)-321(scheduling)-306(based)-307(on)-306(feedback)]TJ 0 -13.549 Td [(metrics)-250(is)-250(not)-250(ne)25(w)-250([3].)]TJ 16.936 -13.549 Td [(There)-285(is)-285(a)-285(big)-285(distinction)-285(though,)-293(which)-285(can)-285(be)-285(made)-285(between)-285(the)-285(ef)25(fects)-285(of)-285(control)-285(theory)-285(in)-285(classical)]TJ -16.936 -13.549 Td [(c)15(ybernetic)-256(applications)-255(v)15(ersus)-256(that)-256(of)-256(run-time)-255(systems.)-327(This)-256(is)-256(primarily)-256(in)-255(the)-256(adaptation)-256(of)-255(the)-256(controller)]TJ 0 -13.55 Td [(in)-250(the)-250(generic)-250(feedback)-250(loop)-250(\050\002gure)-250(1\051.)-311(In)-250(typical)-250(mechanical)-250(feedback)-250(loops)-250(there)-250(are)-250(tw)10(o)-250(scenarios)-250(which)]TJ 0 -13.549 Td [(need)-283(to)-283(be)-283(a)20(v)20(oided:)-376(resonance)-283(and)-283(rapid)-283(compensation.)-410(It)-283(can)-283(be)-283(seen)-283(that)-283(most)-283(controller)-283(models)-283(will)-283(at-)]TJ 0 -13.549 Td [(tempt)-211(to)-212(damp)-211(the)-211(adjustments)-212(to)-211(reduce)-211(oscillation)-212(whi)1(ch)-212(could)-211(cause)-211(resonance)-212(or)-211(sharp)-211(spik)10(es)-212(in)-211(beha)20(vior)]TJ 0 -13.549 Td [(based)-224(on)-224(i)1(ts)-224(output.)-301(This)-224(is)-224(due)-224(to)-223(the)-224(limitations)-224(of)-224(the)-223(ph)5(ysical)-224(space)-224(in)-224(which)-223(the)15(y)-224(are)-224(ha)20(ving)-224(to)-223(deal)-224(with.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-427(in)-391(run-time)-391(scheduling)-392(systems)-391(we)-392(w)10(ould)-391(v)15(ery)-391(much)-392(lik)10(e)-391(to)-391(do)-392(the)-391(opposite.)-734(W)80(e)-392(w)10(ould)]TJ -16.936 -13.55 Td [(prefer)-298(tight)-299(oscillations)-298(or)-298(consistent)-299(beha)20(vior)-298(of)-299(our)-298(runtime)-298(so)-299(as)-298(to)-299(achie)25(v)15(e)-298(minimal)-298(o)15(v)15(erhead)-299(from)-298(our)]TJ 0 -13.549 Td [(modi\002cations.)-564(W)80(e)-335(can)-335(also)-335(compensate,)-356(to)-334(reach)-335(our)-335(reference)-335(signal,)-356(as)-334(quickly)-335(as)-335(we)-335(need)-335(to)-334(as)-335(there)]TJ 0 -13.549 Td [(are)-286(no)-285(ph)5(ysical)-286(restrictions)-285(for)-286(our)-285(modi\002cations.)-417(But)-286(this)-285(is)-286(only)-285(to)-286(note)-286(that)-285(we)-286(need)-285(to)-286(tak)10(e)-286(an)-285(opposite)]TJ 0 -13.549 Td [(approach)-250(to)-250(our)-250(scheduler)-250(implementations)-250(than)-250(classical)-250(theory)65(.)]TJ
+/F43 14.3462 Tf 72 709.041 Td [(1)-1000(Backgr)18(ound)]TJ/F46 10.9091 Tf 0 -24.84 Td [(Since)-384(the)-385(form)1(alization)-385(of)-384(feedback)-384(dri)25(v)15(en)-385(sys)1(tems)-385(and)-384(the)-384(adv)15(ent)-385(of)-384(Cybernetics,)-418(multiple)-384(\002elds)-384(ha)20(v)15(e)]TJ 0 -13.549 Td [(attempted)-342(to)-342(mold)-341(these)-342(principles)-342(to)-342(their)-342(o)25(wn)-342(models;)-387(and)-342(run-time)-342(schedulers)-342(are)-342(no)-342(e)15(xception.)-585(This)]TJ 0 -13.549 Td [(is)-316(due,)-333(in)-316(part,)-333(from)-316(process)-316(scheduling)-317(in)-316(parallel)-316(systems)-316(being)-316(fundamentally)-317(a)-316(NP-Complete)-316(problem)]TJ 0 -13.55 Td [([1].)-544(Instead,)-347(focus)-328(has)-328(been)-328(more)-327(fruitful)-328(when)-328(pursuing)-328(the)-328(optimization)-328(of)-328(v)25(arious)-327(metrics)-328(using)-328(some)]TJ 0 -13.549 Td [(particular)-306(objecti)25(v)15(e)-307(function)-306([4])-307(to)-306(tune)-307(for)-306(particular)-307(edge)-306(cases.)-480(As)-306(such,)-321(scheduling)-306(based)-307(on)-306(feedback)]TJ 0 -13.549 Td [(metrics)-250(is)-250(not)-250(ne)25(w)-250([3].)]TJ 16.936 -13.549 Td [(There)-285(is)-285(a)-285(big)-285(distinction)-285(though,)-293(which)-285(can)-285(be)-285(made)-285(between)-285(the)-285(ef)25(fects)-285(of)-285(control)-285(theory)-285(in)-285(classical)]TJ -16.936 -13.549 Td [(c)15(ybernetic)-256(applications)-255(v)15(ersus)-256(that)-256(of)-256(run-time)-255(systems.)-327(This)-256(is)-256(primarily)-256(in)-255(the)-256(adaptation)-256(of)-255(the)-256(controller)]TJ 0 -13.55 Td [(in)-250(the)-250(generic)-250(feedback)-250(loop)-250(\050\002gure)-250(1\051.)-311(In)-250(typical)-250(mechanical)-250(feedback)-250(loops)-250(there)-250(are)-250(tw)10(o)-250(scenarios)-250(which)]TJ 0 -13.549 Td [(need)-283(to)-283(be)-283(a)20(v)20(oided:)-376(resonance)-283(and)-283(rapid)-283(compensation.)-410(It)-283(can)-283(be)-283(seen)-283(that)-283(most)-283(controller)-283(models)-283(will)-283(at-)]TJ 0 -13.549 Td [(tempt)-211(to)-212(damp)-211(the)-211(adjustments)-212(to)-211(reduce)-211(oscillation)-212(whi)1(ch)-212(could)-211(cause)-211(resonance)-212(or)-211(sharp)-211(spik)10(es)-212(in)-211(beha)20(vior)]TJ 0 -13.549 Td [(based)-224(on)-224(i)1(ts)-224(output.)-301(This)-224(is)-224(due)-224(to)-223(the)-224(limitations)-224(of)-224(the)-223(ph)5(ysical)-224(space)-224(in)-224(which)-223(the)15(y)-224(are)-224(ha)20(ving)-224(to)-223(deal)-224(with.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-427(in)-391(run-time)-391(scheduling)-392(systems)-391(we)-392(w)10(ould)-391(v)15(ery)-391(much)-392(lik)10(e)-391(to)-391(do)-392(the)-391(opposite.)-734(W)80(e)-392(w)10(ould)]TJ -16.936 -13.55 Td [(prefer)-298(tight)-299(oscillations)-298(or)-298(consistent)-299(beha)20(vior)-298(of)-299(our)-298(runtime)-298(so)-299(as)-298(to)-299(achie)25(v)15(e)-298(minimal)-298(o)15(v)15(erhead)-299(from)-298(our)]TJ 0 -13.549 Td [(modi\002cations.)-337(W)80(e)-259(can)-258(also)-259(compensate,)-261(to)-259(reach)-259(our)-259(reference)-259(signal,)-261(as)-259(quickly)-259(as)-259(we)-259(need)-258(to)-259(as)-259(there)-259(are)]TJ 0 -13.549 Td [(no)-250(ph)5(ysical)-250(restrictions)-250(for)-250(our)-250(modi\002cations.)]TJ
 0 g 0 G
 ET
-1 0 0 1 168.5 383.797 cm
+1 0 0 1 168.5 397.346 cm
 q
 .55 0 0 .55 0 0 cm
 q
@@ -35,13 +35,13 @@ q
 Q
 Q
 0 g 0 G
-1 0 0 1 -168.5 -383.797 cm
+1 0 0 1 -168.5 -397.346 cm
 BT
-/F46 10.9091 Tf 194.941 360.285 Td [(Figure)-250(1:)-310(A)-250(classical)-250(feedback)-250(loop)-250(representation.)]TJ
+/F46 10.9091 Tf 194.941 373.834 Td [(Figure)-250(1:)-310(A)-250(classical)-250(feedback)-250(loop)-250(representation.)]TJ
 0 g 0 G
 0 g 0 G
 ET
-1 0 0 1 88.936 338.462 cm
+1 0 0 1 88.936 352.012 cm
 q 
 0 G 
 0 g 
@@ -52,7 +52,7 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 490.167 -0.038 cm
+1 0 0 1 490.167 -0.039 cm
 q 
 0 G 
 0 g 
@@ -92,18 +92,18 @@ h
 B 
 Q 
 q 
-1 0 0 1 -24.964 -3.985 cm
+1 0 0 1 -24.964 -3.984 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -334.439 cm
+1 0 0 1 -554.139 -347.989 cm
 BT
-/F46 10.9091 Tf 554.139 334.439 Td [(Not)-333(sure)]TJ 0 -13.549 Td [(wh)5(y)-333(the)]TJ 0 -13.549 Td [(image)-333(is)]TJ 0 -13.549 Td [(blurry)]TJ
+/F46 10.9091 Tf 554.139 347.989 Td [(Not)-333(sure)]TJ 0 -13.55 Td [(wh)5(y)-333(the)]TJ 0 -13.549 Td [(image)-333(is)]TJ 0 -13.549 Td [(blurry)]TJ
 ET
-1 0 0 1 554.139 334.439 cm
+1 0 0 1 554.139 347.989 cm
 Q 
-1 0 0 1 24.964 3.985 cm
+1 0 0 1 24.964 3.984 cm
 Q 
 Q 
 S 
@@ -129,18 +129,18 @@ h
 B 
 Q 
 q 
-1 0 0 1 -24.964 -3.985 cm
+1 0 0 1 -24.964 -3.984 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -334.439 cm
+1 0 0 1 -554.139 -347.989 cm
 BT
-/F46 10.9091 Tf 554.139 334.439 Td [(Not)-333(sure)]TJ 0 -13.549 Td [(wh)5(y)-333(the)]TJ 0 -13.549 Td [(image)-333(is)]TJ 0 -13.549 Td [(blurry)]TJ
+/F46 10.9091 Tf 554.139 347.989 Td [(Not)-333(sure)]TJ 0 -13.55 Td [(wh)5(y)-333(the)]TJ 0 -13.549 Td [(image)-333(is)]TJ 0 -13.549 Td [(blurry)]TJ
 ET
-1 0 0 1 554.139 334.439 cm
+1 0 0 1 554.139 347.989 cm
 Q 
-1 0 0 1 24.964 3.985 cm
+1 0 0 1 24.964 3.984 cm
 Q 
 Q 
 Q 
@@ -165,11 +165,11 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -608.244 -334.781 cm
+1 0 0 1 -608.244 -348.33 cm
 BT
-/F46 10.9091 Tf 88.936 321.231 Td [(Also,)-255(note)-254(that)-254(run-time)-254(systems)-254(tend)-255(to)-254(e)15(xtend)-254(to)-254(more)-254(than)-254(just)-254(the)-254(process-scheduling)-254(systems.)-323(The)15(y)]TJ -16.936 -13.549 Td [(also)-215(encompass)-216(g)5(arbage)-215(collection,)-223(dynamic)-215(type)-216(checking,)-222(statistical)-215(collection)-216(and)-215(other)-216(deb)20(ugging)-215(mech-)]TJ 0 -13.549 Td [(anisms,)-231(and)-225(general)-226(resource)-226(allocation)-225(\050)]TJ/F42 10.9091 Tf 176.862 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 17.888 0 Td [(I/O\051.)-226(F)15(or)-225(the)-226(purposes)-226(of)-226(this)-225(paper)-226(we)-226(will)-226(be)-225(e)15(xclusi)25(v)15(ely)-226(talk-)]TJ -194.75 -13.549 Td [(ing)-242(about)-243(the)-242(process)-243(schedul)1(ing)-243(system)-242(and)-243(intentionally)-242(ignore)-242(the)-243(ef)25(fects)-242(of)-242(these)-243(other)40(,)-244(albeit)-242(important,)]TJ 0 -13.549 Td [(sub-systems.)-528(This)-322(distinction)-323(must)-323(be)-322(made)-323(ho)25(we)25(v)15(er)40(,)-341(as)-322(some)-323(scheduling)-323(systems)-322(also)-323(tak)10(e)-322(into)-323(account)]TJ 0 -13.55 Td [(the)-324(ef)25(fects)-323(of)-324(these)-323(other)-324(systems)-324(on)-323(the)-324(placement)-323(and)-324(order)-324(of)-323(process)-324(e)25(v)25(aluation.)-531(F)15(or)-323(e)15(xample,)-342(White)]TJ/F42 10.9091 Tf 0 -13.549 Td [(et)-361(al.)]TJ/F46 10.9091 Tf 26.968 0 Td [([8])-361(discuss)-361(heap)-361(size)-361(as)-361(a)-361(metric)-361(for)-361(process)-361(selection)-361(as)-361(a)-361(means)-361(of)-361(curtailing)-361(g)5(arbage)-361(collection)]TJ -26.968 -13.549 Td [(ef)25(fects.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(1.1)-1000(Classical)-250(Run-T)18(ime)-250(Scheduling)]TJ/F46 10.9091 Tf 0 -20.913 Td [(Another)-377(distinction)-376(must)-377(be)-377(made)-376(as)-377(f)10(ar)-377(as)-376(the)-377(le)25(v)15(el)-377(of)-376(foresight)-377(the)-377(scheduling)-376(systems)-377(ha)20(v)15(e,)-408(at)-377(least,)]TJ 0 -13.549 Td [(within)-289(this)-289(paper)55(.)-428(There)-289(is)-290(a)-289(spectrum)-289(of)-289(clairv)20(o)10(yance)]TJ
+/F46 10.9091 Tf 88.936 334.781 Td [(Also,)-255(note)-254(that)-254(run-time)-254(systems)-254(tend)-255(to)-254(e)15(xtend)-254(to)-254(more)-254(than)-254(just)-254(the)-254(process-scheduling)-254(systems.)-323(The)15(y)]TJ -16.936 -13.55 Td [(also)-215(encompass)-216(g)5(arbage)-215(collection,)-223(dynamic)-215(type)-216(checking,)-222(statistical)-215(collection)-216(and)-215(other)-216(deb)20(ugging)-215(mech-)]TJ 0 -13.549 Td [(anisms,)-231(and)-225(general)-226(resource)-226(allocation)-225(\050)]TJ/F42 10.9091 Tf 176.862 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 17.888 0 Td [(I/O\051.)-226(F)15(or)-225(the)-226(purposes)-226(of)-226(this)-225(paper)-226(we)-226(will)-226(be)-225(e)15(xclusi)25(v)15(ely)-226(talk-)]TJ -194.75 -13.549 Td [(ing)-242(about)-243(the)-242(process)-243(schedul)1(ing)-243(system)-242(and)-243(intentionally)-242(ignore)-242(the)-243(ef)25(fects)-242(of)-242(these)-243(other)40(,)-244(albeit)-242(important,)]TJ 0 -13.549 Td [(sub-systems.)-303(This)-229(distinction)-230(must)-229(be)-229(made)-230(ho)25(we)25(v)15(er)40(,)-233(as)-230(some)-229(scheduling)-229(systems)-230(also)-229(tak)10(e)-229(into)-230(account)-229(the)]TJ 0 -13.549 Td [(ef)25(fects)-233(of)-234(other)-233(sub-systems)-234(on)-233(the)-233(placement)-234(and)-233(order)-234(of)-233(process)-233(e)25(v)25(aluation.)-305(F)15(or)-233(e)15(xample,)-237(White)]TJ/F42 10.9091 Tf 431.097 0 Td [(et)-233(al.)]TJ/F46 10.9091 Tf 24.183 0 Td [([8])]TJ -455.28 -13.55 Td [(discuss)-250(heap)-250(size)-250(as)-250(a)-250(metric)-250(for)-250(process)-250(selection)-250(as)-250(a)-250(means)-250(of)-250(curtailing)-250(g)5(arbage)-250(collection)-250(ef)25(fects.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(1.1)-1000(Classical)-250(Run-T)18(ime)-250(Scheduling)]TJ/F46 10.9091 Tf 0 -20.913 Td [(Another)-377(distinction)-376(must)-377(be)-377(made)-376(as)-377(f)10(ar)-377(as)-376(the)-377(le)25(v)15(el)-377(of)-376(foresight)-377(the)-377(scheduling)-376(systems)-377(ha)20(v)15(e,)-408(at)-377(least,)]TJ 0 -13.549 Td [(within)-289(this)-289(paper)55(.)-428(There)-289(is)-290(a)-289(spectrum)-289(of)-289(clairv)20(o)10(yance)]TJ
 ET
-1 0 0 1 313.959 165.705 cm
+1 0 0 1 313.959 192.803 cm
 q 
 0 G 
 0 g 
@@ -180,11 +180,11 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -313.959 -165.705 cm
+1 0 0 1 -313.959 -192.803 cm
 BT
-/F46 10.9091 Tf 313.959 162.023 Td [(in)-289(classical)-289(job-scheduling,)-299(in)-290(that)-289(on)-289(one)-289(end,)-299(job-)]TJ
+/F46 10.9091 Tf 313.959 189.121 Td [(in)-289(classical)-289(job-scheduling,)-299(in)-290(that)-289(on)-289(one)-289(end,)-299(job-)]TJ
 ET
-1 0 0 1 579.103 165.666 cm
+1 0 0 1 579.103 192.765 cm
 q 
 0 G 
 0 g 
@@ -192,13 +192,13 @@ q
 q 
 q 
 q 
-1 0 0 1 0 -3.643 cm
+1 0 0 1 0 -3.644 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
 Q 
-1 0 0 1 0 3.643 cm
+1 0 0 1 0 3.644 cm
 Q 
 Q 
 S 
@@ -224,18 +224,18 @@ h
 B 
 Q 
 q 
-1 0 0 1 -24.964 -4.137 cm
+1 0 0 1 -24.964 -4.138 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -161.529 cm
+1 0 0 1 -554.139 -188.627 cm
 BT
-/F46 10.9091 Tf 554.139 161.529 Td [(Citation)]TJ 0 -13.549 Td [(needed,)]TJ 0 -13.549 Td [(taxonomy)]TJ 0 -13.55 Td [(paper?)]TJ
+/F46 10.9091 Tf 554.139 188.627 Td [(Citation)]TJ 0 -13.549 Td [(needed,)]TJ 0 -13.549 Td [(taxonomy)]TJ 0 -13.549 Td [(paper?)]TJ
 ET
-1 0 0 1 554.139 161.529 cm
+1 0 0 1 554.139 188.627 cm
 Q 
-1 0 0 1 24.964 4.137 cm
+1 0 0 1 24.964 4.138 cm
 Q 
 Q 
 S 
@@ -261,24 +261,24 @@ h
 B 
 Q 
 q 
-1 0 0 1 -24.964 -4.137 cm
+1 0 0 1 -24.964 -4.138 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -161.529 cm
+1 0 0 1 -554.139 -188.627 cm
 BT
-/F46 10.9091 Tf 554.139 161.529 Td [(Citation)]TJ 0 -13.549 Td [(needed,)]TJ 0 -13.549 Td [(taxonomy)]TJ 0 -13.55 Td [(paper?)]TJ
+/F46 10.9091 Tf 554.139 188.627 Td [(Citation)]TJ 0 -13.549 Td [(needed,)]TJ 0 -13.549 Td [(taxonomy)]TJ 0 -13.549 Td [(paper?)]TJ
 ET
-1 0 0 1 554.139 161.529 cm
+1 0 0 1 554.139 188.627 cm
 Q 
-1 0 0 1 24.964 4.137 cm
+1 0 0 1 24.964 4.138 cm
 Q 
 Q 
 Q 
 n 
 Q 
-1 0 0 1 29.141 -3.643 cm
+1 0 0 1 29.141 -3.644 cm
 q 
 0 G 
 0 g 
@@ -297,11 +297,11 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -608.244 -162.023 cm
+1 0 0 1 -608.244 -189.121 cm
 BT
-/F46 10.9091 Tf 72 148.474 Td [(schedulers)-327(ha)20(v)15(e)-327(full)-327(foresight)-327(o)15(v)15(er)-327(the)-327(jobs)-327(which)-327(will)-327(enter)-327(the)-327(queue)-327(and)-327(their)-327(order)55(.)-541(These)-327(schedulers)]TJ 0 -13.55 Td [(ha)20(v)15(e)-357(the)-356(opportunity)-356(to)-357(optimize)-356(for)-357(future)-356(e)25(v)15(ents,)-384(which)-356(is)-357(a)-356(luxury)-357(the)-356(scheduling)-357(syst)1(ems,)-384(this)-356(paper)]TJ 0 -13.549 Td [(discusses,)-250(do)-250(not)-250(ha)20(v)15(e.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-213(as)-203(it)-204(is)-203(a)-203(spectrum,)-213(there)-203(is)-204(a)-203(single)-204(point)-203(of)-203(kno)25(wledge)-204(this)-203(subrange)-203(of)-204(schedulers)-203(can)-204(assume.)]TJ
+/F46 10.9091 Tf 72 175.572 Td [(schedulers)-327(ha)20(v)15(e)-327(full)-327(foresight)-327(o)15(v)15(er)-327(the)-327(jobs)-327(which)-327(will)-327(enter)-327(the)-327(queue)-327(and)-327(their)-327(order)55(.)-541(These)-327(schedulers)]TJ 0 -13.549 Td [(ha)20(v)15(e)-357(the)-356(opportunity)-356(to)-357(optimize)-356(for)-357(future)-356(e)25(v)15(ents,)-384(which)-356(is)-357(a)-356(luxury)-357(the)-356(scheduling)-357(syst)1(ems,)-384(this)-356(paper)]TJ 0 -13.549 Td [(discusses,)-250(do)-250(not)-250(ha)20(v)15(e.)]TJ 16.936 -13.55 Td [(Ho)25(we)25(v)15(er)40(,)-213(as)-203(it)-204(is)-203(a)-203(spectrum,)-213(there)-203(is)-204(a)-203(single)-204(point)-203(of)-203(kno)25(wledge)-204(this)-203(subrange)-203(of)-204(schedulers)-203(can)-204(assume.)]TJ -16.936 -13.549 Td [(Namely)65(,)-220(that)-211(the)-212(\002rst)-212(job)-212(will)-212(al)10(w)10(ays)-212(be)-212(the)-212(last,)-219(and)-212(all)-212(other)-212(jobs)-212(will)-212(spa)15(wn)-212(from)-212(it.)-297(Thus)-212(there)-212(will)-212(al)10(w)10(ays)]TJ 0 -13.549 Td [(be)-291(a)-292(single)-291(process)-291(in)-291(the)-292(queue)-291(at)-291(the)-292(be)15(ginning.)-433(This)-292(is)-291(true)-291(as)-292(t)1(he)-292(runtime)-291(will)-291(al)10(w)10(ays)-292(require)-291(an)-291(initial)]TJ
 0 g 0 G
- 214.337 -35.826 Td [(1)]TJ
+ 231.273 -35.826 Td [(1)]TJ
 0 g 0 G
 ET
 endstream
@@ -395,15 +395,15 @@ m8jt«æ¢¬ÿ 4|Ãþê@JÊƒw&e_Í«
 endstream
 endobj
 20 0 obj <<
-/Length 13805     
+/Length 13587     
 >>
 stream
 0 g 0 G
 0 g 0 G
 BT
-/F46 10.9091 Tf 72 709.041 Td [(Namely)65(,)-220(that)-211(the)-212(\002rst)-212(job)-212(will)-212(al)10(w)10(ays)-212(be)-212(the)-212(last,)-219(and)-212(all)-212(other)-212(jobs)-212(will)-212(spa)15(wn)-212(from)-212(it.)-297(Thus)-212(there)-212(will)-212(al)10(w)10(ays)]TJ 0 -13.549 Td [(be)-291(a)-292(single)-291(process)-291(in)-291(the)-292(queue)-291(at)-291(the)-292(be)15(ginning.)-433(This)-292(is)-291(true)-291(as)-292(t)1(he)-292(runtime)-291(will)-291(al)10(w)10(ays)-292(require)-291(an)-291(initial)]TJ 0 -13.549 Td [(primary)-330(process)-330(\050)]TJ/F42 10.9091 Tf 78.09 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 19.027 0 Td [(the)-330(`main')-330(function\051,)-350(and)-331(once)-330(that)-330(function)-330(is)-330(completed,)-350(the)-330(system)-331(is)-330(terminated)]TJ -97.117 -13.549 Td [(\050despite)-269(the)-268(cases)-269(of)-269(unjoined)-269(c)1(hildren\051.)-367(Apart)-268(from)-269(this)-269(all)-268(other)-269(insights)-269(will)-269(need)-268(to)-269(be)-269(gleaned)-268(from)-269(the)]TJ 0 -13.55 Td [(e)25(v)25(aluation)-250(of)-250(this)-250(initial)-250(process.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(1.2)-1000(Message)-250(P)10(assing)]TJ/F46 10.9091 Tf 0 -20.913 Td [(In)-286(concurrent)-287(system)1(s,)-296(there)-286(are)-286(a)-287(number)-286(of)-286(methods)-286(for)-287(inter)20(-process)-286(communication.)-419(Ar)18(guably)-286(though,)]TJ 0 -13.549 Td [(one)-336(of)-335(the)-336(more)-335(popular)-336(abstractions)-335(is)-336(the)-336(idea)-335(of)-336(message)-335(passing.)-567(Message)-336(passing)-335(in)-336(general)-335(can)-336(be)]TJ 0 -13.549 Td [(brok)10(en)-260(do)25(wn)-260(into)-261(tw)10(o)-260(types,)-263(asynchronous)-260(or)-260(synchronous,)-263(and)-260(then)-260(further)-260(by)-261(ho)25(w)-260(the)15(y)-260(are)-260(implemented.)]TJ 0 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-292(when)-284(discussing)-284(process)-284(scheduling)-284(the)-284(method)-284(of)-284(their)-284(implementation)-283(is)-284(often)-284(of)-284(some)-284(conse-)]TJ 0 -13.549 Td [(quence)]TJ
+/F46 10.9091 Tf 72 709.041 Td [(primary)-330(process)-330(\050)]TJ/F42 10.9091 Tf 78.09 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 19.027 0 Td [(the)-330(`main')-330(function\051,)-350(and)-331(once)-330(that)-330(function)-330(is)-330(completed,)-350(the)-330(system)-331(is)-330(terminated)]TJ -97.117 -13.549 Td [(\050despite)-256(the)-256(cases)-256(of)-256(unjoined)-257(children\051.)-328(Apart)-256(from)-256(this,)-258(all)-256(other)-256(insights)-256(will)-256(need)-257(to)-256(be)-256(gleaned)-256(from)-256(the)]TJ 0 -13.549 Td [(e)25(v)25(aluation)-250(of)-250(this)-250(initial)-250(process.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(1.2)-1000(Message)-250(P)10(assing)]TJ/F46 10.9091 Tf 0 -20.913 Td [(In)-286(concurrent)-287(system)1(s,)-296(there)-286(are)-286(a)-287(number)-286(of)-286(methods)-286(for)-287(inter)20(-process)-286(communication.)-419(Ar)18(guably)-286(though,)]TJ 0 -13.549 Td [(one)-336(of)-335(the)-336(more)-335(popular)-336(abstractions)-335(is)-336(the)-336(idea)-335(of)-336(message)-335(passing.)-567(Message)-336(passing)-335(in)-336(general)-335(can)-336(be)]TJ 0 -13.55 Td [(brok)10(en)-260(do)25(wn)-260(into)-261(tw)10(o)-260(types,)-263(asynchronous)-260(or)-260(synchronous,)-263(and)-260(then)-260(further)-260(by)-261(ho)25(w)-260(the)15(y)-260(are)-260(implemented.)]TJ 0 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-292(when)-284(discussing)-284(process)-284(scheduling)-284(the)-284(method)-284(of)-284(their)-284(implementation)-283(is)-284(often)-284(of)-284(some)-284(conse-)]TJ 0 -13.549 Td [(quence)]TJ
 ET
-1 0 0 1 105.622 553.514 cm
+1 0 0 1 105.622 580.613 cm
 q 
 0 G 
 0 g 
@@ -414,11 +414,11 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -105.622 -553.514 cm
+1 0 0 1 -105.622 -580.613 cm
 BT
-/F46 10.9091 Tf 105.622 549.832 Td [(.)]TJ
+/F46 10.9091 Tf 105.622 576.931 Td [(.)]TJ
 ET
-1 0 0 1 579.103 553.476 cm
+1 0 0 1 579.103 580.575 cm
 q 
 0 G 
 0 g 
@@ -458,16 +458,16 @@ h
 B 
 Q 
 q 
-1 0 0 1 -24.964 -4.137 cm
+1 0 0 1 -24.964 -4.138 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -549.339 cm
+1 0 0 1 -554.139 -576.437 cm
 BT
-/F46 10.9091 Tf 554.139 549.339 Td [(Needs)-333(ci-)]TJ 0 -13.549 Td [(tation?)]TJ
+/F46 10.9091 Tf 554.139 576.437 Td [(Needs)-333(ci-)]TJ 0 -13.549 Td [(tation?)]TJ
 ET
-1 0 0 1 554.139 549.339 cm
+1 0 0 1 554.139 576.437 cm
 Q 
 1 0 0 1 24.964 4.137 cm
 Q 
@@ -500,11 +500,11 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -549.339 cm
+1 0 0 1 -554.139 -576.437 cm
 BT
-/F46 10.9091 Tf 554.139 549.339 Td [(Needs)-333(ci-)]TJ 0 -13.549 Td [(tation?)]TJ
+/F46 10.9091 Tf 554.139 576.437 Td [(Needs)-333(ci-)]TJ 0 -13.549 Td [(tation?)]TJ
 ET
-1 0 0 1 554.139 549.339 cm
+1 0 0 1 554.139 576.437 cm
 Q 
 1 0 0 1 24.964 4.137 cm
 Q 
@@ -512,7 +512,7 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 29.141 -3.644 cm
+1 0 0 1 29.141 -3.643 cm
 q 
 0 G 
 0 g 
@@ -532,7 +532,7 @@ Q
 n 
 Q 
 0 g 0 G
-1 0 0 1 -312.477 -25.392 cm
+1 0 0 1 -312.477 -25.393 cm
 q 
 0 G 
 0 g 
@@ -540,10 +540,10 @@ q
 q 
 q 
 q 
-1 0 0 1 -88.8 -65.774 cm
+1 0 0 1 -88.8 -65.773 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 88.8 65.774 cm
+1 0 0 1 88.8 65.773 cm
 q 
 0 G 
 0 g 
@@ -555,41 +555,41 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -258.732 -524.44 cm
+1 0 0 1 -258.732 -551.538 cm
 BT
-/F46 10.9091 Tf 258.732 524.44 Td [(Message)-250(P)15(assing)]TJ
+/F46 10.9091 Tf 258.732 551.538 Td [(Message)-250(P)15(assing)]TJ
 ET
-1 0 0 1 258.732 524.44 cm
+1 0 0 1 258.732 551.538 cm
 Q 
 1 0 0 1 37.035 0 cm
 Q 
 Q 
 q 
 q 
-1 0 0 1 -88.8 -65.774 cm
+1 0 0 1 -88.8 -65.773 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 37.196 65.774 cm
+1 0 0 1 37.196 65.773 cm
 q 
 0 G 
 0 g 
 0.3985 w 
 q 
 q 
-1 0 0 1 42.521 -65.774 cm
+1 0 0 1 42.521 -65.773 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 -42.521 65.774 cm
+1 0 0 1 -42.521 65.773 cm
 q 
 0 G 
 0 g 
 0.3985 w 
 q 
 q 
-1 0 0 1 42.521 -65.774 cm
+1 0 0 1 42.521 -65.773 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 60.688 35.886 cm
+1 0 0 1 60.688 35.885 cm
 q 
 0 G 
 0 g 
@@ -601,41 +601,41 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -336.463 -494.552 cm
+1 0 0 1 -336.463 -521.65 cm
 BT
-/F46 10.9091 Tf 336.463 494.552 Td [(Sync)]TJ
+/F46 10.9091 Tf 336.463 521.65 Td [(Sync)]TJ
 ET
-1 0 0 1 336.463 494.552 cm
+1 0 0 1 336.463 521.65 cm
 Q 
 1 0 0 1 10.909 0 cm
 Q 
 Q 
 q 
 q 
-1 0 0 1 -60.688 -35.886 cm
+1 0 0 1 -60.688 -35.885 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 30.603 35.886 cm
+1 0 0 1 30.603 35.885 cm
 q 
 0 G 
 0 g 
 0.3985 w 
 q 
 q 
-1 0 0 1 32.595 -35.886 cm
+1 0 0 1 32.595 -35.885 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 -32.595 35.886 cm
+1 0 0 1 -32.595 35.885 cm
 q 
 0 G 
 0 g 
 0.3985 w 
 q 
 q 
-1 0 0 1 32.595 -35.886 cm
+1 0 0 1 32.595 -35.885 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 27.576 5.998 cm
+1 0 0 1 27.576 5.997 cm
 q 
 0 G 
 0 g 
@@ -647,40 +647,40 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -353.518 -464.664 cm
+1 0 0 1 -353.518 -491.762 cm
 BT
-/F46 10.9091 Tf 353.518 464.664 Td [(Symmetric)]TJ
+/F46 10.9091 Tf 353.518 491.762 Td [(Symmetric)]TJ
 ET
-1 0 0 1 353.518 464.664 cm
+1 0 0 1 353.518 491.762 cm
 Q 
 1 0 0 1 23.94 0 cm
 Q 
 Q 
 n 
 Q 
-1 0 0 1 -27.576 -5.998 cm
+1 0 0 1 -27.576 -5.997 cm
 Q 
-1 0 0 1 -32.595 35.886 cm
+1 0 0 1 -32.595 35.885 cm
 Q 
 Q 
 n 
 Q 
-1 0 0 1 32.595 -35.886 cm
+1 0 0 1 32.595 -35.885 cm
 Q 
-1 0 0 1 -32.595 35.886 cm
+1 0 0 1 -32.595 35.885 cm
 Q 
 Q 
 q 
 1.0 0.0 0.0 1.0 -30.6032 -35.88606 cm 
 q 
-1 0 0 1 30.603 35.885 cm
+1 0 0 1 30.603 35.886 cm
 q 
 0 G 
 0 g 
 0.3985 w 
 q 
 q 
-1 0 0 1 -30.603 -35.885 cm
+1 0 0 1 -30.603 -35.886 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 1 0 0 1 30.603 5.998 cm
@@ -695,11 +695,11 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -320.923 -500.55 cm
+1 0 0 1 -320.923 -527.648 cm
 BT
-/F46 10.9091 Tf 320.923 500.55 Td [(Asymmetric)]TJ
+/F46 10.9091 Tf 320.923 527.648 Td [(Asymmetric)]TJ
 ET
-1 0 0 1 320.923 500.55 cm
+1 0 0 1 320.923 527.648 cm
 Q 
 1 0 0 1 26.967 0 cm
 Q 
@@ -708,19 +708,19 @@ n
 Q 
 1 0 0 1 -30.603 -5.998 cm
 Q 
-1 0 0 1 30.603 35.885 cm
-Q 
-Q 
-n 
-Q 
-1 0 0 1 -30.603 -35.885 cm
+1 0 0 1 30.603 35.886 cm
 Q 
 Q 
 n 
 Q 
 1 0 0 1 -30.603 -35.886 cm
 Q 
-1 0 0 1 60.688 35.886 cm
+Q 
+n 
+Q 
+1 0 0 1 -30.603 -35.885 cm
+Q 
+1 0 0 1 60.688 35.885 cm
 Q 
 Q 
 0.0 -6.197 m 
@@ -731,16 +731,16 @@ S
 S 
 n 
 Q 
-1 0 0 1 -60.688 -35.886 cm
+1 0 0 1 -60.688 -35.885 cm
 Q 
-1 0 0 1 -42.521 65.774 cm
+1 0 0 1 -42.521 65.773 cm
 Q 
 Q 
 n 
 Q 
-1 0 0 1 42.521 -65.774 cm
+1 0 0 1 42.521 -65.773 cm
 Q 
-1 0 0 1 -42.521 65.774 cm
+1 0 0 1 -42.521 65.773 cm
 Q 
 Q 
 q 
@@ -768,11 +768,11 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -267.423 -558.089 cm
+1 0 0 1 -267.423 -585.187 cm
 BT
-/F46 10.9091 Tf 267.423 558.089 Td [(Async)]TJ
+/F46 10.9091 Tf 267.423 585.187 Td [(Async)]TJ
 ET
-1 0 0 1 267.423 558.089 cm
+1 0 0 1 267.423 585.187 cm
 Q 
 1 0 0 1 13.936 0 cm
 Q 
@@ -814,11 +814,11 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -284.325 -528.201 cm
+1 0 0 1 -284.325 -555.299 cm
 BT
-/F46 10.9091 Tf 284.325 528.201 Td [(Indirect)]TJ
+/F46 10.9091 Tf 284.325 555.299 Td [(Indirect)]TJ
 ET
-1 0 0 1 284.325 528.201 cm
+1 0 0 1 284.325 555.299 cm
 Q 
 1 0 0 1 16.963 0 cm
 Q 
@@ -840,17 +840,17 @@ Q
 q 
 1.0 0.0 0.0 1.0 -17.26686 -33.64966 cm 
 q 
-1 0 0 1 17.266 33.649 cm
+1 0 0 1 17.266 33.65 cm
 q 
 0 G 
 0 g 
 0.3985 w 
 q 
 q 
-1 0 0 1 -17.266 -33.649 cm
+1 0 0 1 -17.266 -33.65 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
-1 0 0 1 17.266 3.761 cm
+1 0 0 1 17.266 3.762 cm
 q 
 0 G 
 0 g 
@@ -862,25 +862,25 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -265.066 -561.85 cm
+1 0 0 1 -265.066 -588.949 cm
 BT
-/F46 10.9091 Tf 265.066 561.85 Td [(Direct)]TJ
+/F46 10.9091 Tf 265.066 588.949 Td [(Direct)]TJ
 ET
-1 0 0 1 265.066 561.85 cm
+1 0 0 1 265.066 588.949 cm
 Q 
 1 0 0 1 13.63 0 cm
 Q 
 Q 
 n 
 Q 
-1 0 0 1 -17.266 -3.761 cm
+1 0 0 1 -17.266 -3.762 cm
 Q 
-1 0 0 1 17.266 33.649 cm
+1 0 0 1 17.266 33.65 cm
 Q 
 Q 
 n 
 Q 
-1 0 0 1 -17.266 -33.649 cm
+1 0 0 1 -17.266 -33.65 cm
 Q 
 Q 
 n 
@@ -932,12 +932,12 @@ Q
 n 
 Q 
 0 g 0 G
-1 0 0 1 -295.768 -524.44 cm
+1 0 0 1 -295.768 -551.538 cm
 BT
-/F46 10.9091 Tf 190.818 440.267 Td [(Figure)-250(2:)-310(A)-250(High-Le)25(v)15(el)-250(Message-P)15(assing)-250(T)80(axonomy)]TJ
+/F46 10.9091 Tf 190.818 467.366 Td [(Figure)-250(2:)-310(A)-250(High-Le)25(v)15(el)-250(Message-P)15(assing)-250(T)80(axonomy)]TJ
 0 g 0 G
 0 g 0 G
- -101.881 -25.504 Td [(In)-308(asynchronous)-307(message)-308(passing)-307(a)-308(process)-307(can)-308(either)-308(be)-307(pro)15(vided)-308(a)-307(rendezv)20(ous)-308(point)-307(or)-308(an)-308(identi\002er)]TJ -16.937 -13.549 Td [(for)-298(another)-297(process.)-453(T)80(o)-297(send)-298(a)-298(message)-297(in)-298(either)-297(case)-298(requires)-297(pushing/cop)10(ying)-298(the)-297(message)-298(into)-298(a)-297(shared)]TJ 0 -13.549 Td [(or)-240(global)-241(memory)-240(space)-240(for)-240(another)-241(process)-240(to)-240(access)-240(\050possibly\051)-241(at)-240(a)-240(later)-240(time.)-307(This)-240(push/cop)10(y)-241(can)-240(be)-240(done)]TJ 0 -13.549 Td [(in)-305(a)-306(lock)-305(free)-306(manner)-305(with)-305(some)-306(lo)25(wer)-305(le)25(v)15(el)-306(atomic)-305(data)-305(structures)-306(such)-305(as)-306(a)-305(double-ended)-305(queue.)-477(But)-305(in)]TJ 0 -13.55 Td [(either)-280(a)-279(lock)10(ed)-280(or)-280(lock-free)-280(manner)40(,)-287(the)-279(process)-280(performing)-280(the)-279(send)-280(still)-280(blocks)-280(\050if)-279(only)-280(for)-280(a)-279(moment\051)-280(on)]TJ 0 -13.549 Td [(the)-253(operation.)-321(Ho)25(we)25(v)15(er)40(,)-254(one)-254(dif)25(ferenc)1(e)-254(to)-253(note)-254(is)-253(that)-254(the)-253(rendezv)20(ous)-254(point)-253(allo)25(ws)-253(for)-254(the)-253(potential)-254(of)-253(man)15(y)]TJ 0 -13.549 Td [(processes)-250(of)-250(accessing)-250(the)-250(message)-250(b)20(uf)25(fer)-250(at)-250(once.)]TJ 16.937 -13.549 Td [(In)-201(terms)-200(of)-201(scheduling,)-210(a)-201(language)-201(with)-200(asynchronous)-201(message)-201(passing)-200(can)-201(ignore)-201(the)-200(ef)25(fects)-201(of)-201(blocking)]TJ -16.937 -13.549 Td [(operations,)-324(b)20(ut)-309(will)-310(need)-309(to)-309(look)-310(closer)-309(at)-309(process)-310(placement)-309(to)-309(tak)10(e)-310(adv)25(antage)-309(of)-309(possible)-309(g)5(ains)-310(in)-309(cache)]TJ 0 -13.55 Td [(af)25(\002nity)-254([2].)-320(F)15(or)-254(e)15(xample,)-254(the)-254(ef)25(fects)-253(of)-254(the)-254(cache)-253(on)-254(direct)-253(message)-254(passing)-253(\050)]TJ/F42 10.9091 Tf 336.352 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 18.192 0 Td [(a)-254(process)-253(mailbox\051)-254(can)-253(be)]TJ -354.544 -13.549 Td [(substantial)-308(as)-308(tw)10(o)-307(processes)-308(on)-308(dif)25(ferent)-308(cores)-307(will)-308(need)-308(to)-308(cop)10(y)-307(stack)-308(frames)-308(to)-308(memory)-308(and)-307(back)-308(rather)]TJ 0 -13.549 Td [(than)-324(just)-324(a)-325(pointer)-324(to)-324(the)-324(message)-324(in)-325(the)-324(originator')55(s)-324(stack)-324(frame.)-533(In)-324(indirect)-324(message)-325(pas)1(sing)-325(the)-324(task)-324(is)]TJ 0 -13.549 Td [(e)25(v)15(en)-250(w)10(orse)-250(as)-250(multiple)-250(processes)-250(may)-250(need)-250(access)-250(to)-250(the)-250(same)-250(data.)]TJ 16.937 -13.549 Td [(In)-302(synchronous)-303(message)-302(passing,)-316(a)-302(process)-302(must)-303(meet)-302(another)-302(at)-303(a)-302(pro)15(vided)-302(rendezv)20(ous)-303(point)-302(b)20(ut)-303(can)]TJ -16.937 -13.55 Td [(either)-238(be)-239(symmetrical)-238(or)-239(asymmetrical.)-306(Note)-238(that)-239(the)-238(rendezv)20(ous)-239(point)-238(is)-238(not)-239(a)-238(requirement)-239(in)-238(the)-239(sense)-238(that)]TJ 0 -13.549 Td [(direct)-290(synchronous)-289(messaging)-290(isn')18(t)-289(possible.)-429(Instead)-290(we)-289(think)-290(of)-289(a)-290(rendezv)20(ous)-289(point)-290(in)-290(synchronous)-289(com-)]TJ 0 -13.549 Td [(munication)-222(to)-222(be)-222(time)-222(bound)-222(rather)-222(than)-222(location)-222(bound)-222(\050)]TJ/F42 10.9091 Tf 246.616 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 15.589 0 Td [(tw)10(o)-222(processes)-222(are)-222(block)10(ed)-222(until)-222(communication)]TJ -262.205 -13.549 Td [(occurs,)-250(the)-250(implementation)-250(of)-250(this)-250(passing)-250(is)-250(irrele)25(v)25(ant)-250(to)-250(this)-250(classi\002cation\051.)]TJ 16.937 -13.549 Td [(Ho)25(we)25(v)15(er)-252(there)-252(is)-252(a)-252(further)-253(classi\002cati)1(on)-253(of)-252(synchronous)-252(message)-252(passing;)-253(that)-252(of)-252(symmetrical)-252(vs)-253(asym-)]TJ -16.937 -13.55 Td [(metrical)-278(m)1(essage)-278(passing.)-393(Asymmetrical)-277(message)-278(passing)-277(is)-278(synon)15(ymous)-277(with)-278(Milner')55(s)-277(Calculus)-278(of)-277(Com-)]TJ 0 -13.549 Td [(municating)-347(Systems)-347([5])-348(or)-347(standard)]TJ/F15 10.9091 Tf 163.168 0 Td [(\005)]TJ/F46 10.9091 Tf 8.182 0 Td [(-Calculus)-347([6],)-372(in)-347(that)-347(you)-347(ha)20(v)15(e)-348(a)-347(sender)-347(and)-347(a)-348(recei)25(v)15(er)-347(which)-347(will)]TJ -171.35 -13.549 Td [(block)-290(on)-290(their)-290(respecti)25(v)15(e)-290(functions)-290(around)-290(an)-290(anon)15(ymous)-290(channel)-290(until)-289(the)-290(pass)-290(has)-290(been)-290(completed.)-430(This)]TJ 0 -13.549 Td [(dif)25(fers)-342(from)-343(a)-342(symmetrical)-342(message)-342(passing)-343(only)-342(in)-342(that)-343(the)-342(only)-342(operation)-343(on)-342(the)-342(channel)-343(i)1(s)-343(a)-342(blocking)]TJ 0 -13.549 Td [(sw)10(ap-v)25(alues)-250(with)-250(the)-250(process)-250(on)-250(the)-250(other)-250(end.)]TJ
+ -101.881 -25.505 Td [(In)-308(asynchronous)-307(message)-308(passing)-307(a)-308(process)-307(can)-308(either)-308(be)-307(pro)15(vided)-308(a)-307(rendezv)20(ous)-308(point)-307(or)-308(an)-308(identi\002er)]TJ -16.937 -13.549 Td [(for)-298(another)-297(process.)-453(T)80(o)-297(send)-298(a)-298(message)-297(in)-298(either)-297(case)-298(requires)-297(pushing/cop)10(ying)-298(the)-297(message)-298(into)-298(a)-297(shared)]TJ 0 -13.549 Td [(or)-240(global)-241(memory)-240(space)-240(for)-240(another)-241(process)-240(to)-240(access)-240(\050possibly\051)-241(at)-240(a)-240(later)-240(time.)-307(This)-240(push/cop)10(y)-241(can)-240(be)-240(done)]TJ 0 -13.549 Td [(in)-305(a)-306(lock)-305(free)-306(manner)-305(with)-305(some)-306(lo)25(wer)-305(le)25(v)15(el)-306(atomic)-305(data)-305(structures)-306(such)-305(as)-306(a)-305(double-ended)-305(queue.)-477(But)-305(in)]TJ 0 -13.549 Td [(either)-280(a)-279(lock)10(ed)-280(or)-280(lock-free)-280(manner)40(,)-287(the)-279(process)-280(performing)-280(the)-279(send)-280(still)-280(blocks)-280(\050if)-279(only)-280(for)-280(a)-279(moment\051)-280(on)]TJ 0 -13.55 Td [(the)-250(operation.)]TJ 16.937 -13.549 Td [(In)-201(terms)-200(of)-201(scheduling,)-210(a)-201(language)-201(with)-200(asynchronous)-201(message)-201(passing)-200(can)-201(ignore)-201(the)-200(ef)25(fects)-201(of)-201(blocking)]TJ -16.937 -13.549 Td [(operations,)-324(b)20(ut)-309(will)-310(need)-309(to)-309(look)-310(closer)-309(at)-309(process)-310(placement)-309(to)-309(tak)10(e)-310(adv)25(antage)-309(of)-309(possible)-309(g)5(ains)-310(in)-309(cache)]TJ 0 -13.549 Td [(af)25(\002nity)-254([2].)-320(F)15(or)-254(e)15(xample,)-254(the)-254(ef)25(fects)-253(of)-254(the)-254(cache)-253(on)-254(direct)-253(message)-254(passing)-253(\050)]TJ/F42 10.9091 Tf 336.352 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 18.192 0 Td [(a)-254(process)-253(mailbox\051)-254(can)-253(be)]TJ -354.544 -13.549 Td [(substantial)-308(as)-308(tw)10(o)-307(processes)-308(on)-308(dif)25(ferent)-308(cores)-307(will)-308(need)-308(to)-308(cop)10(y)-307(stack)-308(frames)-308(to)-308(memory)-308(and)-307(back)-308(rather)]TJ 0 -13.55 Td [(than)-324(just)-324(a)-325(pointer)-324(to)-324(the)-324(message)-324(in)-325(the)-324(originator')55(s)-324(stack)-324(frame.)-533(In)-324(indirect)-324(message)-325(pas)1(sing)-325(the)-324(task)-324(is)]TJ 0 -13.549 Td [(e)25(v)15(en)-250(w)10(orse)-250(as)-250(multiple)-250(processes)-250(may)-250(need)-250(access)-250(to)-250(the)-250(same)-250(data.)]TJ 16.937 -13.549 Td [(In)-302(synchronous)-303(message)-302(passing,)-316(a)-302(process)-302(must)-303(meet)-302(another)-302(at)-303(a)-302(pro)15(vided)-302(rendezv)20(ous)-303(point)-302(b)20(ut)-303(can)]TJ -16.937 -13.549 Td [(either)-238(be)-239(symmetrical)-238(or)-239(asymmetrical.)-306(Note)-238(that)-239(the)-238(rendezv)20(ous)-239(point)-238(is)-238(not)-239(a)-238(requirement)-239(in)-238(the)-239(sense)-238(that)]TJ 0 -13.549 Td [(direct)-290(synchronous)-289(messaging)-290(isn')18(t)-289(possible.)-429(Instead)-290(we)-289(think)-290(of)-289(a)-290(rendezv)20(ous)-289(point)-290(in)-290(synchronous)-289(com-)]TJ 0 -13.55 Td [(munication)-222(to)-222(be)-222(time)-222(bound)-222(rather)-222(than)-222(location)-222(bound)-222(\050)]TJ/F42 10.9091 Tf 246.616 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 15.589 0 Td [(tw)10(o)-222(processes)-222(are)-222(block)10(ed)-222(until)-222(communication)]TJ -262.205 -13.549 Td [(occurs,)-250(the)-250(implementation)-250(of)-250(this)-250(passing)-250(is)-250(irrele)25(v)25(ant)-250(to)-250(this)-250(classi\002cation\051.)]TJ 16.937 -13.549 Td [(Asymmetrical)-285(message)-286(passing)-285(is)-286(synon)15(ymous)-286(wi)1(th)-286(Milner')55(s)-286(Calcul)1(us)-286(of)-286(Communicating)-285(Systems)-286([5])]TJ -16.937 -13.549 Td [(or)-324(standard)]TJ/F15 10.9091 Tf 53.126 0 Td [(\005)]TJ/F46 10.9091 Tf 8.181 0 Td [(-Calculus)-324([6],)-343(in)-325(that)-324(you)-325(ha)20(v)15(e)-324(a)-325(sender)-324(and)-324(a)-325(recei)25(v)15(er)-324(which)-325(will)-324(block)-324(on)-325(their)-324(respecti)25(v)15(e)]TJ -61.307 -13.549 Td [(functions)-238(around)-238(an)-239(anon)15(ymous)-238(channel)-238(until)-238(the)-239(pass)-238(has)-238(been)-238(completed.)-306(This)-239(dif)26(fers)-239(from)-238(a)-238(symmetrical)]TJ 0 -13.55 Td [(message)-294(passing)-294(in)-293(that)-294(the)-294(only)-294(operation)-294(on)-294(the)-293(channel)-294(is)-294(a)-294(blocking)-294(function)-294(which)-293(sw)10(aps)-294(v)25(alues)-294(with)]TJ 0 -13.549 Td [(the)-250(process)-250(at)-250(the)-250(other)-250(end.)]TJ 16.937 -13.549 Td [(Note,)-354(it)-333(is)-333(possible)-333(to)-333(simulate)-333(symmetrical)-333(message)-333(passing)-333(on)-333(asymmetrical)-333(message)-333(channels,)-354(b)20(ut)]TJ -16.937 -13.549 Td [(in)-318(terms)-317(of)-318(scheduling)-317(of)-318(synchronizing)-317(processes,)-335(order)-317(is)-318(no)25(w)-317(a)-318(f)10(actor)-317(that)-318(needs)-317(to)-318(be)-317(considered.)-513(On)]TJ 0 -13.549 Td [(top)-284(of)-283(this,)-292(directionality)-284(can)-283(also)-284(be)-284(a)-283(f)10(actor)-284(which)-284(compl)1(icates)-284(the)-284(channel)-283(implementation.)-411(Namely)65(,)-292(the)]TJ 0 -13.549 Td [(internal)-307(queuing)-307(of)-307(senders)-308(or)-307(recei)25(v)15(ers)-307(may)-307(not)-307(percolate)-307(hints)-307(up)-307(to)-308(the)-307(scheduler)-307(re)15(g)5(arding)-307(their)-307(queue)]TJ
 0 g 0 G
  231.273 -31.132 Td [(2)]TJ
 0 g 0 G
@@ -945,15 +945,15 @@ ET
 endstream
 endobj
 24 0 obj <<
-/Length 9750      
+/Length 9438      
 >>
 stream
 0 g 0 G
 0 g 0 G
 BT
-/F46 10.9091 Tf 88.936 709.041 Td [(Note,)-354(it)-333(is)-333(possible)-333(to)-333(simulate)-333(symmetrical)-333(message)-333(passing)-333(on)-333(asymmetrical)-333(message)-333(channels,)-354(b)20(ut)]TJ -16.936 -13.549 Td [(in)-318(terms)-317(of)-318(scheduling)-317(of)-318(synchronizing)-317(processes,)-335(order)-317(is)-318(no)25(w)-317(a)-318(f)10(actor)-317(that)-318(needs)-317(to)-318(be)-317(considered.)-513(On)]TJ 0 -13.549 Td [(top)-284(of)-283(this,)-292(directionality)-284(can)-283(also)-284(be)-284(a)-283(f)10(actor)-284(which)-283(complicates)-284(the)-284(channel)-283(implementation.)-411(Namely)65(,)-292(the)]TJ 0 -13.549 Td [(internal)-307(queuing)-307(of)-307(senders)-308(or)-307(recei)25(v)15(ers)-307(may)-307(not)-307(percolate)-307(hints)-307(up)-307(to)-308(the)-307(scheduler)-307(re)15(g)5(arding)-307(their)-307(queue)]TJ 0 -13.55 Td [(position.)-430(F)15(or)-290(the)-290(alternati)25(v)15(e,)-300(symmetrical)-290(message)-291(pass)1(ing)-291(or)-290(sw)10(ap)-290(channels,)-300(the)-290(order)-290(is)-290(directly)-290(handled)]TJ 0 -13.549 Td [(by)-318(the)-319(scheduling)-318(of)-318(the)-319(system)-318(\050)]TJ/F42 10.9091 Tf 148.701 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 16.64 0 Td [(the)-318(order)-319(at)-318(which)-318(the)-319(channels)-318(e)25(v)25(aluate)-318(the)]TJ/F54 10.9091 Tf 199.304 0 Td [(sw)-27(ap)]TJ/F46 10.9091 Tf 27.945 0 Td [(command)-318(can)-319(be)]TJ -392.59 -13.549 Td [(directly)-250(go)15(v)15(erned\051.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(1.3)-1000(Cooperati)10(vity)-250(as)-250(a)-250(Metric)]TJ
+/F46 10.9091 Tf 72 709.041 Td [(position.)-430(F)15(or)-290(the)-290(alternati)25(v)15(e,)-300(symmetrical)-290(message)-291(pass)1(ing)-291(or)-290(sw)10(ap)-290(channels,)-300(the)-290(order)-290(is)-290(directly)-290(handled)]TJ 0 -13.549 Td [(by)-318(the)-319(scheduling)-318(of)-318(the)-319(system)-318(\050)]TJ/F42 10.9091 Tf 148.701 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 16.64 0 Td [(the)-318(order)-319(at)-318(which)-318(the)-319(channels)-318(e)25(v)25(aluate)-318(the)]TJ/F54 10.9091 Tf 199.304 0 Td [(sw)-27(ap)]TJ/F46 10.9091 Tf 27.945 0 Td [(command)-318(can)-319(be)]TJ -392.59 -13.549 Td [(directly)-250(go)15(v)15(erned\051.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(1.3)-1000(Cooperati)10(vity)-250(as)-250(a)-250(Metric)]TJ
 ET
-1 0 0 1 305.751 572.304 cm
+1 0 0 1 305.751 626.501 cm
 q 
 0 G 
 0 g 
@@ -987,11 +987,11 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -76.176 -575.435 cm
+1 0 0 1 -76.176 -629.632 cm
 BT
-/F46 10.9091 Tf 76.176 575.435 Td [(This)-333(section)-334(feels)-333(of)25(f,)-333(I)-333(wish)-334(I)-333(had)-333(referenced)-334(a)-333(\224generic\224)-333(de\002nition)-333(by)-334(which)-333(to)-333(base)-333(all)-334(assumptions)]TJ 0 -13.549 Td [(and)-333(initial)-334(observ)25(ations)-333(of)25(f)-333(of.)]TJ
+/F46 10.9091 Tf 76.176 629.632 Td [(This)-333(section)-334(feels)-333(of)25(f,)-333(I)-333(wish)-334(I)-333(had)-333(referenced)-334(a)-333(\224generic\224)-333(de\002nition)-333(by)-334(which)-333(to)-333(base)-333(all)-334(assumptions)]TJ 0 -13.55 Td [(and)-333(initial)-334(observ)25(ations)-333(of)25(f)-333(of.)]TJ
 ET
-1 0 0 1 76.176 575.435 cm
+1 0 0 1 76.176 629.632 cm
 Q 
 1 0 0 1 229.575 -3.131 cm
 Q 
@@ -999,25 +999,25 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -305.751 -572.304 cm
+1 0 0 1 -305.751 -626.501 cm
 BT
-/F46 10.9091 Tf 88.936 544.008 Td [(As)-250(e)15(xplained)-249(abo)15(v)15(e,)-250(there)-250(is)-249(quite)-250(a)-250(literature)-249(behind)-250(the)-250(types)-249(of)-250(metrics)-250(used.)-309(Y)100(et)-250(statistical)-250(collection)]TJ -16.936 -13.55 Td [(is)-296(only)-295(a)-296(third)-295(of)-296(the)-295(feedback)-296(loop.)-446(A)-296(classi\002cation)-295(of)-296(the)-295(system)-296(must)-295(be)-296(made)-296(by)-295(a)-296(control)-295(mechanism)]TJ 0 -13.549 Td [(based)-250(on)-250(the)-250(recorded)-250(state,)-250(and)-250(then)-250(a)-251(modi\002cation)-250(must)-250(be)-250(made)-250(to)-250(the)-250(scheduler)-250(which)-250(should)-250(positi)25(v)15(ely)]TJ 0 -13.549 Td [(ef)25(fect)-208(the)-207(state)-208(of)-208(the)-207(system')55(s)-208(future.)-296(The)-208(k)10(e)15(y)-207(is)-208(to)-208(mak)10(e)-208(sure)-207(this)-208(ef)25(fect)-208(is)-207(transparent)-208(and)-208(results)-207(in)-208(minimal)]TJ 0 -13.549 Td [(o)15(v)15(erhead,)-250(while)-250(still)-250(achie)25(ving)-250(the)-250(objecti)25(v)15(e)-250(function.)]TJ 16.936 -13.549 Td [(This)-270(objecti)25(v)15(e)-271(function,)-275(for)-270(the)-271(purposes)-270(of)-270(simplicity)-271(is)-270(typically)-270(e)15(x)15(ecution)-271(time.)-371(Ho)25(we)25(v)15(er)40(,)-275(it)-270(can)-271(also)]TJ -16.936 -13.55 Td [(tak)10(e)-310(into)-310(account)-309(resource)-310(utilization,)-325(process/channel)-310(f)10(airness,)-324(ful\002llment)-310(of)-310(real-time)-310(guarantees,)]TJ/F42 10.9091 Tf 440.686 0 Td [(etc.)]TJ/F46 10.9091 Tf 18.827 0 Td [(to)]TJ -459.513 -13.549 Td [(rate)-284(the)-283(scheduler)-284(as)-283(a)-284(whole.)-410(Note)-284(that)-283(this)-284(function)-283(is)-284(an)-284(e)15(xte)1(rnal)-284(measure)-284(\050e)25(v)25(aluati)1(on\051)-284(of)-284(the)-283(schedulers)]TJ 0 -13.549 Td [(ef)25(fecti)25(v)15(eness,)-373(which)-348(will)-349(be)-348(brought)-348(up)-349(furthe)1(r)-349(in)-348(section)-348(3.3.)-606(F)15(or)-348(no)25(w)-348(ho)25(we)25(v)15(er)40(,)-373(note)-348(that)-349(the)-348(objecti)25(v)15(e)]TJ 0 -13.549 Td [(function)-250(and)-250(control)-250(metrics)-250(are)-250(separate)-250(and)-250(e)25(v)25(aluate)-250(tw)10(o)-250(dif)25(ferent)-250(things.)]TJ 16.936 -13.549 Td [(Interacti)25(vity)-287(is)-288(one)-287(metric)-288(which)-287(e)25(v)25(aluates)-288(the)-287(system')55(s)-288(current)-287(scheduler)55(.)-423(It)-287(looks)-288(at)-287(the)-288(ratio)-287(of)-288(com-)]TJ -16.936 -13.55 Td [(munication)-287(to)-286(computation)-287(currently)-286(taking)-287(place)-287(i)1(n)-287(the)-287(system)-286(as)-287(a)-286(whole.)-420(One)-287(scheduling)-287(syst)1(em)-287(which)]TJ 0 -13.549 Td [(utilizes)-250(this)-250(metric)-250(indirectly)-250(is)-250(in)-250(CML)-250([7].)]TJ 16.936 -13.549 Td [(It')55(s)-356(method)-355(by)-356(which)-355(it)-356(grades)-355(the)-356(system)-355(is)-356(the)-356(r)1(ecognition)-356(of)]TJ/F42 10.9091 Tf 288.344 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)-356(processes)-355(v)15(ersus)]TJ/F42 10.9091 Tf -359.825 -13.549 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-233(processes.)-305(A)]TJ/F42 10.9091 Tf 91.72 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-233(process)-233(is)-234(one)-233(which)-233(has)-233(pre)25(vious)-233(block)10(ed)-233(itself)]TJ -226.25 -13.549 Td [(without)-397(using)-398(it')55(s)-397(entire)-397(scheduled)-397(quantum,)-435(t)1(he)-398(rational)-397(for)-397(this)-398(is)-397(only)-397(a)-398(synchroniz)1(ing)-398(thread)-397(w)10(ould)]TJ 0 -13.55 Td [(be)-369(willing)-368(to)-369(block;)-428(thus)-369(a)]TJ/F42 10.9091 Tf 124.78 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)-369(process)-368(is)-369(the)-369(opposi)1(te)-369(\050)]TJ/F42 10.9091 Tf 144.939 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 17.189 0 Td [(one)-369(that)-368(al)10(w)10(ays)-369(uses)-369(its)-368(full)]TJ -341.453 -13.549 Td [(quantum\051.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-305(this)-294(metric)-294(looks)-295(only)-294(at)-294(the)-294(ratio)-294(of)]TJ/F42 10.9091 Tf 207.526 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-294(processes)-294(to)]TJ/F42 10.9091 Tf 90.823 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)]TJ -437.095 -13.549 Td [(processes)-343(and)-343(misses)-343(the)-343(quantity)-343(of)-343(communication)-343(on)-342(a)-343(per)20(-process)-343(le)25(v)15(el)-343(which)-343(could)-343(indicate)-343(needed)]TJ 0 -13.549 Td [(changes)-250(in)-250(scheduling)-250(quantum)-250(or)-250(process)-250(locality)-250(with)-250(those)-250(which)-250(are)-250(frequently)-250(in)-250(touch.)]TJ 16.936 -13.55 Td [(This)-234(hints)-235(at)-234(a)-234(need)-235(to)-234(look)-234(for)-234(some)-235(le)25(v)15(el)-234(of)-234(cooperation)-235(between)-234(processes)-234(in)-234(the)-235(phases)-234(of)-234(an)-235(applica-)]TJ -16.936 -13.549 Td [(tion')55(s)-212(life-time.)-297(Rather)-213(than)-212(a)-212(ratio)-212(of)]TJ/F42 10.9091 Tf 163.474 0 Td [(communication)]TJ/F46 10.9091 Tf 69.579 0 Td [(to)]TJ/F42 10.9091 Tf 10.802 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(,)-220(instead)-212(we)-212(need)-212(to)-212(look)-212(at)-213(a)-212(frequenc)15(y)]TJ -298.4 -13.549 Td [(of)-221(communication)-221(and)-221(between)-221(which)-221(processes)-221(\050)]TJ/F42 10.9091 Tf 215.625 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 15.577 0 Td [(rate)-221(at)-221(which)-221(a)-221(process)-221(communicates)-221(with)-221(a)-221(particular)]TJ -231.202 -13.549 Td [(channel\051.)-308(One)-242(method)-243(this)-242(can)-243(be)-243(achie)25(v)15(ed)-242(by)-243(is,)-244(in)-243(a)1(ddition)-243(to)-243(recording)-242(which)-243(threads)-243(are)]TJ/F42 10.9091 Tf 400.735 0 Td [(communication)]TJ/F46 10.9091 Tf -400.735 -13.549 Td [(and)]TJ/F42 10.9091 Tf 19.504 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound,)-367(the)-344(scheduler)-344(can)-344(also)-344(tag)-344(the)-344(process)-344(with)-344(it')55(s)-344(frequenc)15(y)-343(of)-344(communication)-344(on)]TJ -74.049 -13.549 Td [(each)-293(channel)-294(it)-293(touches)-294(o)15(v)15(er)-293(time.)-440(By)-294(doing)-293(so,)-304(the)-294(scheduler)-293(can)-294(calculate)-293(a)-293(process')55(s)-294(cooperati)25(vity)-293(with)]TJ 0 -13.55 Td [(one)-250(or)-250(more)-250(processes)-250(by)-250(comparing)-250(frequenc)15(y)-250(counts)-250(on)-250(particular)-250(channels,)-250(perhaps)-250(by)-250(a)-250(sum)-250(of)-250(ratios.)]TJ/F43 14.3462 Tf 0 -35.114 Td [(2)-1000(Moti)10(v)10(ation)]TJ/F46 10.9091 Tf 0 -24.84 Td [(There)-307(are)-306(a)-307(fe)25(w)-307(moti)25(v)25(ating)-307(e)15(xamples)-306(based)-307(on)-307(conceptually)-307(com)1(mon)-307(scenarios.)-480(The)-307(\002rst)-307(is)-307(a)-306(Ring)-307(based)]TJ 0 -13.55 Td [(structure)-288(where)-289(a)-288(tok)10(en)-289(and)-288(possibly)-289(more)-288(data)-289(is)-288(passed)-289(predicti)25(v)15(ely)-288(around)-289(a)-288(set)-289(of)]TJ/F54 10.9091 Tf 378.102 0 Td [(n)]TJ/F46 10.9091 Tf 9.695 0 Td [(processes)-288(across)-289(a)]TJ
+/F46 10.9091 Tf 88.936 598.204 Td [(As)-250(e)15(xplained)-249(abo)15(v)15(e,)-250(there)-250(is)-249(quite)-250(a)-250(literature)-249(behind)-250(the)-250(types)-249(of)-250(metrics)-250(used.)-309(Y)100(et)-250(statistical)-250(collection)]TJ -16.936 -13.549 Td [(is)-296(only)-295(a)-296(third)-295(of)-296(the)-295(feedback)-296(loop.)-446(A)-296(classi\002cation)-295(of)-296(the)-295(system)-296(must)-295(be)-296(made)-296(by)-295(a)-296(control)-295(mechanism)]TJ 0 -13.549 Td [(based)-250(on)-250(the)-250(recorded)-250(state,)-250(and)-250(then)-250(a)-251(modi\002cation)-250(must)-250(be)-250(made)-250(to)-250(the)-250(scheduler)-250(which)-250(should)-250(positi)25(v)15(ely)]TJ 0 -13.549 Td [(ef)25(fect)-208(the)-207(state)-208(of)-208(the)-207(system')55(s)-208(future.)-296(The)-208(k)10(e)15(y)-207(is)-208(to)-208(mak)10(e)-208(sure)-207(this)-208(ef)25(fect)-208(is)-207(transparent)-208(and)-208(results)-207(in)-208(minimal)]TJ 0 -13.549 Td [(o)15(v)15(erhead,)-250(while)-250(still)-250(achie)25(ving)-250(the)-250(objecti)25(v)15(e)-250(function.)]TJ 16.936 -13.55 Td [(This)-270(objecti)25(v)15(e)-271(function,)-275(for)-270(the)-271(purposes)-270(of)-270(simplicity)-271(is)-270(typically)-270(e)15(x)15(ecution)-271(time.)-371(Ho)25(we)25(v)15(er)40(,)-275(it)-270(can)-271(also)]TJ -16.936 -13.549 Td [(tak)10(e)-310(into)-310(account)-309(resource)-310(utilization,)-325(process/channel)-310(f)10(airness,)-324(ful\002llment)-310(of)-310(real-time)-310(guarantees,)]TJ/F42 10.9091 Tf 440.686 0 Td [(etc.)]TJ/F46 10.9091 Tf 18.827 0 Td [(to)]TJ -459.513 -13.549 Td [(rate)-301(the)-301(schedule)-301(as)-301(a)-301(whole.)-464(Note)-301(that)-301(this)-301(function)-301(is)-301(an)-301(e)15(xternal)-301(measure)-301(\050e)25(v)25(aluation\051)-301(of)-301(the)-301(schedulers)]TJ 0 -13.549 Td [(ef)25(fecti)25(v)15(eness,)-373(which)-348(will)-349(be)-348(brought)-348(up)-349(furthe)1(r)-349(in)-348(section)-348(3.3.)-606(F)15(or)-348(no)25(w)-348(ho)25(we)25(v)15(er)40(,)-373(note)-348(that)-349(the)-348(objecti)25(v)15(e)]TJ 0 -13.549 Td [(function)-250(and)-250(control)-250(metrics)-250(are)-250(separate)-250(and)-250(e)25(v)25(aluate)-250(tw)10(o)-250(dif)25(ferent)-250(things.)]TJ 16.936 -13.55 Td [(Interacti)25(vity)-287(is)-288(one)-287(metric)-288(which)-287(e)25(v)25(aluates)-288(the)-287(system')55(s)-288(current)-287(scheduler)55(.)-423(It)-287(looks)-288(at)-287(the)-288(ratio)-287(of)-288(com-)]TJ -16.936 -13.549 Td [(munication)-287(to)-286(computation)-287(currently)-286(taking)-287(place)-287(i)1(n)-287(the)-287(system)-286(as)-287(a)-286(whole.)-420(One)-287(scheduling)-287(syst)1(em)-287(which)]TJ 0 -13.549 Td [(utilizes)-250(this)-250(metric)-250(indirectly)-250(is)-250(in)-250(CML)-250([7].)]TJ 16.936 -13.549 Td [(It')55(s)-356(method)-355(by)-356(which)-355(it)-356(grades)-355(the)-356(system)-355(is)-356(the)-356(r)1(ecognition)-356(of)]TJ/F42 10.9091 Tf 288.344 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)-356(processes)-355(v)15(ersus)]TJ/F42 10.9091 Tf -359.825 -13.549 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-233(processes.)-305(A)]TJ/F42 10.9091 Tf 91.72 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-233(process)-233(is)-234(one)-233(which)-233(has)-233(pre)25(vious)-233(block)10(ed)-233(itself)]TJ -226.25 -13.55 Td [(without)-397(using)-398(it')55(s)-397(entire)-397(scheduled)-397(quantum,)-435(t)1(he)-398(rational)-397(for)-397(this)-398(is)-397(only)-397(a)-398(synchroniz)1(ing)-398(thread)-397(w)10(ould)]TJ 0 -13.549 Td [(be)-369(willing)-368(to)-369(block;)-428(thus)-369(a)]TJ/F42 10.9091 Tf 124.78 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)-369(process)-368(is)-369(the)-369(opposi)1(te)-369(\050)]TJ/F42 10.9091 Tf 144.939 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 17.189 0 Td [(one)-369(that)-368(al)10(w)10(ays)-369(uses)-369(its)-368(full)]TJ -341.453 -13.549 Td [(quantum\051.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-305(this)-294(metric)-294(looks)-295(only)-294(at)-294(the)-294(ratio)-294(of)]TJ/F42 10.9091 Tf 207.526 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-294(processes)-294(to)]TJ/F42 10.9091 Tf 90.823 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)]TJ -437.095 -13.549 Td [(processes)-343(and)-343(misses)-343(the)-343(quantity)-343(of)-343(communication)-343(on)-342(a)-343(per)20(-process)-343(le)25(v)15(el)-343(which)-343(could)-343(indicate)-343(needed)]TJ 0 -13.55 Td [(changes)-250(in)-250(scheduling)-250(quantum)-250(or)-250(process)-250(locality)-250(with)-250(those)-250(which)-250(are)-250(frequently)-250(in)-250(touch.)]TJ 16.936 -13.549 Td [(This)-234(hints)-235(at)-234(a)-234(need)-235(to)-234(look)-234(for)-234(some)-235(le)25(v)15(el)-234(of)-234(cooperation)-235(between)-234(processes)-234(in)-234(the)-235(phases)-234(of)-234(an)-235(applica-)]TJ -16.936 -13.549 Td [(tion')55(s)-212(life-time.)-297(Rather)-213(than)-212(a)-212(ratio)-212(of)]TJ/F42 10.9091 Tf 163.474 0 Td [(communication)]TJ/F46 10.9091 Tf 69.579 0 Td [(to)]TJ/F42 10.9091 Tf 10.802 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(,)-220(instead)-212(we)-212(need)-212(to)-212(look)-212(at)-213(a)-212(frequenc)15(y)]TJ -298.4 -13.549 Td [(of)-221(communication)-221(and)-221(between)-221(which)-221(processes)-221(\050)]TJ/F42 10.9091 Tf 215.625 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 15.577 0 Td [(rate)-221(at)-221(which)-221(a)-221(process)-221(communicates)-221(with)-221(a)-221(particular)]TJ -231.202 -13.549 Td [(channel\051.)-308(One)-242(method)-243(this)-242(can)-243(be)-243(achie)25(v)15(ed)-242(by)-243(is,)-244(in)-243(a)1(ddition)-243(to)-243(recording)-242(which)-243(threads)-243(are)]TJ/F42 10.9091 Tf 400.735 0 Td [(communication)]TJ/F46 10.9091 Tf -400.735 -13.55 Td [(and)]TJ/F42 10.9091 Tf 19.504 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound,)-367(the)-344(scheduler)-344(can)-344(also)-344(tag)-344(the)-344(process)-344(with)-344(it')55(s)-344(frequenc)15(y)-343(of)-344(communication)-344(on)]TJ -74.049 -13.549 Td [(each)-293(channel)-294(it)-293(touches)-294(o)15(v)15(er)-293(time.)-440(By)-294(doing)-293(so,)-304(the)-294(scheduler)-293(can)-294(calculate)-293(a)-293(process')55(s)-294(cooperati)25(vity)-293(with)]TJ 0 -13.549 Td [(one)-250(or)-250(more)-250(processes)-250(by)-250(comparing)-250(frequenc)15(y)-250(counts)-250(on)-250(particular)-250(channels,)-250(perhaps)-250(by)-250(a)-250(sum)-250(of)-250(ratios.)]TJ/F43 14.3462 Tf 0 -35.114 Td [(2)-1000(Moti)10(v)10(ation)]TJ/F46 10.9091 Tf 0 -24.841 Td [(There)-307(are)-306(a)-307(fe)25(w)-307(moti)25(v)25(ating)-307(e)15(xamples)-306(based)-307(on)-307(conceptually)-307(com)1(mon)-307(scenarios.)-480(The)-307(\002rst)-307(is)-307(a)-306(Ring)-307(based)]TJ 0 -13.549 Td [(structure)-288(where)-289(a)-288(tok)10(en)-289(and)-288(possibly)-289(more)-288(data)-289(is)-288(passed)-289(predicti)25(v)15(ely)-288(around)-289(a)-288(set)-289(of)]TJ/F54 10.9091 Tf 378.102 0 Td [(n)]TJ/F46 10.9091 Tf 9.695 0 Td [(processes)-288(across)-289(a)]TJ -387.797 -13.549 Td [(set)-250(of)-250(logical)-250(processing)-250(units.)]TJ 16.936 -13.549 Td [(In)-363(this)-363(scenario)-363(there)-363(is)-363(a)-363(distinct)-363(structure)-363(to)-363(the)-363(process)-363(layout)-363(and)-363(the)-363(order)-363(of)-363(e)25(v)25(aluation.)-650(Ho)25(w-)]TJ -16.936 -13.549 Td [(e)25(v)15(er)-276(a)-276(simplistic)-276(w)10(ork-stealing)-275(scheduler)-276(may)-276(ha)20(v)15(e)-276(no)-276(notion)-276(of)-276(this)-276(and)-275(the)-276(current)-276(tok)10(en-o)25(wning)-276(process)]TJ
 0 g 0 G
- -156.524 -32.675 Td [(3)]TJ
+ 231.273 -46.225 Td [(3)]TJ
 0 g 0 G
 ET
 endstream
 endobj
 28 0 obj <<
-/Length 10676     
+/Length 10476     
 >>
 stream
 0 g 0 G
 0 g 0 G
 BT
-/F46 10.9091 Tf 72 709.041 Td [(set)-250(of)-250(logical)-250(processing)-250(units.)]TJ 16.936 -13.549 Td [(In)-292(this)-292(scenario)-292(there)-292(is)-292(a)-293(distinc)1(t)-293(structure)-292(to)-292(the)-292(process)-292(layout)-292(and)-292(the)-292(order)-292(of)-292(e)25(v)25(aluation.)-437(Ho)25(we)25(v)15(er)]TJ -16.936 -13.549 Td [(a)-385(simplistic)-385(w)10(ork-stealing)-385(scheduler)-385(may)-385(ha)20(v)15(e)-385(an)15(y)-385(notion)-385(of)-385(this)-385(and)-385(the)-385(current)-385(tok)10(en-o)25(wning)-385(process)]TJ 0 -13.549 Td [(may)-349(randomly)-349(jump)-349(from)-349(one)-349(processing)-349(unit)-349(to)-349(an)15(y)-349(other)-349(without)-349(re)15(g)5(ard)-349(for)-349(possible)-349(inef)25(\002ciencies.)-607(A)]TJ 0 -13.55 Td [(cooperati)25(vity)-234(conscious)-235(scheduler)-234(may)-235(\002nd)-234(that)-234(a)-235(single)-234(core)-235(running)-234(them)-234(in)-235(sequential)-234(order)-235(is)-234(preferable.)]TJ 16.936 -13.549 Td [(Another)-212(scenario)-212(could)-213(be)-212(the)-212(Map-Reduce)-212(based)-212(structure)-213(whe)1(re)-213(a)-212(parent)-212(spa)15(wns)-212(se)25(v)15(eral)-212(children)-213(\050pos-)]TJ -16.936 -13.549 Td [(sibly)-267(communicates)-266(with)-267(them\051)-266(and)-267(then)-267(w)10(aits)-266(for)-267(their)-266(return)-267(\050which)-267(is)-266(another)-267(round)-267(of)-266(communication\051.)]TJ 0 -13.549 Td [(This)-283(demonstrates)-282(the)-283(ef)25(fect)-283(of)-283(phases)-283(within)-282(an)-283(application.)-408(A)-283(scheduler)-283(tar)18(geted)-283(for)-282(interacti)25(vity)65(,)-291(for)-283(the)]TJ 0 -13.549 Td [(sak)10(e)]TJ
+/F46 10.9091 Tf 72 709.041 Td [(may)-349(randomly)-349(jump)-349(from)-349(one)-349(processing)-349(unit)-349(to)-349(an)15(y)-349(other)-349(without)-349(re)15(g)5(ard)-349(for)-349(possible)-349(inef)25(\002ciencies.)-607(A)]TJ 0 -13.549 Td [(cooperati)25(vity)-234(conscious)-235(scheduler)-234(may)-235(\002nd)-234(that)-234(a)-235(single)-234(core)-235(running)-234(them)-234(in)-235(sequential)-234(order)-235(is)-234(preferable.)]TJ 16.936 -13.549 Td [(Another)-212(scenario)-212(could)-213(be)-212(the)-212(Map-Reduce)-212(based)-212(structure)-213(whe)1(re)-213(a)-212(parent)-212(spa)15(wns)-212(se)25(v)15(eral)-212(children)-213(\050pos-)]TJ -16.936 -13.549 Td [(sibly)-267(communicates)-266(with)-267(them\051)-266(and)-267(then)-267(w)10(aits)-266(for)-267(their)-266(return)-267(\050which)-267(is)-266(another)-267(round)-267(of)-266(communication\051.)]TJ 0 -13.55 Td [(This)-283(demonstrates)-282(the)-283(ef)25(fect)-283(of)-283(phases)-283(within)-282(an)-283(application.)-408(A)-283(scheduler)-283(tar)18(geted)-283(for)-282(interacti)25(vity)65(,)-291(for)-283(the)]TJ 0 -13.549 Td [(sak)10(e)]TJ
 ET
-1 0 0 1 94.219 604.329 cm
+1 0 0 1 94.219 644.977 cm
 q 
 0 G 
 0 g 
@@ -1028,363 +1028,11 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -94.219 -604.329 cm
+1 0 0 1 -94.219 -644.977 cm
 BT
-/F46 10.9091 Tf 94.219 600.648 Td [(of)-270(e)15(xample,)-275(might)-269(continuously)-270(check)-270(the)-270(parent)-269(on)-270(each)-270(run)-270(through)-269(it')55(s)-270(queue)-270(despite)-270(ha)20(ving)-270(a)-269(lack)]TJ
+/F46 10.9091 Tf 94.219 641.295 Td [(of)-270(e)15(xample,)-275(might)-269(continuously)-270(check)-270(the)-270(parent)-269(on)-270(each)-270(run)-270(through)-269(it')55(s)-270(queue)-270(despite)-270(ha)20(ving)-270(a)-269(lack)]TJ
 ET
-1 0 0 1 579.103 604.291 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-q 
-q 
-1 0 0 1 0 -3.643 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-Q 
-1 0 0 1 0 3.643 cm
-Q 
-Q 
-S 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-24.90692 7.22986 m 
--24.90692 7.22986 l 
--27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
--28.89203 -100.46332 l 
--28.89203 -102.66426 -27.10785 -104.44843 -24.90692 -104.44843 c 
-24.90692 -104.44843 l 
-27.10785 -104.44843 28.89203 -102.66426 28.89203 -100.46332 c 
-28.89203 3.24475 l 
-28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
-h 
--28.89203 -104.44843 m 
-B 
-Q 
-q 
-1 0 0 1 -24.964 -4.137 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-1 0 0 1 -554.139 -600.154 cm
-BT
-/F46 10.9091 Tf 554.139 600.154 Td [(This)-333(e)15(x-)]TJ 0 -13.549 Td [(ample)]TJ 0 -13.55 Td [(is)-333(not)]TJ 0 -13.549 Td [(w)10(orded)]TJ 0 -13.549 Td [(as)-333(well)]TJ 0 -13.549 Td [(as)-333(I)-334(had)]TJ 0 -13.549 Td [(w)10(anted)-333(it)]TJ 0 -13.55 Td [(to,)-333(re)25(visit.)]TJ
-ET
-1 0 0 1 554.139 600.154 cm
-Q 
-1 0 0 1 24.964 4.137 cm
-Q 
-Q 
-S 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-24.90692 7.22986 m 
--24.90692 7.22986 l 
--27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
--28.89203 -100.46332 l 
--28.89203 -102.66426 -27.10785 -104.44843 -24.90692 -104.44843 c 
-24.90692 -104.44843 l 
-27.10785 -104.44843 28.89203 -102.66426 28.89203 -100.46332 c 
-28.89203 3.24475 l 
-28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
-h 
--28.89203 -104.44843 m 
-B 
-Q 
-q 
-1 0 0 1 -24.964 -4.137 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-1 0 0 1 -554.139 -600.154 cm
-BT
-/F46 10.9091 Tf 554.139 600.154 Td [(This)-333(e)15(x-)]TJ 0 -13.549 Td [(ample)]TJ 0 -13.55 Td [(is)-333(not)]TJ 0 -13.549 Td [(w)10(orded)]TJ 0 -13.549 Td [(as)-333(well)]TJ 0 -13.549 Td [(as)-333(I)-334(had)]TJ 0 -13.549 Td [(w)10(anted)-333(it)]TJ 0 -13.55 Td [(to,)-333(re)25(visit.)]TJ
-ET
-1 0 0 1 554.139 600.154 cm
-Q 
-1 0 0 1 24.964 4.137 cm
-Q 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 29.141 -3.643 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-q 
-0.79701 w 
-1 0.5 0 RG 
--514.03143 -1.98741 m 
--63.95146 -1.98741 l 
--63.95146 -44.9656 l 
--58.2822 -44.9656 l 
--58.2822 -44.9656 l 
-S 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 -608.244 -600.648 cm
-BT
-/F46 10.9091 Tf 72 587.098 Td [(of)-250(cooperati)25(vity)-250(in)-250(the)-250(present.)]TJ 16.936 -13.549 Td [(The)-235(o)15(v)15(erall)-234(moti)25(v)25(ation)-235(is)-234(thusly)65(,)-238(tw)10(ofold.)-305(I)-234(belie)25(v)15(e)-235(there)-234(is)-235(an)-234(additional)-235(feedback)-234(metric)-235(that)-234(has)-235(gotten)]TJ -16.936 -13.549 Td [(little)-330(publicity)-329(despite)-330(it')55(s)-329(apparent)-330(usefulness.)-549(Current)-329(feedback)-330(scheduling)-329(implementations)-330(f)10(ail)-329(to)-330(tak)10(e)]TJ 0 -13.549 Td [(process-cooperati)25(vity)-274(into)-275(account)-274(when)-274(applying)-275(feedback.)-383(A)-274(scheduler)-274(implementation)-274(using)-275(this)-274(metric)]TJ 0 -13.549 Td [(calculation)-286(w)10(ould)-287(aid)-286(in)-287(future)-286(feedback)-287(schedulers,)-295(as)-287(well)-286(as)-286(possibly)-287(introduce)-286(simplistic)-287(b)20(ut)-286(bene\002cial)]TJ 0 -13.55 Td [(modi\002cations)-250(to)-250(current)-250(scheduling)-250(systems.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-296(this)-287(hints)-287(at)-287(other)-287(missing)-287(metrics)-287(that)-287(could)-287(be)-287(useful)-287(for)-287(adapting)-287(to)-287(application)-287(phases.)-421(A)]TJ -16.936 -13.549 Td [(closer)-213(e)25(v)25(aluation)-214(of)-213(current)-213(scheduling)-213(techniques)-214(on)-213(a)-213(core)-213(set)-214(of)-213(common)-213(language)-214(primiti)25(v)15(es)-213(w)10(ould)-213(allo)25(w)]TJ 0 -13.549 Td [(for)-275(a)-275(positi)25(v)15(e)-275(comparati)25(v)15(e)-275(analysis.)-385(Thus)-275(the)-275(\002rst)-275(step)-274(w)10(ould)-275(be)-275(to)-275(synthesize)-275(a)-275(subset)-275(of)-275(primiti)25(v)15(es)-275(useful)]TJ 0 -13.549 Td [(for)-250(metric)-250(g)5(athering)-250(while)-250(introducing)-250(as)-250(little)-250(noise)-250(as)-250(possible.)]TJ 16.936 -13.55 Td [(From)-202(the)-202(e)15(xamples)-202(gi)25(v)15(en,)-212(the)-202(internal)-202(characteristics)-202(pro)15(vided)-202(by)-202(most)-202(message)-202(passing)-203(s)1(ystems)-203(can)-202(still)]TJ -16.936 -13.549 Td [(look)-288(synchronous)-289(to)-288(the)-289(scheduler)-288(and)-288(seem)-289(to)-288(gi)25(v)15(e)-289(little)-288(lee)25(w)10(ay)-288(as)-289(f)10(ar)-288(as)-289(order)-288(of)-288(e)25(v)25(aluation)-289(and)-288(priority)65(.)]TJ 0 -13.549 Td [(Otherwise,)-379(there)-353(may)-353(be)-354(bottle)-353(necks)-353(in)-353(asynchronous)-354(message)-353(passing)-353(as)-353(the)-353(run)-354(time)-353(system)-353(accesses)]TJ 0 -13.549 Td [(the)-397(underlying)-396(channel)-397(representation)-397(\050)]TJ/F42 10.9091 Tf 177.268 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 19.753 0 Td [(share)-397(memory)-396(space,)-434(message)-396(box,)]TJ/F42 10.9091 Tf 164.822 0 Td [(etc.)]TJ/F46 10.9091 Tf 15.447 0 Td [(\051.)-750(In)-397(either)-396(e)25(v)15(ent)-397(it)]TJ -377.29 -13.549 Td [(seems)-292(lik)10(ely)-292(that)-292(a)-292(simpli\002ed)-292(symmetric)-292(synchronous)-292(mes)1(sage)-292(passing)-292(primiti)25(v)15(e)-292(w)10(ould)-292(lead)-292(to)-292(interesting)]TJ 0 -13.55 Td [(techniques)-250(as)-250(f)10(ar)-250(as)-250(scheduling)-250(is)-250(concerned.)]TJ 16.936 -13.549 Td [(Gi)25(v)15(en)-302(this)-302(messaging)-301(primiti)25(v)15(e,)-315(cooperati)25(vity)-302(metrics)-302(should)-302(follo)25(w)-301(from)-302(monitoring)-302(frequenc)15(y)-302(of)-302(in-)]TJ -16.936 -13.549 Td [(teraction)-279(with)-279(these)-279(channels)-278(between)-279(partners)-279(of)-279(processes.)-397(Y)100(et,)-286(as)-278(mentioned,)-287(these)-278(assumptions)-279(need)-279(to)]TJ 0 -13.549 Td [(be)-320(tested)-321(on)-320(an)-320(e)25(v)15(en)-321(playing)-320(\002eld)-321(among)-320(other)-320(scheduling)-321(techniques)-320(and)-320(using)-321(a)-320(di)25(v)15(erse)-320(set)-321(of)-320(e)15(xample)]TJ 0 -13.549 Td [(application)-250(simulations.)]TJ/F43 14.3462 Tf 0 -35.115 Td [(3)-1000(Pr)18(oposed)-250(W)75(ork)]TJ/F46 10.9091 Tf 0 -24.84 Td [(I)-355(ha)20(v)15(e)-355(already)-354(be)15(gun)-355(to)-355(w)10(ork)-355(on)-355(a)-355(compiler)-355(b)20(uilt)-354(with)-355(sw)10(appable)-355(scheduler')55(s)-355(in)-355(mind.)-624(The)-355(language)-355(is)]TJ 0 -13.549 Td [(a)-372(simple)-372(concurrent)-373(lambda)-372(and)-372(process)-372(calculi)-372(with)-373(synchronous)-372(sw)10(ap)-372(channels)-372(so)-372(as)-373(to)-372(minimize)-372(the)]TJ 0 -13.549 Td [(language)-281(characteristics)-281(which)-281(may)-281(mask)-281(the)-281(process-based)-281(metrics,)-288(such)-281(as)-281(dif)25(ferentiating)-281(between)-281(CPU,)]TJ 0 -13.55 Td [(I/O,)-250(and)-250(Channel)-250(bound)-250(processes.)]TJ 16.936 -13.549 Td [(This)-280(compiler)-281(will)-280(also)-281(allo)25(w)-280(me)-281(to)-280(directly)-280(test)-281(multiple)-280(metrics)-281(and)-280(scheduling)-280(techniques)-281(as)-280(well)-281(as)]TJ -16.936 -13.549 Td [(visualize)-289(the)-290(system)-289(phases)-290(at)-289(an)15(y)-290(gi)25(v)15(en)-289(point.)-429(I)-289(will)-290(attempt)-289(to)-290(do)-289(a)-290(comparati)25(v)15(e)-289(analysis)-290(of)-289(one)-290(or)-289(more)]TJ 0 -13.549 Td [(popular)-313(scheduling)-313(techniques)-312(ag)5(ainst)-313(a)-313(ne)25(w)-313(algorithm)-312(I)-313(am)-313(designing)-313(which)-312(uses)-313(cooperati)25(vity)65(.)-499(This,)-328(in)]TJ 0 -13.549 Td [(turn,)-313(will)-300(e)25(v)25(aluate)-301(the)-300(ef)25(fecti)25(v)15(eness)-300(of)-301(the)-300(process)-300(and)-301(communica)1(tion)-301(channel)-300(abstractions)-300(utilized)-301(in)-300(the)]TJ 0 -13.55 Td [(language.)]TJ 16.936 -13.549 Td [(Thus)-310(this)-310(section)-310(is)-310(di)25(vided)-310(into)-310(four)-310(sections:)-430(\002rst,)-325(section)-310(3.1)-310(will)-310(discuss)-310(the)-310(language)-310(some)-310(initial)]TJ -16.936 -13.549 Td [(assumptions)-371(about)-372(it')55(s)-371(implementation,)-402(the)-371(abstractions)-371(made)-371(and)-372(the)-371(rational)-371(for)-372(these)-371(decisions;)-432(ne)15(xt,)]TJ 0 -13.549 Td [(section)-266(3.2)-266(e)15(xplai)1(ns)-266(the)-266(scheduling)-266(interf)10(ace)-266(the)-265(compiler)-266(will)-266(pro)15(vide)-266(and)-265(what)-266(schedulers)-266(I)-266(intend)-265(to)-266(port)]TJ 0 -13.549 Td [(for)-203(use)-203(the)-203(ErLam)-203(run-time)-202(system;)-219(then,)-212(section)-203(3.3)-203(will)-203(discuss)-203(the)-203(e)25(v)25(aluation)-203(techniques)-203(I)-202(intend)-203(to)-203(use)-203(for)]TJ
-0 g 0 G
- 231.273 -35.119 Td [(4)]TJ
-0 g 0 G
-ET
-endstream
-endobj
-31 0 obj <<
-/Length 10003     
->>
-stream
-0 g 0 G
-0 g 0 G
-0 g 0 G
-BT
-/F45 10.9091 Tf 109.637 712.767 Td [(<Expression>)-600(::=)-600(<Variable>)]TJ 91.636 -13.549 Td [(|)-1200(<Integer>)]TJ 0 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(newchan)]TJ/F45 10.9091 Tf 45.818 0 Td [(')]TJ -72 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(\050)]TJ/F45 10.9091 Tf 6.545 0 Td [(')-600(<Expression>)-600(`)]TJ/F67 10.9091 Tf 104.727 0 Td [(\051)]TJ/F45 10.9091 Tf 6.546 0 Td [(')]TJ -144 -13.549 Td [(|)-1200(<Expression>)-600(<Expression>)]TJ 0 -13.55 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(if)]TJ/F45 10.9091 Tf 13.091 0 Td [(')-600(<Expression>)-600(<Expression>)-600(<Expression>)]TJ -39.273 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(swap)]TJ/F45 10.9091 Tf 26.181 0 Td [(')-600(<Channel>)-600(<Expression>)]TJ -52.363 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(spawn)]TJ/F45 10.9091 Tf 32.727 0 Td [(')-600(<Expression>)]TJ -58.909 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(fun)]TJ/F45 10.9091 Tf 19.636 0 Td [(')-600(<Variable>)-600(`)]TJ/F67 10.9091 Tf 91.636 0 Td [(.)]TJ/F45 10.9091 Tf 6.546 0 Td [(')-600(<Expression>)]TJ
-0 g 0 G
-/F46 10.9091 Tf -195.997 -23.512 Td [(Figure)-250(3:)-310(The)-250(ErLam)-250(language)-250(grammar)40(,)-250(without)-250(syntax)-250(sug)5(ar)-250(or)-250(types.)]TJ
-0 g 0 G
-0 g 0 G
- -77.276 -33.246 Td [(on)-251(the)-252(cooperati)25(vity)-251(scheduler)-252(and)-251(all)-252(ported)-251(schedulers;)-252(\002nally)65(,)-252(section)-252(3.4)-251(will)-252(\002nalize)-251(what)-252(the)-251(outcomes)]TJ 0 -13.549 Td [(are)-250(for)-250(this)-250(thesis)-250(as)-250(well)-250(as)-250(the)-250(required)-250(deli)25(v)15(erables.)]TJ/F43 11.9552 Tf 0 -29.902 Td [(3.1)-1000(The)-250(ErLam)-250(Language)]TJ/F46 10.9091 Tf 0 -20.913 Td [(The)-283(ErLam)-283(Language)-283(is)-282(based)-283(on)-283(Lambda)-283(Calculus,)-291(with)-283(\002rst-class)-283(single)-282(v)25(ariable)-283(functions,)-291(b)20(ut)-283(de)25(viates)]TJ 0 -13.549 Td [(some)25(what)-362(in)-361(that)-362(it)-362(pro)15(vides)-361(other)-362(\002rst-class)-361(entities.)-645(It)-362(de)25(viates)-362(from)-361(Church)-362(representation)-361(to)-362(pro)15(vide)]TJ 0 -13.55 Td [(Inte)15(gers,)-270(this)-265(is)-266(purely)-266(for)-265(ease)-266(of)-266(use,)-269(and)-266(also)-266(pro)15(vides)-265(symmetric)-266(synchronous)-266(Channels)-265(for)-266(interprocess)]TJ 0 -13.549 Td [(communication.)-310(This)-250(language)-250(can)-250(also)-250(be)-250(called)-250(a)-250(Simply-T)80(yped)-250(Lambda)-250(Calculus.)]TJ 16.937 -13.549 Td [(ErLam)-293(also)-294(mak)10(es)-293(a)-294(number)-293(of)-294(ease-of-use)-293(decisions)-294(lik)10(e)-293(pro)15(viding)-294(a)-294(def)10(a)1(ult)-294(branch)-294(operat)1(or)-294(and)-294(has)]TJ -16.937 -13.549 Td [(some)-208(useful)-208(syntactic)-208(sug)5(ar)-208(such)-208(as)-208(SML)-208(style)]TJ/F54 10.9091 Tf 202.315 0 Td [(l)-20(et)]TJ/F46 10.9091 Tf 14.758 0 Td [(e)15(xpressions)-208(and)-208(multi-v)25(ariable)-208(function)-208(de\002nitions.)-296(There)]TJ -217.073 -13.549 Td [(is)-294(also)-294(a)-294(set)-294(of)-293(b)20(uilt)-294(in)-294(functions)-294(for)-294(numeric)-294(operations,)-305(type)-294(checking,)-304(and)-294(standard)-294(functional)-294(beha)20(viors)]TJ 0 -13.549 Td [(\050)]TJ/F42 10.9091 Tf 3.633 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 18.152 0 Td [(combinators,)]TJ/F42 10.9091 Tf 59.389 0 Td [(etc.)]TJ/F46 10.9091 Tf 15.447 0 Td [(\051)-310(which)-250(are)-250(ignored)-250(in)-250(this)-250(write)-250(up.)]TJ -79.684 -13.55 Td [(The)-255(hope)-255(is)-255(that)-256(no)25(w)-255(it)-255(should)-255(be)-255(easy)-255(to)-256(recogni)1(ze)]TJ/F42 10.9091 Tf 226.676 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)-255(processes)-255(\050as)-255(the)15(y)-256(do)-255(not)-255(block)]TJ -298.158 -13.549 Td [(before)-242(a)-243(set)-242(number)-243(of)-242(reductions\051,)]TJ/F42 10.9091 Tf 154.934 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-243(proce)1(sses)-243(\050as)-242(the)15(y)-243(will)-242(synchronize)-243(and)-242(block)-243(on)]TJ -222.199 -13.549 Td [(a)-251(sw)10(ap)-252(channel\051,)-252(le)25(v)15(el)-251(of)-252(cooperati)25(vity)-251(between)-252(proces)1(ses)-252(\050)]TJ/F42 10.9091 Tf 258.326 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 15.911 0 Td [(from)-251(k)10(eeping)-252(track)-251(of)-252(which)-251(processes)-252(sw)10(ap)]TJ -274.237 -13.549 Td [(with)-300(which)-300(others\051,)-313(and)-300(an)15(y)-300(other)-300(metric)-301(we)-300(can)-300(think)-300(of)-300(\050as)-300(we)-300(still)-300(ha)20(v)14(e)-300(stack,)-312(process)-300(locality)65(,)-313(channel)]TJ 0 -13.549 Td [(information,)]TJ/F42 10.9091 Tf 56.967 0 Td [(etc.)]TJ/F46 10.9091 Tf 15.447 0 Td [(\051.)]TJ
-ET
-1 0 0 1 305.751 301.877 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-S 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-229.51976 15.60286 m 
--229.51976 15.60286 l 
--231.7207 15.60286 -233.50487 13.8187 -233.50487 11.61775 c 
--233.50487 -11.61775 l 
--233.50487 -13.8187 -231.7207 -15.60286 -229.51976 -15.60286 c 
-229.51976 -15.60286 l 
-231.7207 -15.60286 233.50487 -13.8187 233.50487 -11.61775 c 
-233.50487 11.61775 l 
-233.50487 13.8187 231.7207 15.60286 229.51976 15.60286 c 
-h 
--233.50487 -15.60286 m 
-B 
-Q 
-q 
-1 0 0 1 -229.575 4.236 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-1 0 0 1 -76.176 -306.113 cm
-BT
-/F46 10.9091 Tf 76.176 306.113 Td [(Reference)-333(a)-334(\002gure)-333(to)-333(sho)25(w)-333(an)-334(e)15(xample)-333(ErLam)-333(application,)-333(perhaps)-334(an)-333(implementation)-333(of)-334(a)-333(Ring)-333(pro-)]TJ 0 -13.549 Td [(gram)-333(or)-334(MapReduce)-333(style,)-333(as)-333(those)-334(were)-333(the)-333(e)15(xamples)-333(used)-334(abo)15(v)15(e?)]TJ
-ET
-1 0 0 1 76.176 306.113 cm
-Q 
-1 0 0 1 229.575 -4.236 cm
-Q 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 -305.751 -301.877 cm
-BT
-/F43 11.9552 Tf 72 256.123 Td [(3.2)-1000(P)20(orted)-250(Schedulers)]TJ/F46 10.9091 Tf 0 -20.913 Td [(Ultimately)-321(it)-322(w)10(ould)-321(be)-321(interesting)-322(to)-321(test)-321(a)-322(lar)18(ge)-321(collection)-321(of)-322(scheduling)-321(mechanisms)-321(and)-322(metrics)-321(within)]TJ 0 -13.549 Td [(the)-307(same)-307(frame)25(w)10(ork.)-481(Ho)25(we)25(v)15(er)-307(with)-307(time)-308(constraint)1(s)-308(I)-307(will)-307(limit)-307(it)-307(to)-307(the)-307(most)-307(promising)-307(and)-307(comparable)]TJ 0 -13.549 Td [(feedback)-250(scheduler)-250(in)-250(use.)]TJ 16.936 -13.549 Td [(The)-373(\002rst)-373(is)-374(CML)92(')55(s)-373(interacti)25(vity-based)-373(scheduler)55(.)]TJ
-ET
-1 0 0 1 312.685 198.245 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-q 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 -312.685 -198.245 cm
-BT
-/F46 10.9091 Tf 312.685 194.563 Td [(This)-373(scheduling)-373(system)-373(uses)-374(a)-373(simple)-373(b)20(ut)-373(v)15(ery)-373(ef-)]TJ
-ET
-1 0 0 1 579.103 198.206 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-q 
-q 
-1 0 0 1 0 -3.643 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-Q 
-1 0 0 1 0 3.643 cm
-Q 
-Q 
-S 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-24.90692 7.22986 m 
--24.90692 7.22986 l 
--27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
--28.89203 -4.205 l 
--28.89203 -6.40594 -27.10785 -8.19011 -24.90692 -8.19011 c 
-24.90692 -8.19011 l 
-27.10785 -8.19011 28.89203 -6.40594 28.89203 -4.205 c 
-28.89203 3.24475 l 
-28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
-h 
--28.89203 -8.19011 m 
-B 
-Q 
-q 
-1 0 0 1 -24.964 -4.137 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-1 0 0 1 -554.139 -194.069 cm
-BT
-/F46 10.9091 Tf 554.139 194.069 Td [(cite?)]TJ
-ET
-1 0 0 1 554.139 194.069 cm
-Q 
-1 0 0 1 24.964 4.137 cm
-Q 
-Q 
-S 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-q 
-0 G 
-1 0.5 0 rg 
-0.49814 w 
-24.90692 7.22986 m 
--24.90692 7.22986 l 
--27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
--28.89203 -4.205 l 
--28.89203 -6.40594 -27.10785 -8.19011 -24.90692 -8.19011 c 
-24.90692 -8.19011 l 
-27.10785 -8.19011 28.89203 -6.40594 28.89203 -4.205 c 
-28.89203 3.24475 l 
-28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
-h 
--28.89203 -8.19011 m 
-B 
-Q 
-q 
-1 0 0 1 -24.964 -4.137 cm
-1.0 0.0 0.0 1.0 0.0 0.0 cm 
-q 
-0 G 
-0 g 
-1 0 0 1 -554.139 -194.069 cm
-BT
-/F46 10.9091 Tf 554.139 194.069 Td [(cite?)]TJ
-ET
-1 0 0 1 554.139 194.069 cm
-Q 
-1 0 0 1 24.964 4.137 cm
-Q 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 29.141 -3.643 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-q 
-0.79701 w 
-1 0.5 0 RG 
--295.56335 -1.98741 m 
--63.95146 -1.98741 l 
--63.95146 3.16354 l 
--58.2822 3.16354 l 
--58.2822 3.16354 l 
-S 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 -608.244 -194.563 cm
-BT
-/F46 10.9091 Tf 72 181.014 Td [(fecti)25(v)15(e)-303(tw)10(o-queue)-304(m)1(ethod)-304(for)-303(se)15(gre)15(g)5(ating)]TJ/F42 10.9091 Tf 187.083 0 Td [(computation)]TJ/F46 10.9091 Tf 57.853 0 Td [(and)]TJ/F42 10.9091 Tf 19.061 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-303(processes)-304(so)-303(as)-303(to)-303(ha)20(v)15(e)]TJ -331.262 -13.55 Td [(preferential)-250(treatment)-250(of)-250(the)-250(communication)-250(in)-250(the)-250(system)-250(without)-250(sacri\002cing)-250(too)-250(much)-250(computation)-250(time.)]TJ 16.936 -13.549 Td [(The)-232(last)-232(is)-232(Occam-)]TJ/F54 10.9091 Tf 81.517 0 Td [(\031)]TJ/F46 10.9091 Tf 6.61 0 Td [(')55(s)-232(process)-232(locality-based)-232(scheduler)-232(which)-233(attempts)-232(to)-232(catch)-232(a)-232(portion)-232(of)-232(cooperation)]TJ -105.063 -13.549 Td [(by)-214(batching)-214(processes)-213(into)-214(groups)-214(and)-214(only)-214(w)10(ork-stealing)-213(groups.)-298(Their)-214(scheduler)-214(looks)-214(v)15(ery)-214(promi)1(sing)-214(as)-214(it)]TJ 0 -13.549 Td [(has)-253(been)-253(sho)25(wn)-253(to)-254(tak)10(e)-253(much)-253(more)-253(adv)25(antage)-253(of)-253(the)-253(cache)-253(than)-254(sim)1(ple)-254(w)10(ork-stealing)-253(schedulers.)-319(Ho)25(we)25(v)15(er)40(,)]TJ 0 -13.549 Td [(the)-240(implementation)-241(comple)15(xity)-240(of)-241(this)-240(scheduler)-240(may)-241(push)-240(this)-241(to)-240(being)-241(a)-240(stretch)-240(goal)-241(rather)-240(than)-241(a)-240(required)]TJ
-0 g 0 G
- 231.273 -41.268 Td [(5)]TJ
-0 g 0 G
-ET
-endstream
-endobj
-35 0 obj <<
-/Length 7136      
->>
-stream
-0 g 0 G
-0 g 0 G
-BT
-/F46 10.9091 Tf 72 709.041 Td [(deli)25(v)15(erable.)]TJ 16.936 -13.549 Td [(These)-354(tw)10(o)-353(schedulers)-354(will)-354(need)-353(to)-354(be)-354(ported)-353(along)-354(side)-353(the)-354(ne)25(w)-354(cooperati)25(vity)-353(scheduler)-354(for)-354(side-by-)]TJ -16.936 -13.549 Td [(side)-296(testing.)-448(It)-296(w)10(ould)-296(also)-296(be)-296(required)-297(to)-296(ha)20(v)15(e)-296(a)-296(baseline)-296(for)-296(these)-296(tests)-296(so)-296(a)-296(simple)-296(non-feedback)-296(enabled)]TJ 0 -13.549 Td [(w)10(ork-stealing)-250(scheduler)-250(will)-250(also)-250(be)-250(implemented.)]TJ/F43 11.9552 Tf 0 -29.903 Td [(3.3)-1000(Ev)10(aluation)]TJ/F46 10.9091 Tf 0 -20.912 Td [(There)-381(are)-382(tw)10(o)-381(portions)-382(of)-381(this)-381(proposal)-382(which)-381(will)-381(require)-382(e)25(v)25(aluation:)-573(the)-381(schedulers)-381(and)-382(the)-381(language)]TJ 0 -13.55 Td [(abstractions:)]TJ
-0 g 0 G
-/F43 10.9091 Tf 0 -25.504 Td [(Scheduler)-250(Comparisons:)]TJ
-0 g 0 G
-/F46 10.9091 Tf 120.304 0 Td [(The)-301(schedulers)-302(will)-301(be)-302(compared)-301(directly)-302(using)-301(quanatati)25(v)15(e)-301(analysis)-302(of)-301(se)25(v)15(eral)]TJ -93.031 -13.549 Td [(metrics.)-304(Namely)-232(I)-232(will)-232(be)-232(looking)-233(at)-232(each)-232(schedulers')-232(queues,)-236(the)-232(number)-232(of)-232(block)10(ed/running/w)10(aiting)]TJ 0 -13.549 Td [(processes,)-257(and)-255(the)-256(timeframes)-255(in)-256(which)-255(each)-256(of)-255(the)-255(processes)-256(are)-255(being)-256(e)25(v)25(aluated.)-326(Using)-256(a)-255(consistent)]TJ 0 -13.55 Td [(set)-357(of)-358(tests,)-384(such)-357(as)-357(the)-357(Ring)-358(and)-357(MapReduce)-357(e)15(xamples)-358(gi)25(v)15(en)-357(pre)25(viously)65(,)-384(it)-357(should)-358(be)-357(possible)-357(to)]TJ 0 -13.549 Td [(e)25(v)25(aluate)-250(what)-250(consistent)-250(beha)20(viors)-250(each)-250(scheduling)-250(algorithm)-250(produces)-250(o)15(v)15(er)-250(multiple)-250(runs.)]TJ
-0 g 0 G
-/F43 10.9091 Tf -27.273 -22.515 Td [(Language)-250(Abstraction)-250(Ev)10(aluation:)]TJ
-0 g 0 G
-/F46 10.9091 Tf 166.569 0 Td [(After)-354(the)-353(schedulers)-354(ha)20(v)15(e)-354(been)-353(compared)-354(there')55(s)-354(no)25(w)-354(the)-353(objecti)25(v)15(e)]TJ -139.296 -13.55 Td [(e)25(v)25(aluation)-316(of)-316(each)-315(scheduler)-316(on)-316(the)-316(language)-315(itself.)-508(It)-315(may)-316(be)-316(possible)-316(that)-316(the)-315(scheduling)-316(systems)]TJ 0 -13.549 Td [(e)15(xhibit)-236(intere)1(sting)-236(beha)20(viors)-236(within)-235(the)-236(abstractions)-235(I)-236(enforced)-235(\050namely)-236(sw)10(ap)-235(channels)-236(and)-236(it')55(s)-235(imple-)]TJ 0 -13.549 Td [(mentation\051.)-300(This)-220(step)-219(can)-220(be)-220(performed)-219(during)-220(the)-220(implementation)-220(a)1(nd)-220(testing)-220(phases)-220(of)-219(the)-220(road-map)]TJ 0 -13.549 Td [(and)-299(will)-298(primarily)-299(be)-299(summarized)-298(in)-299(weekly)-299(blog)-298(posts)-299(and)-299(in)-298(the)-299(language)-298(implementation)-299(section)]TJ 0 -13.549 Td [(of)-250(the)-250(\002nal)-250(report.)]TJ/F43 11.9552 Tf -27.273 -29.903 Td [(3.4)-1000(Outcomes)-250(and)-250(Deli)10(v)10(erables)]TJ/F46 10.9091 Tf 0 -20.912 Td [(The)-342(end)-342(goal)-342(will)-343(be)-342(to)-342(ha)20(v)15(e,)-365(at)-342(minimum,)-365(the)-342(scheduling)-343(al)1(gorithm)-343(based)-342(on)-342(process)-342(cooperati)25(vity)-342(and)]TJ 0 -13.55 Td [(the)-257(ErLam)-257(compilation)-257(frame)25(w)10(ork)-258(for)-257(testing)-257(it)-257(along-side)-257(other)-257(algorithms,)-259(completely)-258(impleme)1(nted.)-332(The)]TJ 0 -13.549 Td [(frame)25(w)10(ork)-322(will)-322(ha)20(v)15(e)-322(tw)10(o)-323(part)1(s:)-455(A)-322(ne)25(w)-322(tool)-322(for)-322(comparati)25(v)15(e)-322(analysis)-322(of)-323(the)-322(inner)-322(w)10(orkings)-322(of)-322(concurrent)]TJ 0 -13.549 Td [(schedulers,)-250(and)-250(a)-250(set)-250(of)-250(high)-250(le)25(v)15(el)-250(language)-250(abstractions)-250(for)-250(future)-250(run-time)-250(scheduler)-250(testing.)]TJ
-ET
-1 0 0 1 479.657 346.286 cm
-q 
-0 G 
-0 g 
-0.3985 w 
-q 
-q 
-Q 
-Q 
-n 
-Q 
-1 0 0 1 99.446 -0.038 cm
+1 0 0 1 579.103 644.939 cm
 q 
 0 G 
 0 g 
@@ -1413,14 +1061,14 @@ q
 24.90692 7.22986 m 
 -24.90692 7.22986 l 
 -27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
--28.89203 -126.14934 l 
--28.89203 -128.35028 -27.10785 -130.13445 -24.90692 -130.13445 c 
-24.90692 -130.13445 l 
-27.10785 -130.13445 28.89203 -128.35028 28.89203 -126.14934 c 
+-28.89203 -100.46332 l 
+-28.89203 -102.66426 -27.10785 -104.44843 -24.90692 -104.44843 c 
+24.90692 -104.44843 l 
+27.10785 -104.44843 28.89203 -102.66426 28.89203 -100.46332 c 
 28.89203 3.24475 l 
 28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
 h 
--28.89203 -130.13445 m 
+-28.89203 -104.44843 m 
 B 
 Q 
 q 
@@ -1429,13 +1077,328 @@ q
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -342.11 cm
+1 0 0 1 -554.139 -640.801 cm
 BT
-/F46 10.9091 Tf 554.139 342.11 Td [(I)-333(feel)-334(as)]TJ 0 -13.549 Td [(though)-333(I'm)]TJ 0 -13.549 Td [(reiterating)]TJ 0 -13.549 Td [(too)-333(much,)]TJ 0 -13.55 Td [(this)-333(sec-)]TJ 0 -13.549 Td [(tion)-333(might)]TJ 0 -13.549 Td [(w)10(ork)-333(bet-)]TJ 0 -13.549 Td [(ter)-333(as)-334(just)]TJ 0 -13.549 Td [(a)-333(b)20(ulleted)]TJ 0 -13.55 Td [(list.)]TJ
+/F46 10.9091 Tf 554.139 640.801 Td [(This)-333(e)15(x-)]TJ 0 -13.549 Td [(ample)]TJ 0 -13.549 Td [(is)-333(not)]TJ 0 -13.549 Td [(w)10(orded)]TJ 0 -13.549 Td [(as)-333(well)]TJ 0 -13.55 Td [(as)-333(I)-334(had)]TJ 0 -13.549 Td [(w)10(anted)-333(it)]TJ 0 -13.549 Td [(to,)-333(re)25(visit.)]TJ
 ET
-1 0 0 1 554.139 342.11 cm
+1 0 0 1 554.139 640.801 cm
 Q 
 1 0 0 1 24.964 4.138 cm
+Q 
+Q 
+S 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+24.90692 7.22986 m 
+-24.90692 7.22986 l 
+-27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
+-28.89203 -100.46332 l 
+-28.89203 -102.66426 -27.10785 -104.44843 -24.90692 -104.44843 c 
+24.90692 -104.44843 l 
+27.10785 -104.44843 28.89203 -102.66426 28.89203 -100.46332 c 
+28.89203 3.24475 l 
+28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
+h 
+-28.89203 -104.44843 m 
+B 
+Q 
+q 
+1 0 0 1 -24.964 -4.138 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+1 0 0 1 -554.139 -640.801 cm
+BT
+/F46 10.9091 Tf 554.139 640.801 Td [(This)-333(e)15(x-)]TJ 0 -13.549 Td [(ample)]TJ 0 -13.549 Td [(is)-333(not)]TJ 0 -13.549 Td [(w)10(orded)]TJ 0 -13.549 Td [(as)-333(well)]TJ 0 -13.55 Td [(as)-333(I)-334(had)]TJ 0 -13.549 Td [(w)10(anted)-333(it)]TJ 0 -13.549 Td [(to,)-333(re)25(visit.)]TJ
+ET
+1 0 0 1 554.139 640.801 cm
+Q 
+1 0 0 1 24.964 4.138 cm
+Q 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 29.141 -3.644 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+q 
+0.79701 w 
+1 0.5 0 RG 
+-514.03143 -1.98741 m 
+-63.95146 -1.98741 l 
+-63.95146 -44.9656 l 
+-58.2822 -44.9656 l 
+-58.2822 -44.9656 l 
+S 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 -608.244 -641.295 cm
+BT
+/F46 10.9091 Tf 72 627.746 Td [(of)-250(cooperati)25(vity)-250(in)-250(the)-250(present.)]TJ 16.936 -13.549 Td [(The)-235(o)15(v)15(erall)-234(moti)25(v)25(ation)-235(is)-234(thusly)65(,)-238(tw)10(ofold.)-305(I)-234(belie)25(v)15(e)-235(there)-234(is)-235(an)-234(additional)-235(feedback)-234(metric)-235(that)-234(has)-235(gotten)]TJ -16.936 -13.549 Td [(little)-330(publicity)-329(despite)-330(it')55(s)-329(apparent)-330(usefulness.)-549(Current)-329(feedback)-330(scheduling)-329(implementations)-330(f)10(ail)-329(to)-330(tak)10(e)]TJ 0 -13.55 Td [(process-cooperati)25(vity)-274(into)-275(account)-274(when)-274(applying)-275(feedback.)-383(A)-274(scheduler)-274(implementation)-274(using)-275(this)-274(metric)]TJ 0 -13.549 Td [(calculation)-286(w)10(ould)-287(aid)-286(in)-287(future)-286(feedback)-287(schedulers,)-295(as)-287(well)-286(as)-286(possibly)-287(introduce)-286(simplistic)-287(b)20(ut)-286(bene\002cial)]TJ 0 -13.549 Td [(modi\002cations)-250(to)-250(current)-250(scheduling)-250(systems.)]TJ 16.936 -13.549 Td [(Ho)25(we)25(v)15(er)40(,)-296(this)-287(hints)-287(at)-287(other)-287(missing)-287(metrics)-287(that)-287(could)-287(be)-287(useful)-287(for)-287(adapting)-287(to)-287(application)-287(phases.)-421(A)]TJ -16.936 -13.549 Td [(closer)-213(e)25(v)25(aluation)-214(of)-213(current)-213(scheduling)-213(techniques)-214(on)-213(a)-213(core)-213(set)-214(of)-213(common)-213(language)-214(primiti)25(v)15(es)-213(w)10(ould)-213(allo)25(w)]TJ 0 -13.55 Td [(for)-275(a)-275(positi)25(v)15(e)-275(comparati)25(v)15(e)-275(analysis.)-385(Thus)-275(the)-275(\002rst)-275(step)-274(w)10(ould)-275(be)-275(to)-275(synthesize)-275(a)-275(subset)-275(of)-275(primiti)25(v)15(es)-275(useful)]TJ 0 -13.549 Td [(for)-250(metric)-250(g)5(athering)-250(while)-250(introducing)-250(as)-250(little)-250(noise)-250(as)-250(possible.)]TJ 16.936 -13.549 Td [(From)-202(the)-202(e)15(xamples)-202(gi)25(v)15(en,)-212(the)-202(internal)-202(characteristics)-202(pro)15(vided)-202(by)-202(most)-202(message)-202(passing)-203(s)1(ystems)-203(can)-202(still)]TJ -16.936 -13.549 Td [(look)-288(synchronous)-289(to)-288(the)-289(scheduler)-288(and)-288(seem)-289(to)-288(gi)25(v)15(e)-289(little)-288(lee)25(w)10(ay)-288(as)-289(f)10(ar)-288(as)-289(order)-288(of)-288(e)25(v)25(aluation)-289(and)-288(priority)65(.)]TJ 0 -13.549 Td [(Otherwise,)-379(there)-353(may)-353(be)-354(bottle)-353(necks)-353(in)-353(asynchronous)-354(message)-353(passing)-353(as)-353(the)-353(run)-354(time)-353(system)-353(accesses)]TJ 0 -13.55 Td [(the)-397(underlying)-396(channel)-397(representation)-397(\050)]TJ/F42 10.9091 Tf 177.268 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 19.753 0 Td [(share)-397(memory)-396(space,)-434(message)-396(box,)]TJ/F42 10.9091 Tf 164.822 0 Td [(etc.)]TJ/F46 10.9091 Tf 15.447 0 Td [(\051.)-750(In)-397(either)-396(e)25(v)15(ent)-397(it)]TJ -377.29 -13.549 Td [(seems)-292(lik)10(ely)-292(that)-292(a)-292(simpli\002ed)-292(symmetric)-292(synchronous)-292(mes)1(sage)-292(passing)-292(primiti)25(v)15(e)-292(w)10(ould)-292(lead)-292(to)-292(interesting)]TJ 0 -13.549 Td [(techniques)-250(as)-250(f)10(ar)-250(as)-250(scheduling)-250(is)-250(concerned.)]TJ 16.936 -13.549 Td [(Gi)25(v)15(en)-302(this)-302(messaging)-301(primiti)25(v)15(e,)-315(cooperati)25(vity)-302(metrics)-302(should)-302(follo)25(w)-301(from)-302(monitoring)-302(frequenc)15(y)-302(of)-302(in-)]TJ -16.936 -13.549 Td [(teraction)-279(with)-279(these)-279(channels)-278(between)-279(partners)-279(of)-279(processes.)-397(Y)100(et,)-286(as)-278(mentioned,)-287(these)-278(assumptions)-279(need)-279(to)]TJ 0 -13.55 Td [(be)-320(tested)-321(on)-320(an)-320(e)25(v)15(en)-321(playing)-320(\002eld)-321(among)-320(other)-320(scheduling)-321(techniques)-320(and)-320(using)-321(a)-320(di)25(v)15(erse)-320(set)-321(of)-320(e)15(xample)]TJ 0 -13.549 Td [(simulations.)]TJ/F43 14.3462 Tf 0 -35.114 Td [(3)-1000(Pr)18(oposed)-250(W)75(ork)]TJ/F46 10.9091 Tf 0 -24.84 Td [(I)-355(ha)20(v)15(e)-355(already)-354(be)15(gun)-355(to)-355(w)10(ork)-355(on)-355(a)-355(compiler)-355(b)20(uilt)-354(with)-355(sw)10(appable)-355(scheduler')55(s)-355(in)-355(mind.)-624(The)-355(language)-355(is)]TJ 0 -13.55 Td [(a)-372(simple)-372(concurrent)-373(lambda)-372(and)-372(process)-372(calculi)-372(with)-373(synchronous)-372(sw)10(ap)-372(channels)-372(so)-372(as)-373(to)-372(minimize)-372(the)]TJ 0 -13.549 Td [(language)-281(characteristics)-281(which)-281(may)-281(mask)-281(the)-281(process-based)-281(metrics,)-288(such)-281(as)-281(dif)25(ferentiating)-281(between)-281(CPU,)]TJ 0 -13.549 Td [(I/O,)-250(and)-250(Channel)-250(bound)-250(processes.)]TJ 16.936 -13.549 Td [(This)-280(compiler)-281(will)-280(also)-281(allo)25(w)-280(me)-281(to)-280(directly)-280(test)-281(multiple)-280(metrics)-281(and)-280(scheduling)-280(techniques)-281(as)-280(well)-281(as)]TJ -16.936 -13.549 Td [(visualize)-289(the)-290(system)-289(phases)-290(at)-289(an)15(y)-290(gi)25(v)15(en)-289(point.)-429(I)-289(will)-290(attempt)-289(to)-290(do)-289(a)-290(comparati)25(v)15(e)-289(analysis)-290(of)-289(one)-290(or)-289(more)]TJ 0 -13.55 Td [(popular)-313(scheduling)-313(techniques)-312(ag)5(ainst)-313(a)-313(ne)25(w)-313(algorithm)-312(I)-313(am)-313(designing)-313(which)-312(uses)-313(cooperati)25(vity)65(.)-499(This,)-328(in)]TJ 0 -13.549 Td [(turn,)-313(will)-300(e)25(v)25(aluate)-301(the)-300(ef)25(fecti)25(v)15(eness)-300(of)-301(the)-300(process)-300(and)-301(communica)1(tion)-301(channel)-300(abstractions)-300(utilized)-301(in)-300(the)]TJ 0 -13.549 Td [(language.)]TJ 16.936 -13.549 Td [(Thus)-350(this)-350(section)-349(is)-350(di)25(vided)-350(into)-350(four)-350(sub-sections:)-509(\002rst,)-375(section)-350(3.1)-350(wil)1(l)-350(discuss)-350(the)-350(language,)-375(some)]TJ -16.936 -13.549 Td [(initial)-347(assumptions)-348(about)-347(it')55(s)-348(implementation,)-372(the)-347(abstractions)-347(made)-348(and)-347(the)-348(rational)-347(for)-348(these)-347(decisions;)]TJ 0 -13.55 Td [(ne)15(xt,)-327(section)-311(3.2)-311(e)15(xplains)-311(the)-312(scheduling)-311(interf)10(ace)-311(the)-311(compiler)-312(will)-311(pro)15(vide)-311(and)-311(what)-312(schedulers)-311(I)-311(intend)]TJ 0 -13.549 Td [(to)-259(port)-260(for)-259(use)-259(in)-260(the)-259(ErLam)-259(run-time)-260(system;)-264(then,)-261(section)-260(3.3)-259(will)-259(discuss)-260(the)-259(e)25(v)25(aluation)-259(methods)-260(I)-259(intend)]TJ 0 -13.549 Td [(to)-339(use)-340(on)-339(the)-339(cooperati)25(vity)-339(scheduler)-340(and)-339(all)-339(ported)-339(schedulers;)-384(\002nally)65(,)-362(section)-339(3.4)-339(will)-340(\002nalize)-339(what)-339(the)]TJ 0 -13.549 Td [(outcomes)-250(are)-250(for)-250(this)-250(thesis)-250(as)-250(well)-250(as)-250(the)-250(required)-250(deli)25(v)15(erables.)]TJ
+0 g 0 G
+ 231.273 -48.668 Td [(4)]TJ
+0 g 0 G
+ET
+endstream
+endobj
+31 0 obj <<
+/Length 10297     
+>>
+stream
+0 g 0 G
+0 g 0 G
+0 g 0 G
+BT
+/F45 10.9091 Tf 109.637 712.767 Td [(<Expression>)-600(::=)-600(<Variable>)]TJ 91.636 -13.549 Td [(|)-1200(<Integer>)]TJ 0 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(newchan)]TJ/F45 10.9091 Tf 45.818 0 Td [(')]TJ -72 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(\050)]TJ/F45 10.9091 Tf 6.545 0 Td [(')-600(<Expression>)-600(`)]TJ/F67 10.9091 Tf 104.727 0 Td [(\051)]TJ/F45 10.9091 Tf 6.546 0 Td [(')]TJ -144 -13.549 Td [(|)-1200(<Expression>)-600(<Expression>)]TJ 0 -13.55 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(if)]TJ/F45 10.9091 Tf 13.091 0 Td [(')-600(<Expression>)-600(<Expression>)-600(<Expression>)]TJ -39.273 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(swap)]TJ/F45 10.9091 Tf 26.181 0 Td [(')-600(<Channel>)-600(<Expression>)]TJ -52.363 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(spawn)]TJ/F45 10.9091 Tf 32.727 0 Td [(')-600(<Expression>)]TJ -58.909 -13.549 Td [(|)-1200(`)]TJ/F67 10.9091 Tf 26.182 0 Td [(fun)]TJ/F45 10.9091 Tf 19.636 0 Td [(')-600(<Variable>)-600(`)]TJ/F67 10.9091 Tf 91.636 0 Td [(.)]TJ/F45 10.9091 Tf 6.546 0 Td [(')-600(<Expression>)]TJ
+0 g 0 G
+/F46 10.9091 Tf -195.997 -23.512 Td [(Figure)-250(3:)-310(The)-250(ErLam)-250(language)-250(grammar)40(,)-250(without)-250(syntax)-250(sug)5(ar)-250(or)-250(types.)]TJ
+0 g 0 G
+0 g 0 G
+/F43 11.9552 Tf -77.276 -33.246 Td [(3.1)-1000(The)-250(ErLam)-250(Language)]TJ/F46 10.9091 Tf 0 -20.913 Td [(The)-283(ErLam)-283(Language)-283(is)-282(based)-283(on)-283(Lambda)-283(Calculus,)-291(with)-283(\002rst-class)-283(single)-282(v)25(ariable)-283(functions,)-291(b)20(ut)-283(de)25(viates)]TJ 0 -13.549 Td [(some)25(what)-225(in)-226(that)-225(it)-226(pro)15(vides)-225(other)-226(\002rst-class)-225(entities.)-302(It)-225(de)25(viates)-226(from)-225(Church)-226(representation)-225(to)-226(pro)15(vide)-225(Inte-)]TJ 0 -13.549 Td [(gers,)-268(this)-265(is)-264(purely)-265(for)-264(ease)-265(of)-264(use.)-354(It)-264(also)-265(pro)15(vides)-264(a)-265(symmetric)-264(synchronous)-265(Channel)-264(type)-265(for)-264(interprocess)]TJ 0 -13.549 Td [(communication.)-310(As)-250(a)-250(note,)-250(this)-250(language)-250(can)-250(also)-250(be)-250(classi\002ed)-250(as)-250(a)-250(Simply-T)80(yped)-250(Lambda)-250(Calculus.)]TJ 16.937 -13.55 Td [(ErLam)-293(also)-294(mak)10(es)-293(a)-294(number)-293(of)-294(ease-of-use)-293(decisions)-294(lik)10(e)-293(pro)15(viding)-294(a)-294(def)10(a)1(ult)-294(branch)-294(operat)1(or)-294(and)-294(has)]TJ -16.937 -13.549 Td [(some)-208(useful)-208(syntactic)-208(sug)5(ar)-208(such)-208(as)-208(SML)-208(style)]TJ/F54 10.9091 Tf 202.315 0 Td [(l)-20(et)]TJ/F46 10.9091 Tf 14.758 0 Td [(e)15(xpressions)-208(and)-208(multi-v)25(ariable)-208(function)-208(de\002nitions.)-296(There)]TJ -217.073 -13.549 Td [(is)-294(also)-294(a)-294(set)-294(of)-293(b)20(uilt)-294(in)-294(functions)-294(for)-294(numeric)-294(operations,)-305(type)-294(checking,)-304(and)-294(standard)-294(functional)-294(beha)20(viors)]TJ 0 -13.549 Td [(\050)]TJ/F42 10.9091 Tf 3.633 0 Td [(e)15(.g)15(.)]TJ/F46 10.9091 Tf 18.152 0 Td [(combinators,)]TJ/F42 10.9091 Tf 59.389 0 Td [(etc.)]TJ/F46 10.9091 Tf 15.447 0 Td [(\051)-310(which)-250(are)-250(ignored)-250(in)-250(this)-250(write)-250(up.)]TJ -79.684 -13.549 Td [(The)-255(hope)-255(is)-255(that)-256(no)25(w)-255(it)-255(should)-255(be)-255(easy)-255(to)-256(recogni)1(ze)]TJ/F42 10.9091 Tf 226.676 0 Td [(computation)]TJ/F46 10.9091 Tf 54.545 0 Td [(-bound)-255(processes)-255(\050as)-255(the)15(y)-256(do)-255(not)-255(block)]TJ -298.158 -13.549 Td [(before)-242(a)-243(set)-242(number)-243(of)-242(reductions\051,)]TJ/F42 10.9091 Tf 154.934 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-243(proce)1(sses)-243(\050as)-242(the)15(y)-243(will)-242(synchronize)-243(and)-242(block)-243(on)]TJ -222.199 -13.55 Td [(a)-251(sw)10(ap)-252(channel\051,)-252(le)25(v)15(el)-251(of)-252(cooperati)25(vity)-251(between)-252(proces)1(ses)-252(\050)]TJ/F42 10.9091 Tf 258.326 0 Td [(i.e)15(.)]TJ/F46 10.9091 Tf 15.911 0 Td [(from)-251(k)10(eeping)-252(track)-251(of)-252(which)-251(processes)-252(sw)10(ap)]TJ -274.237 -13.549 Td [(with)-300(which)-300(others\051,)-313(and)-300(an)15(y)-300(other)-300(metric)-301(we)-300(can)-300(think)-300(of)-300(\050as)-300(we)-300(still)-300(ha)20(v)14(e)-300(stack,)-312(process)-300(locality)65(,)-313(channel)]TJ 0 -13.549 Td [(information,)]TJ/F42 10.9091 Tf 56.967 0 Td [(etc.)]TJ/F46 10.9091 Tf 15.447 0 Td [(\051.)]TJ
+ET
+1 0 0 1 305.751 345.329 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+S 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+229.51976 15.60286 m 
+-229.51976 15.60286 l 
+-231.7207 15.60286 -233.50487 13.8187 -233.50487 11.61775 c 
+-233.50487 -11.61775 l 
+-233.50487 -13.8187 -231.7207 -15.60286 -229.51976 -15.60286 c 
+229.51976 -15.60286 l 
+231.7207 -15.60286 233.50487 -13.8187 233.50487 -11.61775 c 
+233.50487 11.61775 l 
+233.50487 13.8187 231.7207 15.60286 229.51976 15.60286 c 
+h 
+-233.50487 -15.60286 m 
+B 
+Q 
+q 
+1 0 0 1 -229.575 4.235 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+1 0 0 1 -76.176 -349.564 cm
+BT
+/F46 10.9091 Tf 76.176 349.564 Td [(Reference)-333(a)-334(\002gure)-333(to)-333(sho)25(w)-333(an)-334(e)15(xample)-333(ErLam)-333(application,)-333(perhaps)-334(an)-333(implementation)-333(of)-334(a)-333(Ring)-333(pro-)]TJ 0 -13.549 Td [(gram)-333(or)-334(MapReduce)-333(style,)-333(as)-333(those)-334(were)-333(the)-333(e)15(xamples)-333(used)-334(abo)15(v)15(e?)]TJ
+ET
+1 0 0 1 76.176 349.564 cm
+Q 
+1 0 0 1 229.575 -4.235 cm
+Q 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 -305.751 -345.329 cm
+BT
+/F43 11.9552 Tf 72 299.575 Td [(3.2)-1000(P)20(orted)-250(Schedulers)]TJ/F46 10.9091 Tf 0 -20.913 Td [(Ultimately)-321(it)-322(w)10(ould)-321(be)-321(interesting)-322(to)-321(test)-321(a)-322(lar)18(ge)-321(collection)-321(of)-322(scheduling)-321(mechanisms)-321(and)-322(metrics)-321(within)]TJ 0 -13.549 Td [(the)-307(same)-307(frame)25(w)10(ork.)-481(Ho)25(we)25(v)15(er)-307(with)-307(time)-308(constraint)1(s)-308(I)-307(will)-307(limit)-307(it)-307(to)-307(the)-307(most)-307(promising)-307(and)-307(comparable)]TJ 0 -13.55 Td [(feedback)-250(schedulers)-250(in)-250(use.)]TJ 16.936 -13.549 Td [(The)-373(\002rst)-373(is)-374(CML)92(')55(s)-373(interacti)25(vity-based)-373(scheduler)55(.)]TJ
+ET
+1 0 0 1 312.685 241.696 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+q 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 -312.685 -241.696 cm
+BT
+/F46 10.9091 Tf 312.685 238.014 Td [(This)-373(scheduling)-373(system)-373(uses)-374(a)-373(simple)-373(b)20(ut)-373(v)15(ery)-373(ef-)]TJ
+ET
+1 0 0 1 579.103 241.658 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+q 
+q 
+1 0 0 1 0 -3.644 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+Q 
+1 0 0 1 0 3.644 cm
+Q 
+Q 
+S 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+24.90692 7.22986 m 
+-24.90692 7.22986 l 
+-27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
+-28.89203 -4.205 l 
+-28.89203 -6.40594 -27.10785 -8.19011 -24.90692 -8.19011 c 
+24.90692 -8.19011 l 
+27.10785 -8.19011 28.89203 -6.40594 28.89203 -4.205 c 
+28.89203 3.24475 l 
+28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
+h 
+-28.89203 -8.19011 m 
+B 
+Q 
+q 
+1 0 0 1 -24.964 -4.137 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+1 0 0 1 -554.139 -237.521 cm
+BT
+/F46 10.9091 Tf 554.139 237.521 Td [(cite?)]TJ
+ET
+1 0 0 1 554.139 237.521 cm
+Q 
+1 0 0 1 24.964 4.137 cm
+Q 
+Q 
+S 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+24.90692 7.22986 m 
+-24.90692 7.22986 l 
+-27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
+-28.89203 -4.205 l 
+-28.89203 -6.40594 -27.10785 -8.19011 -24.90692 -8.19011 c 
+24.90692 -8.19011 l 
+27.10785 -8.19011 28.89203 -6.40594 28.89203 -4.205 c 
+28.89203 3.24475 l 
+28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
+h 
+-28.89203 -8.19011 m 
+B 
+Q 
+q 
+1 0 0 1 -24.964 -4.137 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+1 0 0 1 -554.139 -237.521 cm
+BT
+/F46 10.9091 Tf 554.139 237.521 Td [(cite?)]TJ
+ET
+1 0 0 1 554.139 237.521 cm
+Q 
+1 0 0 1 24.964 4.137 cm
+Q 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 29.141 -3.644 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+q 
+0.79701 w 
+1 0.5 0 RG 
+-295.56335 -1.98741 m 
+-63.95146 -1.98741 l 
+-63.95146 3.16354 l 
+-58.2822 3.16354 l 
+-58.2822 3.16354 l 
+S 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 -608.244 -238.014 cm
+BT
+/F46 10.9091 Tf 72 224.465 Td [(fecti)25(v)15(e)-303(tw)10(o-queue)-304(m)1(ethod)-304(for)-303(se)15(gre)15(g)5(ating)]TJ/F42 10.9091 Tf 187.083 0 Td [(computation)]TJ/F46 10.9091 Tf 57.853 0 Td [(and)]TJ/F42 10.9091 Tf 19.061 0 Td [(communication)]TJ/F46 10.9091 Tf 67.265 0 Td [(-bound)-303(processes)-304(so)-303(as)-303(to)-303(ha)20(v)15(e)]TJ -331.262 -13.549 Td [(preferential)-250(treatment)-250(of)-250(the)-250(communication)-250(in)-250(the)-250(system)-250(without)-250(sacri\002cing)-250(too)-250(much)-250(computation)-250(time.)]TJ 16.936 -13.549 Td [(The)-232(last)-232(is)-232(Occam-)]TJ/F54 10.9091 Tf 81.517 0 Td [(\031)]TJ/F46 10.9091 Tf 6.61 0 Td [(')55(s)-232(process)-232(locality-based)-232(scheduler)-232(which)-233(attempts)-232(to)-232(catch)-232(a)-232(portion)-232(of)-232(cooperation)]TJ -105.063 -13.55 Td [(by)-214(batching)-214(processes)-213(into)-214(groups)-214(and)-214(only)-214(w)10(ork-stealing)-213(groups.)-298(Their)-214(scheduler)-214(looks)-214(v)15(ery)-214(promi)1(sing)-214(as)-214(it)]TJ 0 -13.549 Td [(has)-253(been)-253(sho)25(wn)-253(to)-254(tak)10(e)-253(much)-253(more)-253(adv)25(antage)-253(of)-253(the)-253(cache)-253(than)-254(sim)1(ple)-254(w)10(ork-stealing)-253(schedulers.)-319(Ho)25(we)25(v)15(er)40(,)]TJ 0 -13.549 Td [(the)-240(implementation)-241(comple)15(xity)-240(of)-241(this)-240(scheduler)-240(may)-241(push)-240(this)-241(to)-240(being)-241(a)-240(stretch)-240(goal)-241(rather)-240(than)-241(a)-240(required)]TJ 0 -13.549 Td [(deli)25(v)15(erable.)]TJ 16.936 -13.549 Td [(These)-354(tw)10(o)-353(schedulers)-354(will)-354(need)-353(to)-354(be)-354(ported)-353(along)-354(side)-353(the)-354(ne)25(w)-354(cooperati)25(vity)-353(scheduler)-354(for)-354(side-by-)]TJ -16.936 -13.549 Td [(side)-296(testing.)-448(It)-296(w)10(ould)-296(also)-296(be)-296(required)-297(to)-296(ha)20(v)15(e)-296(a)-296(baseline)-296(for)-296(these)-296(tests)-296(so)-296(a)-296(simple)-296(non-feedback)-296(enabled)]TJ 0 -13.55 Td [(w)10(ork-stealing)-250(scheduler)-250(will)-250(also)-250(be)-250(implemented.)]TJ
+0 g 0 G
+ 231.273 -30.522 Td [(5)]TJ
+0 g 0 G
+ET
+endstream
+endobj
+35 0 obj <<
+/Length 6539      
+>>
+stream
+0 g 0 G
+0 g 0 G
+BT
+/F43 11.9552 Tf 72 709.041 Td [(3.3)-1000(Ev)10(aluation)]TJ/F46 10.9091 Tf 0 -20.913 Td [(There)-381(are)-382(tw)10(o)-381(portions)-382(of)-381(this)-381(proposal)-382(which)-381(will)-381(require)-382(e)25(v)25(aluation:)-573(the)-381(schedulers)-381(and)-382(the)-381(language)]TJ 0 -13.549 Td [(abstractions:)]TJ
+0 g 0 G
+/F43 10.9091 Tf 0 -25.504 Td [(Scheduler)-250(Comparisons:)]TJ
+0 g 0 G
+/F46 10.9091 Tf 120.304 0 Td [(The)-301(schedulers)-302(will)-301(be)-302(compared)-301(directly)-302(using)-301(quanatati)25(v)15(e)-301(analysis)-302(of)-301(se)25(v)15(eral)]TJ -93.031 -13.549 Td [(metrics.)-304(Namely)-232(I)-232(will)-232(be)-232(looking)-233(at)-232(each)-232(schedulers')-232(queues,)-236(the)-232(number)-232(of)-232(block)10(ed/running/w)10(aiting)]TJ 0 -13.55 Td [(processes,)-257(and)-255(the)-256(timeframes)-255(in)-256(which)-255(each)-256(of)-255(the)-255(processes)-256(are)-255(being)-256(e)25(v)25(aluated.)-326(Using)-256(a)-255(consistent)]TJ 0 -13.549 Td [(set)-357(of)-358(tests,)-384(such)-357(as)-357(the)-357(Ring)-358(and)-357(MapReduce)-357(e)15(xamples)-358(gi)25(v)15(en)-357(pre)25(viously)65(,)-384(it)-357(should)-358(be)-357(possible)-357(to)]TJ 0 -13.549 Td [(e)25(v)25(aluate)-250(what)-250(consistent)-250(beha)20(viors)-250(each)-250(scheduling)-250(algorithm)-250(produces)-250(o)15(v)15(er)-250(multiple)-250(runs.)]TJ
+0 g 0 G
+/F43 10.9091 Tf -27.273 -22.516 Td [(Language)-250(Abstraction)-250(Ev)10(aluation:)]TJ
+0 g 0 G
+/F46 10.9091 Tf 166.569 0 Td [(After)-354(the)-353(schedulers)-354(ha)20(v)15(e)-354(been)-353(compared)-354(there')55(s)-354(no)25(w)-354(the)-353(objecti)25(v)15(e)]TJ -139.296 -13.549 Td [(e)25(v)25(aluation)-316(of)-316(each)-315(scheduler)-316(on)-316(the)-316(language)-315(itself.)-508(It)-315(may)-316(be)-316(possible)-316(that)-316(the)-315(scheduling)-316(systems)]TJ 0 -13.549 Td [(e)15(xhibit)-236(intere)1(sting)-236(beha)20(viors)-236(within)-235(the)-236(abstractions)-235(I)-236(enforced)-235(\050namely)-236(sw)10(ap)-235(channels)-236(and)-236(it')55(s)-235(imple-)]TJ 0 -13.549 Td [(mentation\051.)-300(This)-220(step)-219(can)-220(be)-220(performed)-219(during)-220(the)-220(implementation)-220(a)1(nd)-220(testing)-220(phases)-220(of)-219(the)-220(road-map)]TJ 0 -13.549 Td [(and)-299(will)-298(primarily)-299(be)-299(summarized)-298(in)-299(weekly)-299(blog)-298(posts)-299(and)-299(in)-298(the)-299(language)-298(implementation)-299(section)]TJ 0 -13.55 Td [(of)-250(the)-250(\002nal)-250(report.)]TJ/F43 11.9552 Tf -27.273 -29.902 Td [(3.4)-1000(Outcomes)-250(and)-250(Deli)10(v)10(erables)]TJ/F46 10.9091 Tf 0 -20.913 Td [(The)-342(end)-342(goal)-342(will)-343(be)-342(to)-342(ha)20(v)15(e,)-365(at)-342(minimum,)-365(the)-342(scheduling)-343(al)1(gorithm)-343(based)-342(on)-342(process)-342(cooperati)25(vity)-342(and)]TJ 0 -13.549 Td [(the)-257(ErLam)-257(compilation)-257(frame)25(w)10(ork)-258(for)-257(testing)-257(it)-257(along-side)-257(other)-257(algorithms,)-259(completely)-258(impleme)1(nted.)-332(The)]TJ 0 -13.549 Td [(frame)25(w)10(ork)-322(will)-322(ha)20(v)15(e)-322(tw)10(o)-323(part)1(s:)-455(A)-322(ne)25(w)-322(tool)-322(for)-322(comparati)25(v)15(e)-322(analysis)-322(of)-323(the)-322(inner)-322(w)10(orkings)-322(of)-322(concurrent)]TJ 0 -13.549 Td [(schedulers,)-250(and)-250(a)-250(set)-250(of)-250(high)-250(le)25(v)15(el)-250(language)-250(abstractions)-250(for)-250(future)-250(run-time)-250(scheduler)-250(testing.)]TJ
+ET
+1 0 0 1 479.657 416.836 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+q 
+Q 
+Q 
+n 
+Q 
+1 0 0 1 99.446 -0.039 cm
+q 
+0 G 
+0 g 
+0.3985 w 
+q 
+q 
+q 
+1 0 0 1 0 -3.643 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+Q 
+1 0 0 1 0 3.643 cm
 Q 
 Q 
 S 
@@ -1461,24 +1424,61 @@ h
 B 
 Q 
 q 
-1 0 0 1 -24.964 -4.138 cm
+1 0 0 1 -24.964 -4.137 cm
 1.0 0.0 0.0 1.0 0.0 0.0 cm 
 q 
 0 G 
 0 g 
-1 0 0 1 -554.139 -342.11 cm
+1 0 0 1 -554.139 -412.66 cm
 BT
-/F46 10.9091 Tf 554.139 342.11 Td [(I)-333(feel)-334(as)]TJ 0 -13.549 Td [(though)-333(I'm)]TJ 0 -13.549 Td [(reiterating)]TJ 0 -13.549 Td [(too)-333(much,)]TJ 0 -13.55 Td [(this)-333(sec-)]TJ 0 -13.549 Td [(tion)-333(might)]TJ 0 -13.549 Td [(w)10(ork)-333(bet-)]TJ 0 -13.549 Td [(ter)-333(as)-334(just)]TJ 0 -13.549 Td [(a)-333(b)20(ulleted)]TJ 0 -13.55 Td [(list.)]TJ
+/F46 10.9091 Tf 554.139 412.66 Td [(I)-333(feel)-334(as)]TJ 0 -13.549 Td [(though)-333(I'm)]TJ 0 -13.549 Td [(reiterating)]TJ 0 -13.55 Td [(too)-333(much,)]TJ 0 -13.549 Td [(this)-333(sec-)]TJ 0 -13.549 Td [(tion)-333(might)]TJ 0 -13.549 Td [(w)10(ork)-333(bet-)]TJ 0 -13.549 Td [(ter)-333(as)-334(just)]TJ 0 -13.55 Td [(a)-333(b)20(ulleted)]TJ 0 -13.549 Td [(list.)]TJ
 ET
-1 0 0 1 554.139 342.11 cm
+1 0 0 1 554.139 412.66 cm
 Q 
-1 0 0 1 24.964 4.138 cm
+1 0 0 1 24.964 4.137 cm
+Q 
+Q 
+S 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+q 
+0 G 
+1 0.5 0 rg 
+0.49814 w 
+24.90692 7.22986 m 
+-24.90692 7.22986 l 
+-27.10785 7.22986 -28.89203 5.4457 -28.89203 3.24475 c 
+-28.89203 -126.14934 l 
+-28.89203 -128.35028 -27.10785 -130.13445 -24.90692 -130.13445 c 
+24.90692 -130.13445 l 
+27.10785 -130.13445 28.89203 -128.35028 28.89203 -126.14934 c 
+28.89203 3.24475 l 
+28.89203 5.4457 27.10785 7.22986 24.90692 7.22986 c 
+h 
+-28.89203 -130.13445 m 
+B 
+Q 
+q 
+1 0 0 1 -24.964 -4.137 cm
+1.0 0.0 0.0 1.0 0.0 0.0 cm 
+q 
+0 G 
+0 g 
+1 0 0 1 -554.139 -412.66 cm
+BT
+/F46 10.9091 Tf 554.139 412.66 Td [(I)-333(feel)-334(as)]TJ 0 -13.549 Td [(though)-333(I'm)]TJ 0 -13.549 Td [(reiterating)]TJ 0 -13.55 Td [(too)-333(much,)]TJ 0 -13.549 Td [(this)-333(sec-)]TJ 0 -13.549 Td [(tion)-333(might)]TJ 0 -13.549 Td [(w)10(ork)-333(bet-)]TJ 0 -13.549 Td [(ter)-333(as)-334(just)]TJ 0 -13.55 Td [(a)-333(b)20(ulleted)]TJ 0 -13.549 Td [(list.)]TJ
+ET
+1 0 0 1 554.139 412.66 cm
+Q 
+1 0 0 1 24.964 4.137 cm
 Q 
 Q 
 Q 
 n 
 Q 
-1 0 0 1 29.141 -3.644 cm
+1 0 0 1 29.141 -3.643 cm
 q 
 0 G 
 0 g 
@@ -1497,11 +1497,11 @@ Q
 Q 
 n 
 Q 
-1 0 0 1 -608.244 -342.604 cm
+1 0 0 1 -608.244 -413.154 cm
 BT
-/F46 10.9091 Tf 88.936 329.055 Td [(Thus,)-277(there)-272(are)-272(tw)10(o)-272(deli)25(v)15(erables)-271(e)15(xpected)-272(alongside)-272(the)-272(Thesis)-271(Report;)-283(the)-272(source)-272(code)-271(for)-272(a)-272(ne)25(w)-272(com-)]TJ -16.936 -13.549 Td [(piler)-219(and)-220(runtime)-219(frame)25(w)10(ork,)-226(and)-219(the)-219(implementation)-220(and)-219(design)-219(description)-220(of)-219(a)-219(ne)25(w)-220(scheduling)-219(algorithm.)]TJ 0 -13.55 Td [(Both)-250(of)-250(which)-250(will)-250(be)-250(made)-250(a)20(v)25(ailable)-250(for)-250(public)-250(use)-250(after)-250(completion.)]TJ
+/F46 10.9091 Tf 88.936 399.605 Td [(Thus,)-277(there)-272(are)-272(tw)10(o)-272(deli)25(v)15(erables)-271(e)15(xpected)-272(alongside)-272(the)-272(Thesis)-271(Report;)-283(the)-272(source)-272(code)-271(for)-272(a)-272(ne)25(w)-272(com-)]TJ -16.936 -13.55 Td [(piler)-219(and)-220(runtime)-219(frame)25(w)10(ork,)-226(and)-219(the)-219(implementation)-220(and)-219(design)-219(description)-220(of)-219(a)-219(ne)25(w)-220(scheduling)-219(algorithm.)]TJ 0 -13.549 Td [(Both)-250(of)-250(which)-250(will)-250(be)-250(made)-250(a)20(v)25(ailable)-250(for)-250(public)-250(use)-250(after)-250(completion.)]TJ
 0 g 0 G
- 231.273 -229.956 Td [(6)]TJ
+ 231.273 -300.506 Td [(6)]TJ
 0 g 0 G
 ET
 endstream
@@ -2523,8 +2523,8 @@ endobj
 78 0 obj <<
 /Producer (pdfTeX-1.40.13)
 /Creator (TeX)
-/CreationDate (D:20140502105629-04'00')
-/ModDate (D:20140502105629-04'00')
+/CreationDate (D:20140502121636-04'00')
+/ModDate (D:20140502121636-04'00')
 /Trapped /False
 /PTEX.Fullbanner (This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) kpathsea version 6.1.0)
 >> endobj
@@ -2637,7 +2637,7 @@ stream
 % 33 0 obj
 <<
  /ColorSpace 3 0 R /Pattern 2 0 R /ExtGState 1 0 R 
-/Font << /F46 10 0 R /F43 8 0 R >>
+/Font << /F43 8 0 R /F46 10 0 R >>
 /ProcSet [ /PDF /Text ]
 >>
 % 38 0 obj
@@ -2989,14 +2989,14 @@ endobj
 /W [1 3 1]
 /Root 77 0 R
 /Info 78 0 R
-/ID [<183F65C0664EE0A4E08D5AA8B59C2829> <183F65C0664EE0A4E08D5AA8B59C2829>]
+/ID [<366CD2D9BA2F7ECFF87B48D9CEA12E47> <366CD2D9BA2F7ECFF87B48D9CEA12E47>]
 /Length 400       
 >>
 stream
-    ÿ                3  0  /  2  1   4 :      ò      k   +     ¡.   *  	   Ç~     
- ñl   .    ¹   5    4Ó   -  ,    TÒ       )                iE   ¹    µÀ   !Ó9   "ð¿   #G   $A(   %vþ   &™Ó   'ä»   (  6  7þ Jð 
+    ÿ                3  0  /  2  1þ   4 ;~      ò      l   +     ¡S   *  	   Æk     
+ ï‘   .       5    1É   -  ,    QÈ       )                f;   Š¯    ²¶   !Ð/   "íµ   #=   $>   %sô   &–É   'á±   (  6  7ô Gæ 
 endstream
 endobj
 startxref
-215792
+215014
 %%EOF
