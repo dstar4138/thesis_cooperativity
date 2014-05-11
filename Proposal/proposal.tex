@@ -69,8 +69,8 @@ Rochester, New York }\\ [0.3in]
 \vspace{0.28in}
 \today{}\\
 %%%%%%%%%%%%%%%%XXX: REMOVE WHEN DONE %%%%%%%%%%%%%%%%
-		\vspace{0.25in}
-		{\bf\em DRAFT MODE: PLEASE BE HARSH! }\\
+%		\vspace{0.25in}
+%		{\bf\em DRAFT MODE: PLEASE BE HARSH! }\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{center}
 \vfill
@@ -89,13 +89,13 @@ Rochester, New York }\\ [0.3in]
 \section*{Abstract}
 Runtime systems for concurrent languages have begun to utilize feedback mechanisms to influence their
 scheduling behavior as the application proceeds. These feedback mechanisms rely on metrics by which to
-grade any alterations made to the scheduling system. As the application's phase shifts, the feedback mechanism
-is tasked with modifying the scheduler to reduce it's overhead and increase the application's efficiency.
+grade any alterations made to the schedule of the multi-threaded application. As the application's phase shifts, the feedback mechanism
+is tasked with modifying the scheduler to reduce its overhead and increase the application's efficiency.
 
-Cooperativity is another possible metric by which to grade a system. In biochemistry the term cooperativity
+Cooperativity is a novel possible metric by which to grade a system. In biochemistry the term cooperativity
 is defined as the increase or decrease in the rate of interaction between a reactant and a protein as
 the reactant concentration increases. This definition translates well as an information theoretic definition
-as: the increase or decrease in the rate of interaction between a process and a communication mode as the
+as: the increase or decrease in the rate of interaction between a process and a communication method as the
 number of processes increase. 
 
 This work proposes a unique feedback mechanism and scheduling algorithm which takes advantage of cooperative behavior.
@@ -132,7 +132,7 @@ lend themselves to easier statistical metric accumulation.
 
 Since the formalization of feedback driven systems and the advent of Cybernetics, multiple fields have attempted 
 to mold these principles to their own models; and run-time schedulers are no exception. This is due, in part, from
-process scheduling in parallel systems being fundamentally a NP-Complete problem \cite{bruno1976computer}. Instead,
+process scheduling in parallel systems being fundamentally an NP-Complete problem \cite{bruno1976computer}. Instead,
 focus has been more fruitful when pursuing the optimization of various metrics using some particular objective 
 function \cite{garey1978performance} to tune for particular edge cases. As such, scheduling based on feedback 
 metrics is not new \cite{dietz1997use}.
@@ -172,7 +172,7 @@ There is a spectrum of clairvoyance
 \todo{Citation needed, taxonomy paper?}
 in classical job-scheduling, in that on one end, job-schedulers have full foresight
 over the jobs which will enter the queue and their order. These schedulers have the opportunity to optimize for future
-events, which is a luxury the scheduling systems, this paper discusses, do not have. 
+events, which is a luxury the scheduling systems that this paper discusses do not have. 
 
 However, as it is a spectrum, there is a single point of knowledge this subrange of schedulers can assume. Namely, 
 that the first job will always be the last, and all other jobs will spawn from it. Thus there will always be a single 
@@ -236,12 +236,16 @@ the scheduler regarding their queue position. For the alternative, symmetrical m
 directly handled by the scheduling of the system (\ie~the order at which the channels evaluate the $swap$ command can be 
 directly governed).
 
-\subsection{Cooperativity as a Metric}
+\subsection{Example Scheduling Feedback Systems}
 
-\todo[inline]{This section feels off, I wish I had referenced a "generic" definition by which to base all assumptions
-and initial observations off of.}
+A basic feedback scheduler can be explained using a metric like 'waiting time vs running time'. A standard round-robin
+scheduler may utilize a queue of processes and attempts to be fair by giving every process an equal chance to run.
+However, in a contrived example such as a fork-bomb, the scheduler may never reach the end of the queue and the rest of 
+the system could starve. In our example feedback enabled system each process could be ranked according to its ratio of 
+waiting time over running time. Thus as time went on, even in the event of a fork-bombing effects the beginning of the
+queue would still get some time to run.
 
-As explained above, there is quite a literature behind the types of metrics used. Yet statistical collection is 
+There is quite a literature behind the types of metrics used though. Yet statistical collection is 
 only a third of the feedback loop. A classification of the system must be made by a control mechanism based on the 
 recorded state, and then a modification must be made to the scheduler which should positively 
 effect the state of the system's future. The key is to make sure this effect is transparent and results in minimal
@@ -253,31 +257,52 @@ schedule as a whole. Note that this function is an external measure (evaluation)
 which will be brought up further in section~\ref{sec:workevaluation}. For now however, note that the objective 
 function and control metrics are separate and evaluate two different things.
 
-Interactivity is one metric which evaluates the system's current scheduler. It looks at the ratio of communication
-to computation currently taking place in the system as a whole. One scheduling system which utilizes this metric 
-indirectly is in CML \cite{reppy1993concurrent}.
+Before discussing Cooperativity as a feedback metric though, it is important to introduce previous metrics and their
+respective control schemes. Interactivity is one metric which evaluates the system's current scheduler. It looks at 
+the ratio of communication to computation currently taking place in the system as a whole. One scheduling system which 
+utilizes this metric indirectly is in CML \cite{reppy1993concurrent}.
 
 It's method by which it grades the system is the recognition of {\em computation}-bound processes versus
 {\em communication}-bound processes. A {\em communication}-bound process is one which has previous blocked itself
 without using it's entire scheduled quantum, the rational for this is only a synchronizing thread would be willing
-to block; thus a {\em computation}-bound process is the opposite (\ie~one that always uses its full quantum). 
+to block; thus a {\em computation}-bound process is the opposite (\ie~one that always uses its full quantum). After
+labeling the processes the scheduler pushes {\em computation}-bound processes to a secondary queue so they don't eat
+up all of the time. This improves the time the scheduler can spend attending the processes which need to synchronize,
+which in turn improves the Interactivity of the application (\ie~GUI widgets will finish their message passing while 
+the back end computes).
 
-However, this metric looks only at the ratio of {\em communication}-bound processes to {\em computation}-bound
+\subsection{Cooperativity as a Metric}
+
+\todo[inline]{This section feels off, I wish I had referenced a "generic" definition by which to base all assumptions
+and initial observations off of.}
+
+As mentioned, note that the Interactivity metric looks only at the ratio of {\em communication}-bound processes to {\em computation}-bound
 processes and misses the quantity of communication on a per-process level which could indicate needed changes in
-scheduling quantum or process locality with those which are frequently in touch.
-
+scheduling quantum or process locality with those which are frequently in touch. 
 This hints at a need to look for some level of cooperation between processes in the phases of an application's
-life-time. Rather than a ratio of {\em communication} to {\em computation}, instead we need to look at a 
+life-time. 
+
+Rather than a ratio of {\em communication} to {\em computation}, instead we need to look at a 
 frequency of communication and between which processes (\ie~rate at which a process communicates with a particular
-channel). One method this can be achieved by is, in addition to recording which threads are {\em communication} and 
+channel). One method this can be achieved by is, in addition to recording which processes are {\em communication} and 
 {\em computation}-bound, the scheduler can also tag the process with it's frequency of communication on each 
 channel it touches over time. By doing so, the scheduler can calculate a process's cooperativity with one or more
 processes by comparing frequency counts on particular channels, perhaps by a sum of ratios.
 
-%Thus for a decent generic definition, Abeliovich \cite{abeliovich2005empirical} defines positive cooperativity as: 
-%\begin{quote}
-%A process involving multiple identical incremental steps, in which intermediate states are statistically underrepresented relative to a hypothetical standard system (null hypothesis) where the steps occur independently of each other. Likewise, a definition of negative cooperativity would be a process involving multiple identical incremental steps, in which the intermediate states are overrepresented relative to a hypothetical standard state in which individual steps occur independently.
-%\end{quote}
+Cooperativity, in the general sense, has been a probabilistic interpretation of how two actors can be affected by the actions of
+others. This has been a sociological term as well as a biological one. Abeliovich \cite{abeliovich2005empirical}, thusly defines a
+notion of positive cooperativity as: 
+\begin{quote}
+A process involving multiple identical incremental steps, in which intermediate states are statistically underrepresented relative to a hypothetical standard system [...] where the steps occur independently of each other. Likewise, a definition of negative cooperativity would be a process involving multiple identical incremental steps, in which the intermediate states are overrepresented relative to a hypothetical standard state in which individual steps occur independently.
+\end{quote}
+
+In other words, while a process can be cooperative, a system can be shown to possess {\em positive} or {\em negative}
+cooperativity as the set of cooperative processes increases or decreases (respectively). This lends itself quite 
+readily as a metric for an evolving system of phases. Assuming the cooperativity can be directly probed we can check 
+it against an evolving standard state the scheduler proposes. The feedback mechanism would be to attempt to raise or
+lower the cooperativity of the system to get it back to this standard state. It can do so by increasing or decreasing
+the synchronization allowance each scheduler gets per a given time frame for example. This would have the effect of 
+bounding the frequencies of communication.
 
 \section{Motivation}
 %%TODO:
@@ -296,10 +321,9 @@ scheduler may find that a single core running them in sequential order is prefer
 
 Another scenario could be the Map-Reduce based structure where a parent spawns several children (possibly 
 communicates with them) and then waits for their return (which is another round of communication). This 
-demonstrates the effect of phases within an application. A scheduler targeted for interactivity, for the sake
-\todo{This example is not worded as well as I had wanted it to, revisit.}
-of example, might continuously check the parent on each run through it's queue despite having a lack of 
-cooperativity in the present.
+demonstrates the effect of phases within an application, and has an opposite signature from the previous example
+in that the $n$ processes spawned should all run at the same time. In this case a cooperativity conscious scheduler
+may find that following the simplistic work-stealing approach works best.
 
 The overall motivation is thusly, twofold. I believe there is an additional feedback metric that has gotten little
 publicity despite it's apparent usefulness. Current feedback scheduling implementations fail to take 
@@ -427,7 +451,7 @@ been shown to take much more advantage of the cache than simple work-stealing sc
 complexity of this scheduler may push this to being a stretch goal rather than a required deliverable.
 
 These two schedulers will need to be ported along side the new cooperativity scheduler for side-by-side testing. It
-would also be required to have a baseline for these tests so a simple non-feedback enabled work-stealing scheduler
+would also be required to have a baseline for these tests so a simple non-feedback-enabled round-robin work-stealing scheduler
 will also be implemented.
 
 \subsection{Evaluation}
@@ -436,7 +460,7 @@ will also be implemented.
 There are two portions of this proposal which will require evaluation: the schedulers and the language abstractions:
 
 \begin{itemize}
-\item[{\bf Scheduler Comparisons:}] The schedulers will be compared directly using quanatative analysis of several
+\item[{\bf Scheduler Comparisons:}] The schedulers will be compared directly using quantitative analysis of several
 metrics. Namely I will be looking at each schedulers' queues, the number of blocked/running/waiting processes, and
 the timeframes in which each of the processes are being evaluated. Using a consistent set of tests, such as the 
 Ring and MapReduce examples given previously, it should be possible to evaluate what consistent behaviors each 
@@ -449,6 +473,21 @@ scheduling algorithm produces over multiple runs.
 	road-map and will primarily be summarized in weekly blog posts and in the language implementation
 	section of the final report.
 
+\end{itemize}
+
+To perform the scheduler comparisons I will need to take a number of statistics about the scheduler's themselves.
+These will be separate from the scheduling process itself, but could be useful in analyzing the operation of the
+scheduler over time and as the application's phase shifts. Possible metrics for scheduler evaluation are as follows:
+
+\begin{itemize}
+\item[{\bf Process Location:}] If a process keeps getting juggled, or a particular LPU does not steal correctly, 
+	it would be helpful to know where all the processes are and the paths they take.
+
+\item[{\bf Swap Channel Timing:}] This will catch how long it takes to actually perform a swap. Which should, in 
+	conjunction with knowing process location (logical unit ID), capture cache affinity over time.
+
+\item[{\bf Process State Timing:}] A process can be either Blocked, Waiting or Running. By keeping track of each
+	and how long a process has been in each state before switching we can check on possible fairness concerns.
 \end{itemize}
 
 \subsection{Outcomes and Deliverables}
