@@ -1,0 +1,297 @@
+\chapter{Background}
+\index{Background\emph{Background}}%
+
+Mathematical Expressions MEs form an essential part of scientific
+and technical documents. Mathematical Expressions can be typeset or
+handwritten which uses two dimensional arrangements of symbols to
+transmit information. Recognizing both form of mathematical
+expressions are challenging. A variation to handwritten ME is
+cursive handwriting. Unconstrained cursive property of such
+handwritten expressions poses a major challenge to its recognition.
+
+Generally speaking understanding and recognizing mathematical
+expression, whether typeset or handwritten, involves three
+activities: Expression localization, symbol recognition and
+symbol-arrangement analysis. ME localization involves finding and
+extracting mathematical expression from the document. Symbol
+recognition converts the extracted expression image into a set of
+symbols and symbol arrangement analyzes the spatial arrangement of
+set of symbols to recover the information content of the given
+mathematical notations.
+
+Now based on the recognition process, symbol recognition activity
+can further subdivided as 1) preprocessing - noise reduction,
+deskewing, slant correction etc, 2) segmentation to isolate symbols
+3) and finally, recognition. Similarly depending upon the
+symbol-arrangement algorithm, symbol arrangement analysis can be
+further subdivided into a) identification of spatial relationships
+among symbols b) identification of logical relationships among
+symbols 3) construction of meaning. These processes can be executed
+in series or in parallel with latter processes providing contextual
+feedback for the earlier processes. The order of these recognition
+activities can vary somewhat, for example, partial identification of
+spatial and logical relationships can be performed prior to symbol
+recognition.
+
+\section{Preprocessing}
+\index{Preprocessing@\emph{Preprocessing}}%
+
+Preprocessing is required to eliminate irregularities and noise from
+the image, especially in handwritten character recognition. Certain
+preprocessing method requirements may depend upon the techniques
+used for recognition. \cite{gyeonghwan1997lda} uses chain code
+method for handwritten image representation. Preprocessing involves
+slant angle correction in which global slant angle from different
+vertical lines is estimated and tangent of the estimated global
+slant angle is used to correct for slant. Smoothing of image
+involves elimination of small blobs (noise) on the contour. A
+sliding 3-component one dimensional window is applied overall
+components during which components are removed or added based on the
+orientation of components. Average stroke width is estimated by
+dividing chain code contours horizontally and by tracing left to
+right various distances between outer and inner contour.
+\cite{jcai1999issi} performs size normalization to reduce variation
+in character size. To avoid significant deformation due to directly
+scaling of all images to identical size, a holistic approach is used
+for scaling in which if width/height ratio is less than 0.8 then
+scale is identical horizontally and vertically otherwise the scale
+factor is set to 0.8 to prevent large variation in image width.
+
+\section{Character segmentation}
+\index{Character segmentation@\emph{Character segmentation}}%
+
+Character segmentation, next step in ME recognition, has long been a
+critical area of OCR process. Depending upon the requirement,
+character segmentation techniques is divided into four major
+headings \cite{CaseyLecolinet1996}. Classical approach of
+segmentation also called dissection technique consists of
+partitioning the input image into sub-images based on their inherent
+features, which are then classified. Another approach to
+segmentation is a group of techniques that avoids dissection and
+segments to image either explicitly by classification of
+pre-specified windows, or implicitly by classification of subsets of
+spatial features collected from the image as a whole. Another
+approach is a hybrid approach employing dissection but using
+classification to select from admissible segmentation possibility.
+Finally holistic approach avoids segmentation process itself and
+performs recognition entire character strings.
+
+Various techniques have been used for segmentation that involves
+dissection. White spaces between the characters are used to detect
+segmentation points. Pitch which is the number of characters per
+unit of horizontal distance provides a basis for estimating
+segmentation points. The segmentation points obtained for a given
+line should be approximately equally spaced at the distance that
+corresponds to pitch \cite{CaseyLecolinet1996}.
+
+Inter-character boundaries can be obtained if most segmentation
+takes place by finding columns of white. Now all segmentation points
+that do not lie near these boundaries can be rejected as caused due
+to broken characters. Similarly we can estimate missed points due to
+merged characters. Hoffman and McCullough gave a framework for
+segmentation that involves three steps i.e. 1) Detection of the
+start of the character, 2) A decision to begin testing for the end
+of a character called sectioning, 3) Detection of end-of-character.
+Sectioning is done by weighted analysis of horizontal black runs
+completed versus run still incomplete.  Once sectioning determines
+the regions of segmentation, rules were invoked to segment based on
+either an increase in bit density or the use of special features
+designed to detect end-of-character.
+
+In \cite{arica2002ocr}, segmentation in cursive handwritten
+characters is performed in the binary word image by using the
+contour of the writing. Determination of segmentation regions is
+done in three steps. In first step a straight line is drawn in the
+slant angle direction from each local maximum until the top of the
+word image. While going upward in the slant direction, if any
+contour pixel is hit, this contour is followed until the slope of
+the contour changes to the opposite direction. An abrupt change in
+the slope of the contour indicates an end point. A line is drawn
+from the maximum to the end point and path continues to go upward in
+slant direction until the top of the word image. In step 2, a path
+in the slant direction from each maximum to the lower baseline, is
+drawn. Step 3 follows the same process as in step 1 in order to
+determine the path from lower baseline to the bottom of the word
+image. Combining all the three steps gives the segmentation regions.
+In \cite{gyeonghwan1997lda} segmentation involves detecting
+ligatures as segmentation points in cursive scripts. Alternatively,
+concavity features in the upper contour and convexities in the lower
+contour are used in conjunction with ligatures to reduce the number
+of potentials segmentation points.
+
+Another dissection technique that applies to non-cursive characters
+is bounding box technique \cite{CaseyLecolinet1996}. In this
+analysis, the adjacency relationships between characters are tested
+to perform merging or their size or aspect ratios are calculated to
+trigger splitting mechanisms.  Another involves splitting of
+connected components. Connected components are merged or split
+according to rules based on height and width of the bounding boxes.
+Intersection of two characters can give rise to special image
+features and different dissection methods have been developed to
+detect these features and to use them in splitting a character
+string images into sub-images.
+
+\cite{chen2000sso} focuses on segmentation of single and multiple
+touching character segmentation. \cite{chen2000sso} proposes a new
+technique that links the feature points on the foreground and
+background alternately to get the possible segmentation path.
+Mixture Gaussian probability function is determined and used to rank
+all the possible segmentation paths. Segmentation paths construction
+is performed separately for single touching characters and for
+multiple touching characters. All the paths from to two analysis are
+collectively processed to remove useless strokes and then mixture
+Gaussian probability function is applied to decide which on is the
+best segmentation path.
+
+Another kind of approach to character segmentation is recognition
+based approach. In these segmentation processes letter segmentation
+is a by-product of letter recognition. The basic principle is use a
+mobile window of variable width to provide sequences of tentative
+segmentation which are confirmed (or not) by character recognition.
+A technique called Shortest Path Segmentation selects the optimal
+combination of cuts from the predefined set of candidate cuts that
+construct all possible legal segments through combination. A graph
+whose nodes represent acceptable segments is the created. The paths
+of these graphs represent all legal segmentations of the word. Each
+node of the graph is then assigned a distance obtained by the neural
+net recognizer. The shortest path though the graph thus corresponds
+to the best recognition and segmentation of the word. An alternative
+method attempts to match subgraphs of features with predefined
+character prototypes. Different alternative are represented by a
+directed network whose nodes correspond to the matched subgraphs.
+Word recognition is done by searching for the path that gives the
+best interpretation of the word features.
+
+\section{Symbol-Arrangement Analysis}
+\index{Symbol-Arrangement Analysis@\emph{Symbol-Arrangement Analysis}}%
+
+One approach to symbol-arrangement analysis is syntactic approach.
+Syntactic approach makes use of two dimensional grammar rules to
+define the correct grouping of math symbols. Co-ordinate grammar for
+recognition is presented by Anderson. The grammar specifies
+syntactic rules that subdivide the set of symbols into several
+subsets, each with its own syntactic subgoal. The final
+interpretation result is given by the m attribute of the grammar
+start's symbol where m represents ASCII encoding of the meaning of
+symbol-set. Although coordinate grammar provides a clear and well
+structured recognition approach, its slow parsing speed and
+difficulty to handle errors are its major drawbacks. In [8], a
+syntactic approach is adopted in which a system consisting of
+hierarchy of parsers for the interpretation of 2-D mathematical
+formulas is described. The ME interpreter consists of two syntactic
+parser top-down and bottom-up. It starts with a priority operator in
+the expression to be analyzed and tries to divide it into
+sub-expressions or operands which are then analyzed in the same way
+and so on. The bottom-up parser chooses from the starting character
+and from the neighboring sub-expressions the corresponding rule in
+the grammar. This rule gives instructions to the top-down parser to
+delimit the zones of neighboring operands and operators.
+
+Garain and Chaudhari in \cite{garain2004roh}, proposes a two pass
+approach to determine arrangement of symbols. The first pass is a
+scanning or lexicon analysis that performs micro-level examination
+of the symbols to determine the symbol groups and to determine their
+categories or descriptors. The second pass is parsing or syntax
+analysis that processes the descriptors synthesized in the first
+pass to determine the syntactical structure of the expression. A set
+of predefined rules guides the activities in both the passes.
+
+Another symbol-arrangement analysis approach is projection profile
+cutting. It involves recursive projection-profile cutting. Cutting
+by the vertical projection profile is attempted first, followed by
+horizontal cuts for each resulting regions. The process repeats
+until no further cutting is possible. The resulting spatial
+relationships are represented by a tree structure.  Although the
+method looks simple and efficient technique, it is still under study
+and also involves additional processing for symbols like square
+root, subscripts and superscripts as these can be handled by
+projection profile cut.
+
+Another approach discussed is the Graph Rewriting. Graph rewriting
+involves information represented as an attributed graph and the
+graph get updated through the application of graph-rewriting rules.
+An initial graph contains one node to represent each symbol, with
+nodes attributes recording the spatial coordinates of the symbol.
+Graph rewriting rules are applied to add edges representing
+meaningful spatial relationships. Rules are further applied to prune
+or modify these edges identifying logical relationships from the
+spatial relationships. In [7], Ann Grbavec and Dorothea Blostein
+proposed a novel-graph rewriting techniques that addresses the
+recursive structure of mathematical notations, the critical
+dependence of the meaning upon operator precedence and the presence
+of ambiguities that depends upon global context. The recognition
+system proposed called EXPRESSO, is based on
+Build-Constrain-Rank-Incorporate model where the Build phase
+constructs edges to represent potentially meaningful spatial
+relation- ships between symbols. The Constrain phase applies
+information about the notational conventions of mathematics to
+remove contra- dictions and resolve ambiguities. The Rank phase uses
+information about the operator precedence to group symbols into
+sub-expressions and the Incorporate phase interprets
+sub-expressions.
+
+Twaakyondo and Okamoto \cite{twaakyondo1995saa} discuss two basic
+strategies to decide the layout of structure of the given
+expression. One strategy is to check the local structures of the
+sub-expressions using a bottom-up method (specific structure
+processing). It is used to analyze nested structures like
+subscripts, superscripts and root expressions. The other strategy is
+to check the global structure of the whole expression by a top-down
+method (fundamental structure processing). It is used to analyze the
+horizontal and vertical relations between sub-expressions. The
+structure of the expression is represented as a tree structure.
+
+Chou in [11] proposed a two-dimensional stochastic context-free
+grammar for recognition of printed mathematical expressions. The
+recognized symbols are parsed with the grammar in which each
+production rule has an associated probability. The main task of the
+process is to find the most probable parse tree for the input
+expression. The overall probability of a parse tree is computed by
+multiplying together the probabilities for all the production rules
+used in a successful parse.
+
+\section{Conclusion}
+\index{Conclusion@\emph{Conclusion}}%
+
+As we saw through the survey, there have been tremendous advances in
+the field of character recognition from so many years of research.
+Some experiment tried to focus on one activity of recognition
+process while other tried to build a complete system for character
+recognition. Some researchers assumed complete well recognized
+symbols are given and they focus on the symbol-arrangement
+(structural) analysis of the recognized symbols. This survey
+concentrated mainly on the two activities of character recognition
+i.e. segmentation of symbols and symbol-arrangement of recognized
+symbols.
+
+Segmentation processes discussed have some limitations such as some
+are restricted to be applied to cursive handwriting while other
+focuses on non-cursive handwriting. Some researchers focus on
+certain subset of mathematical symbols because of large mathematical
+symbol set. Some concentrate on single touching characters some on
+multiple touching characters. Certain approaches of segmentation
+like holistic approach that recognizes entire word as a unit have
+drawback of being restricted to predefined lexicons. Hence more
+efficient and robust segmentation process is required as further
+analysis of ME recognition depends on segmentation and recognition
+of symbols.
+
+Symbol-arrangement analysis discussed shows wide variations in
+approaches. Some approach exploits the operator precedence property
+of mathematical expression while some performs different level of
+analysis (lexicon and syntax) to first group symbols into different
+categories and then perform structural analysis using predefined
+rules. Some using graph rewriting technique in which mathematical
+symbols are linked to each other through graph rewriting rules. Some
+use stochastic grammar rules to represent to the relationship
+between symbols while some intelligently looks for local structures
+of the expression to determine the features like nested, above or
+below followed by global analysis to check for the correctness of
+the expression as a whole and rectify wrong arrangements of symbols.
+Symbol arrangement analysis may be not so crucial for problems that
+involve only standard English character but problems like
+recognition of mathematical expressions where the actual position
+and location of symbols is important and there are many implicit
+meaning to symbols which depends on their arrangement, it is
+absolutely important to perform symbol arrangement analysis for
+better recognition result.
