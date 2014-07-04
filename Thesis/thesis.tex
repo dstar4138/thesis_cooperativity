@@ -31,7 +31,7 @@
 \usepackage{epsfig}             % Allows inclusion of eps files.
 \usepackage{citesort}           %
 \usepackage{url}        % Allows good typesetting of web URLs.
-%\usepackage{draftcopy}     % Uncomment this line to have the
+\usepackage{draftcopy}     % Uncomment this line to have the
                 % word, "DRAFT," as a background
                 % "watermark" on all of the pages of
                 % of your draft versions. When ready
@@ -40,12 +40,12 @@
                 % the word draft before you re-run
                 % Makediss for the last time.
 
-\author{Amit Pillay}    % Required
+\author{Alexander Dean}    % Required
 
-\address{1814 Crittenden Road Apt 6 \\ Rochester, New York 14623}  % Required
+\address{670 Westchester Rd. \\ Grosse Pointe, Michigan 48230}  % Required
 
-\title{Intelligent Combination of Structural Analysis Algorithms:\\
- Application to Mathematical Expression Recognition}
+\title{Process Cooperativity as a Feedback Metric \\
+                in Concurrent Message-Passing Languages}
                                                     % Required
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,7 +72,7 @@
 %
 %
 \supervisor
-    {Dr. Richard Zanibbi}
+    {Dr. Matthew Fluet}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -88,13 +88,13 @@
 %
 \committeemembers
 %    [Erwin Schr\"odinger]
-    [ABC, Reader]
-    {XYZ, Observer}
+    [Dr. James Heliotis, Reader]
+    {Dr. Rajendra K. Raj, Observer}
 %    {Arthur Schawlow}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\previousdegrees{B.E.}
+\previousdegrees{B.S.}
      % The abbreviated form of your previous degree(s).
      % E.g., \previousdegrees{B.S., MBA}.
      %
@@ -142,7 +142,7 @@
 % Some optional commands to change the document's defaults.      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%\singlespacing
+\singlespacing
 %\oneandonehalfspacing
 
 %\singlespacequote
@@ -284,16 +284,28 @@ fail me to tell of \ldots
 \utabstract
 \index{Abstract}%
 \indent
-This document has the form of a ``fake'' doctoral
-dissertation in order to provide an example of such, but it is
-actually a copy of Miguel Lerma's documentation for the Mathematics
-Department Computer Seminar of 25 March 1998 updated in July 2001
-and following by Craig McCluskey to meet the March 2001 requirements
-of the Graduate School.
+Runtime systems for concurrent languages have begun to utilize feedback
+mechanisms to influence their scheduling behavior as the application proceeds.
+These feedback mechanisms rely on metrics by which to grade any alterations made
+to the schedule of the multi-threaded application. As the application's phase
+shifts, the feedback mechanism is tasked with modifying the scheduler to reduce
+its overhead and increase the application's efficiency.
 
-This document and its source file show to write a Doctoral Dissertation using
-\LaTeX{} and the utdiss2 package.
+Cooperativity is a novel possible metric by which to grade a system. In
+biochemistry the term cooperativity is defined as the increase or decrease in
+the rate of interaction between a reactant and a protein as the reactant
+concentration increases. This definition translates well as an information
+theoretic definition as: the increase or decrease in the rate of interaction
+between a process and a communication method as the number of processes
+increase.
 
+This work proposes several unique takes on feedback mechanisms and scheduling
+algorithms which take advantage of cooperative behavior. It further compares
+these algorithms to other common mechanisms via a custom extensible runtime
+system developed to support swappable scheduling mechanisms. A minimalistic
+language with interesting characteristics, which lend themselves to easier
+statistical metric accumulation and simulated application implementation, is
+also introduced.
 
 
 \tableofcontents   % Table of Contents will be automatically
@@ -317,24 +329,17 @@ This document and its source file show to write a Doctoral Dissertation using
 % of the include statements (something I found helpful in my own
 % dissertation).
 %
-\include{chapter-introduction}
 
-\include{chapter-background}
-
-\include{chapter-methodology}
-
-\include{chapter-result}
-
-\include{chapter-conclusion}
+\include{chapters/introduction}
+\include{chapters/background}
+\include{chapters/methodology}
+\include{chapters/results}
+\include{chapters/conclusions}
 
 %\include{chapter-instructions}
-
 %\include{chapter-howtouse}
-
 %\include{chapter-makingbib}
-
 %\include{chapter-tables+figs}
-
 %\include{chapter-math}
 
 
@@ -375,7 +380,7 @@ This document and its source file show to write a Doctoral Dissertation using
 
 \index{Bibliography@\emph{Bibliography}}%
 \bibliographystyle{plain}
-\bibliography{diss}
+\bibliography{thesis}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -397,15 +402,5 @@ This document and its source file show to write a Doctoral Dissertation using
 % Vita page.                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{vita}
-Amit Arun Pillay was born in Mumbai, India on September 21, 1984,
-the son of Arun Pillay and Uma Pillay. He received the Bachelor of
-Engineering degree in Information Technology from Veermata Jijabai
-Technological Institute, Mumbai, India in 2006. He is currently
-pursuing his Master of Science degree from Rochester Institute of
-Technology, United States of America. His research interest includes
-Pattern Recognition, Computer Vision, Image Processing and Machine
-Learning. His current research includes combining syntactical
-pattern recognition techniques.
-
 \end{vita}
 \end{document}
