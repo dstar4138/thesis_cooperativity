@@ -11,7 +11,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\documentclass[12pt]{report}    % The documentclass must be ``report''.
+% The documentclass must be ``report''.
+\documentclass[11pt,american]{report}
 
 \usepackage{utdiss2}        % Dissertation package style file.
 
@@ -22,16 +23,21 @@
 % the package usage command.                         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{babel}
+\usepackage{times}
+\usepackage[final]{graphicx}
 \usepackage{amsmath,amsthm,amsfonts,amscd}
                 % Some packages to write mathematics.
 \usepackage{eucal}      % Euler fonts
-\usepackage{verbatim}       % Allows quoting source with commands.
-\usepackage{makeidx}        % Package to make an index.
-\usepackage{psfig}          % Allows inclusion of eps files.
-\usepackage{epsfig}             % Allows inclusion of eps files.
-\usepackage{citesort}           %
+\usepackage{verbatim}   % Allows quoting source with commands.
+\usepackage{makeidx}    % Package to make an index.
+\usepackage{psfig}      % Allows inclusion of eps files.
+\usepackage{epsfig}     % Allows inclusion of eps files.
+\usepackage{citesort}   %
 \usepackage{url}        % Allows good typesetting of web URLs.
-\usepackage{draftcopy}     % Uncomment this line to have the
+\usepackage{draftcopy}  % Uncomment this line to have the
                 % word, "DRAFT," as a background
                 % "watermark" on all of the pages of
                 % of your draft versions. When ready
@@ -39,6 +45,24 @@
                 % it out with a percent sign to remove
                 % the word draft before you re-run
                 % Makediss for the last time.
+\usepackage{paralist}   % inline lists
+\usepackage{tikz,tikz-qtree} % Tree, for message-passing taxonomy 
+%%%%%%%%XXX: ONLY ON DRAFT, REMOVE ME %%%%%%%%%%%%%%%%%%%%%%
+%\usepackage[disable]{todonotes}
+\usepackage{todonotes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Collection of useful abbreviations.
+\newcommand{\etc} {\emph{etc.\/}}
+\newcommand{\etal}{\emph{et~al.\/}}
+\newcommand{\eg}  {\emph{e.g.\/}}
+\newcommand{\ie}  {\emph{i.e.\/}}
+\newtheorem{newdef}{Definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pdfcompresslevel0 % Fix blurry JPGs
+\graphicspath{ {./pics/} } %% Relative to /chapters.
 
 \author{Alexander Dean}    % Required
 
@@ -269,11 +293,11 @@
 %\end{dedication}
 
 
-\begin{acknowledgments}     % Optional
-\index{Acknowledgments@\emph{Acknowledgments}}%
-I wish to thank the multitudes of people who helped me. Time would
-fail me to tell of \ldots
-\end{acknowledgments}
+%\begin{acknowledgments}     % Optional
+%\index{Acknowledgments@\emph{Acknowledgments}}%
+%I wish to thank the multitudes of people who helped me. Time would
+%fail me to tell of all the ways they aided me \ldots 
+%\end{acknowledgments}
 
 
 % The abstract is required. Note the use of ``utabstract'' instead of
@@ -401,6 +425,6 @@ also introduced.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Vita page.                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{vita}
-\end{vita}
+%\begin{vita}
+%\end{vita}
 \end{document}

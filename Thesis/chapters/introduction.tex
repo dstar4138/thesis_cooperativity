@@ -1,86 +1,85 @@
 \chapter{Introduction}
 \index{Introduction@\emph{Introduction}}%
+\label{chap:introduction}
 
-\begin{comment}
- This document deals with how to write a doctoral dissertation
-using \LaTeX{}, and how to use the \texttt{utdiss2} package.
-\index{utdiss2 package@{\texttt{utdiss2} package}}%
+Runtime systems can be broken up into multiple distinct parts: the garbage 
+collector, dynamic type-checker, resource allocator, and much more. One 
+sub-system of a language's run-time is the task-scheduler. The scheduler is 
+responsible for order of task evaluation and the distribution of 
+these tasks across the available processing units.
 
-The latest version of this document/package can be obtained from
-\url{http://www.ph.utexas.edu/~laser/craigs_stuff/LaTeX/}.\footnote{I
-will be transferring this page to the Office of Graduate
-Studies when I graduate. The new URL isn't defined yet, but I will
-place a ``redirect'' at this URL to send your browser to the correct
-location when the transition occurs.}
-If your installation of LaTeX is missing any style files used in this
-document (most likely with a \cn{usepackage\{package-name.sty\}}
-command at the beginning of disstemplate.tex), take a look at the link
-on this page to ``Frequently Requested Style Files'' or on the
-Comprehensive TeX Archive Network, \url{http://www.ctan.org}.
+Tasks are typically spawned when there is a chance for parallelism, either 
+explicitly through \texttt{spawn}, or \texttt{fork} commands or implicitly 
+through calls to parallel built-in functions like \texttt{pmap}. In either 
+case it is assumed that the job of a task is to perform some action concurrent 
+to the parent task because it would be quicker if given the chance to be 
+parallel.
 
-In case of any confict between the requirements of the Office of Graduate
-Studies and what this document says to do, the requirements of the Office
-of Graduate Studies prevail.
+It is up to the scheduler of these tasks to try and optimize for where there
+is opportunity for parallelism. However, it's not as simple as evenly 
+distributing the tasks over the set of processing units. Sometimes, these 
+tasks need particular resources which other tasks are currently using,
+or maybe some tasks are waiting for user input and don't have anything to
+do. Still worse, some tasks may be trying to work together to complete an 
+objective, like in the \texttt{pmap} example above.
 
-\section{History of This Package}
-\index{History of This Package@\emph{History of This Package}}%
+Tasks however, in functional language verbiage, are typically called 
+{\em processes} due to the inherent isolation this term brings and the language 
+paradigm calls for. So how do these processes share information or return a 
+value back to their parent? Message passing is a common abstraction to shared
+memory. Message passing is akin to emailing a colleague a question. You operate
+independently, and your colleague can check her mailbox when they want to and 
+respond when they want to. Meanwhile you are free to operate on an assumption 
+until proven wrong, wait until she gets back to you, or even ask someone else.
 
-In 1991 the \texttt{utdiss} package was written by Young U. Ryu
-\index{Young U. Ryu}%
-in order to be used in the preamble of \LaTeX{} doctoral dissertation
-files at the University of Texas at Austin.
-\index{University of Texas at Austin}%
-Since then some changes have occured, the most important one
-being the introduction of a new version of \LaTeX{}
-\index{LaTeX@{\LaTeX{}}}%
-called \LaTeXe{}.
-\index{LaTeX2e@{\LaTeXe{}}}%
+While message passing is a good method for inter-process communication, it is
+also a nice mechanism for catching when two processes are working together.
+Let's, for example, consider a purely functional \texttt{pmap}, where all 
+workers are copied subsections of the list. Each worker thread will have no
+need to cooperate and thus no messages will need to be passed amongst them.
+However, suppose the function being mapped uses several processes accessing a 
+piece of shared memory to update it's particular cell in the list. These 
+processes would do little good if treated like the course-grained parallelism
+the \texttt{pmap} workers create. 
+\todo[inline]{Bad example, should be more real world, and doesn't flow well into the next paragraph.}
 
-In order to partially adapt the utdiss package to this new version
-of \LaTeX{}, Miguel Lerma introduced a few modifications in it,
-and his document, \textit{How to Write a Doctoral Dissertation
-with \LaTeX{}}, served as a test for it. His new package was
-called \texttt{utdiss1}.
-\index{utdiss1@\texttt{utdiss1}}%
+There are a large number of mechanics that scheduling systems can use in an 
+attempt to improve work-load across all processing units. Some of these 
+mechanics use what's called a feedback system. Namely, they observe the 
+running behaviour of the application as a whole, (i.e. collect {\em metrics}),
+and modify themselves to operate better.
 
-With the significant changes in style introduced by the Graduate
-School in the Spring of 2001, as well as  my need to write a
-dissertation myself, I extended Miguel Lerma's package to meet
-these new requirements. As in Miguel Lerma's case, this document
-serves as a test for it, but it is, in addition, intended as a
-template for others to use in writing their own dissertations.
-The new package is called \texttt{utdiss2}.
-\index{utdiss2@\texttt{utdiss2}}%
+Process cooperativity is an interesting metric by which to grade a system. In
+biochemistry the term cooperativity can be defined as an increase or decrease
+in the rate of interaction between a reactant and a protein as the reactant
+concentration increases. We can translate this into an information theoretic 
+definition: 
+\begin{newdef}
+    The {\bf degree of cooperativity} of a system is the increase or decrease 
+    in the rate of interaction between processes and an inter-process 
+    communication method as the concentration of processes fluctuate.
+\end{newdef}
 
-\section{Revised Philosophy for This Package}
-\index{Revised Philosophy for This Package@\emph{Revised Philosophy
-    for This Package}}%
+Thus, when a process attempts to pass a message to another we know it's trying 
+to cooperate on some level. When this frequency of interaction is high, it may
+indicate a tight coupling of processes or fine-grained parallelism. If it is 
+low, this could indicate course-grained parallelism. In either event, a 
+scheduler able to recognize these clusters of cooperative and non-cooperative 
+processes should have an edge over those that don't.
 
-Since the source file of this document is intended to be used by students
-writing their own dissertations, this document does not display all of the
-comments regarding usage of previous versions. It has, instead, transferred
-these comments to their respective places in the source file so someone
-editing their own copy of the source file to produce their own dissertation
-will see the comments where they are needed. It may be helpful to print out
-a copy of the source file along with the PostScript version of the document
-so the two can be studied side-by-side.
+Chapter~\ref{chap:background} will look first at the background of classical 
+scheduling systems as well as the recent feedback-enabled approaches. Then we 
+will also examine the types of message passing implementations and how these
+effect scheduling decisions, now that we are looking at process cooperativity.
+Chapter~\ref{chap:methodology} introduces our work on a language and compiler,
+built to easily simulate system cooperativity and visualize the effects of 
+scheduling mechanisms on these systems. We also discuss a few example mechanics
+which take advantage of cooperativity. Some example applications which 
+demonstrate different degrees of cooperativity and phase changes are also 
+explained.
+In Chapter~\ref{chap:results} we run our cooperativity-enabled schedulers along
+with a few common non-feedback-enabled schedulers on the example applications
+and discuss the results. 
+Finally, in Chapter~\ref{chap:conclusions} we give some concluding remarks and
+avenues of future research we believe would be fruitful.
 
-\textbf{Note:} In spite of the effort to accommodate the package to
-the requirements of the University, it is not possible to guarantee
-that it will always work, and the author of the dissertation remains
-responsible for checking that such requirements are actually fulfilled
-by his/her final work.
-
-The standard caveat applies:
-
-\begin{quote}
-\index{guarantee}%
-This template package is provided and licensed ``as is'' without warranty
-of any kind, either expressed or implied, including, but not limited to,
-the implied warranties of merchantability and fitness for a particular
-purpose. Yadda, yadda, yadda, \ldots
-\end{quote}
-
-In case of any problem with the use of \texttt{utdiss2}, send me email
-at \url{mccluskey@mail.utexas.edu}.
-\end{comment}
