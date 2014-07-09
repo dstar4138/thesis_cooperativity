@@ -9,64 +9,127 @@
 %\section{Message Passing}\label{sec:message passing}
 
 
-Since the formalization of feedback driven systems and the advent of Cybernetics, multiple fields have attempted 
-to mold these principles to their own models; and run-time schedulers are no exception. This is due, in part, from
-process scheduling in parallel systems being fundamentally an NP-Complete problem \cite{bruno1976computer}. Instead,
-focus has been more fruitful when pursuing the optimization of various metrics using some particular objective 
-function \cite{garey1978performance} to tune for particular edge cases. As such, scheduling based on feedback 
-metrics is not new \cite{dietz1997use}.
+\section{A Note on Control Theory}
+\label{sec:a note on control theory}
 
-There is a big distinction though, which can be made between the effects of control theory in classical cybernetic applications 
-versus that of run-time systems. This is primarily in the adaptation of the controller in the generic feedback 
-loop (figure~\ref{fig:controller}).
-In typical mechanical feedback loops there are two scenarios which need to be avoided: resonance 
-and rapid compensation. It can be seen that most controller models will attempt to damp the adjustments to reduce 
-oscillation which could cause resonance or sharp spikes in behavior based on its output. This is due to the  
-limitations of the physical space in which they are having to deal with. 
+Since the formalization of feedback driven systems and the advent of 
+Cybernetics, multiple fields have attempted to mold these principles to their 
+own models; and run-time schedulers are no exception. This is due, in part, from
+process scheduling in parallel systems being fundamentally an NP-Complete 
+problem \cite{bruno1976computer}. 
 
-However, in run-time scheduling systems we would very much like to do the opposite. We would prefer tight oscillations or 
-consistent behavior of our runtime so as to achieve minimal overhead from our modifications. We can also compensate, 
-to reach our reference signal, as quickly as we need to as there are no physical restrictions for our modifications. 
+Note that the simple case of runtime scheduling is called the Multiprocessor 
+Scheduling Problem which states:
+\begin{newdef}
+    {\bf MULTIPROCESSOR SCHEDULING PROBLEM}\\ 
+    Given a set of jobs $\mathscr{J} = (J_1, J_2, \ldots, J_n)$, a directed 
+    acyclic graph (lattice) $L = (\mathscr{J}, C)$ (indicating job dependence,
+    and thus precedence constraints), an integer $P$ (the number of processors) 
+    and an integer $D$ (the deadline), is there a function $S$ (the schedule)
+    mapping $\mathscr{J} \rightarrow \{1, 2, \ldots D\}$ such that:
+    \begin{enumerate}
+        \item For all $t \leq D, |\{J_i : S(J_i) = t \}| \leq P$. (\# of jobs scheduled per time slice is no more than \# of processors)
+        \item If $(J_i, J_j) \in C$, then $S(J_i) < S(J_j)$. (\# jobs cannot be scheduled before their dependencies)
+    \end{enumerate}
+\end{newdef}
+\noindent
+In runtime scheduling, the deadline, $D$, is incremented for each timeslice we
+pass. As such, it is possible for $|\mathscr{J}|$ and thus $C$ to fluctuate 
+causing a need to re-find $S$. The continuous nature of this problem complicates 
+the scheduling problem substantially.
+Instead, focus has been more fruitful when pursuing the optimization of various 
+measurements using some particular objective function 
+\cite{garey1978performance} 
+to tune for particular edge cases. As such, scheduling based on such feedback 
+metrics is not a new practice \cite{dietz1997use}.
 
 \begin{figure}[htp]
 \centering
-\includegraphics[scale=0.55]{\detokenize{Feedback_loop_with_descriptions}} %detoken because of '_' char.
-%\includegraphics{\detokenize{Feedback_loop_with_descriptions}} %detoken because of '_' char.
+\includegraphics[scale=0.55]{\detokenize{Feedback_loop_with_descriptions.pdf}} %detoken because of '_' char.
 \caption{A classical feedback loop representation.}
 \label{fig:controller}
 \end{figure}
-\todo{Not sure why the image is blurry}
 
-Also, note that run-time systems tend to extend to more than just the process-scheduling systems. They also encompass  
-garbage collection, dynamic type checking, statistical collection and other debugging mechanisms, and general 
-resource allocation (\eg~I/O). For the purposes of this paper we will be exclusively talking about the process
-scheduling system and intentionally ignore the effects of these other, albeit important, sub-systems. This 
-distinction must be made however, as some scheduling systems also take into account the effects of other
-sub-systems on the placement and order of process evaluation. For example, White \etal~\cite{white2012automated}
-discuss heap size as a metric for process selection as a means of curtailing garbage collection effects.
+There is a big distinction though, which can be made between the effects of 
+control theory in classical cybernetic applications versus that of run-time 
+systems. This is primarily in the adaptation of the controller in the generic 
+feedback loop (figure~\ref{fig:controller}).
 
-\section{Classical Run-Time Scheduling}
+In typical physical feedback loops there are two scenarios which need to be 
+avoided: resonance and rapid compensation. It can be seen that most controller 
+models will attempt to damp the adjustments to reduce oscillation which could 
+cause resonance or sharp spikes in behavior based on its output. This is due to 
+the limitations of the physical space in which they are having to deal with. 
 
-Another distinction must be made as far as the level of foresight the scheduling systems have, at least, within this paper.
-There is a spectrum of clairvoyance 
-\todo{Citation needed, taxonomy paper?}
-in classical job-scheduling, in that on one end, job-schedulers have full foresight
-over the jobs which will enter the queue and their order. These schedulers have the opportunity to optimize for future
-events, which is a luxury the scheduling systems that this paper discusses do not have. 
+However, in run-time scheduling systems we would very much like to do the 
+opposite. We would prefer tight oscillations or consistent behavior of our 
+runtime so as to achieve minimal overhead from our modifications. We can also 
+compensate, to reach our reference signal, as quickly as we need to as there 
+are no physical restrictions for our modifications.
 
-However, as it is a spectrum, there is a single point of knowledge this subrange of schedulers can assume. Namely, 
-that the first job will always be the last, and all other jobs will spawn from it. Thus there will always be a single 
-process in the queue at the beginning. This is true as the runtime will always require an initial primary process 
-(\eg~the `main' function), and once that function is completed, the system is terminated (despite the cases of unjoined
-children). Apart from this, all other insights will need to be gleaned from the evaluation of this initial process.
+As such these feedback systems are closely coupled with the design of the 
+scheduling algorithm, rather than being an interchangable sensor, and controller
+modules. As such we make an effort to trace the feedback optimizations during
+our evaluation and explaination of the scheduler designs.
 
+Another distinction must be made as far as the level of foresight the scheduling 
+systems have, at least, within this paper. There is a spectrum of clairvoyance 
+in classical job-scheduling, in that on one end, job-schedulers have full 
+foresight over the jobs which will enter the queue and their order 
+(\ie~the full $\mathscr{J}$ set will always be known). These schedulers have the 
+opportunity to optimize for future events (by constructing a valid lattice $L$ 
+based on the current time $t \leq D$), which is a luxury the scheduling systems 
+that this paper discusses do not have.
 
-\section{Message Passing}
+However, as it is a spectrum, there is a single point of knowledge this subrange 
+of schedulers can assume. Namely, that the first job will always be the last, 
+and all other jobs will spawn from it. Thus there will always be a single 
+process in the queue at the beginning. This is true as the runtime will always 
+require an initial primary process (\eg~the `main' function), and once that 
+function is completed, the system is terminated 
+\todo{Note: So main is required to terminate?}
+(despite the cases of unjoined
+children). Apart from this, all other insights will need to be gleaned from the 
+evaluation of this initial process.
+\todo[inline]{ We mention this due to the implications on our scheduling 
+    problem (dynamicly evolving lattice which is altered based on evolving
+    cooperation networks and the forking/joinging of child processes), but can 
+    we tie this back to the above definition and possibly cooperation?
+}
 
-In concurrent systems, there are a number of methods for inter-process communication. Arguably though, one 
-of the more popular abstractions is the idea of message passing. Message passing in general can be broken down into 
-two types, asynchronous or synchronous, and then further by how they are implemented. However, when discussing process
-scheduling the method of their implementation is often of some consequence \todo{Needs citation?}.
+\section{Classical Runtime Scheduling}
+
+\todo[inline]{ I would like to discuss current methods of distributing processes
+ accross processors, as I am assuming later that readers know of terms like:\\
+ - work-stealing \& sharing \\
+ - round-robin \\
+ - global/local process queues\\
+ - spawning and joining methods\\
+ Then somehow lead into process dependencies and thus process synchronization. 
+This will tie it over to the message-passing section.
+}
+
+\section{Feedback-Enabled Scheduling}
+
+\todo[inline]{This is the "related work" section, I would like to give the two
+    big examples i've been considering: CML, and Occam-$\pi$.
+}
+
+\subsection{Cooperativity as a Metric}
+
+\todo[inline]{This should give the primary definitions of a 
+    $cooperative process$ and the differences between focusing on cooperativity 
+    rather than interactivity, etc. It would also be a good idea to talk about 
+    its relationship with application phasses here.
+}
+
+\section{Message-Passing}
+
+In concurrent systems, there are a number of methods for inter-process 
+communication. Arguably though, one of the more popular abstractions is the 
+idea of message passing. This is expecially true in functional languages as the
+language assumes shared-nothing by default. Just as compilers can optimize 
+using the language constraints, so can the run-time using the implementation.
 
 \begin{figure}[htp]
 \centering
@@ -84,104 +147,67 @@ scheduling the method of their implementation is often of some consequence \todo
 \label{fig:mptax}
 \end{figure}
 
-In asynchronous message passing a process can either be provided a rendezvous point or an identifier for another process.
-To send a message in either case requires pushing/copying the message into a shared or global memory space for another
-process to access (possibly) at a later time. This push/copy can be done in a lock free manner with some lower level
-atomic data structures such as a double-ended queue. But in either a locked or lock-free manner, the process performing
-the send still blocks (if only for a moment) on the operation.
+Message passing in general can be broken down into two types based on the 
+language's implementation; asynchronous or synchronous. In asynchronous message 
+passing a process can either be provided a rendezvous point or an identifier for 
+another process. To send a message in either case requires pushing/copying the 
+message into a shared or global memory space for another process to access 
+(possibly) at a later time.  This push/copy can be done in a lock free manner 
+with some lower level atomic data structures such as a double-ended queue. But 
+in either a locked or lock-free manner, the process performing the send still 
+blocks on the operation to push the message. 
 
-In terms of scheduling, a language with asynchronous message passing can ignore the effects of blocking operations, but
-will need to look closer at process placement to take advantage of possible gains in cache affinity \cite{debattista2002cache}.
-For example, the effects of the cache on direct message passing (\eg~a process mailbox) can be substantial as two processes
-on different cores will need to copy stack frames to memory and back rather than just a pointer to the message in the 
-originator's stack frame. In indirect message passing the task is even worse as multiple processes may need access to the
-same data.
+In terms of scheduling, a language with asynchronous message passing can ignore 
+the effects of these blocking operations, but will need to look closer at 
+process placement to take advantage of possible gains in cache affinity 
+\cite{debattista2002cache}. For example, the effects of the cache on direct 
+message passing (\eg~a process mailbox) can be substantial as two processes
+on different cores will need to copy stack frames to memory and back, rather 
+than just a pointer to the message in the originator's stack frame. In indirect 
+message passing the task is even worse as multiple processes may need access to 
+the same data.
 
-In synchronous message passing, a process must meet another at a provided rendezvous point but can either be symmetrical
-or asymmetrical. Note that the rendezvous point is not a requirement in the sense that direct synchronous messaging isn't 
-possible. Instead we think of a rendezvous point in synchronous communication to be time bound rather than location bound (\ie~two
-processes are blocked until communication occurs, the implementation of this passing is irrelevant to this 
-classification).
+In synchronous message passing, a process must meet another at a provided 
+rendezvous point but can either be symmetrical or asymmetrical. Note that the 
+rendezvous point is not a requirement in the sense that direct synchronous 
+messaging isn't possible. Instead we think of a rendezvous point in synchronous 
+communication to be time bound rather than location bound (\ie~two processes are 
+blocked until communication occurs, the implementation of this passing is 
+irrelevant to this classification).
 
-Asymmetrical message passing is synonymous with Milner's Calculus of Communicating Systems \cite{milner1982calculus} 
-or standard $\Pi$-Calculus \cite{palamidessi1997comparing}, in that you have a sender and a receiver which will 
-block on their respective functions around an anonymous channel until the pass has been completed. This differs from a 
-symmetrical message passing in that the only operation on the channel is a blocking function which swaps values 
-with the process at the other end.
+Asymmetrical message passing is synonymous with Milner's Calculus of 
+Communicating Systems \cite{milner1982calculus} or standard $\Pi$-Calculus 
+\cite{palamidessi1997comparing}, in that you have a sender, and then a receiver 
+which will both block on their respective functions around an anonymous channel 
+until the pass has been completed. This differs from a symmetrical message 
+passing in that the only operation on the channel is a blocking function which 
+swaps values with the process at the other end.
 
-Note, it is possible to simulate symmetrical message passing on asymmetrical message channels, but in terms of scheduling of
-synchronizing processes, order is now a factor that needs to be considered. On top of this, directionality can also be a factor
-which complicates the channel implementation. Namely, the internal queuing of senders or receivers may not percolate hints up to
-the scheduler regarding their queue position. For the alternative, symmetrical message passing or swap channels, the order is
-directly handled by the scheduling of the system (\ie~the order at which the channels evaluate the $swap$ command can be 
-directly governed).
+Note, it is possible to simulate symmetrical message passing on asymmetrical 
+message channels, but in terms of scheduling of synchronizing processes, order 
+is now a factor that needs to be considered. On top of this, directionality can 
+also be a factor which complicates the channel implementation. Namely, the 
+internal queuing of senders or receivers may not percolate hints up to the 
+scheduler regarding their queue position. 
 
-\section{Example Scheduling Feedback Systems}
+For the alternative, symmetrical message passing or swap channels, the order is 
+directly handled by the scheduling of the system (\ie~the order at which the 
+channels evaluate the $swap$ command can be directly governed). And it is for 
+this purpose along with simplifying our base language we have chosen to base our
+semantics on symmetric synchronous message-passing. 
 
-A basic feedback scheduler can be explained using a metric like 'waiting time vs running time'. A standard round-robin
-scheduler may utilize a queue of processes and attempts to be fair by giving every process an equal chance to run.
-However, in a contrived example such as a fork-bomb, the scheduler may never reach the end of the queue and the rest of 
-the system could starve. In our example feedback enabled system each process could be ranked according to its ratio of 
-waiting time over running time. Thus as time went on, even in the event of a fork-bombing effects the beginning of the
-queue would still get some time to run.
-
-There is quite a literature behind the types of metrics used though. Yet statistical collection is 
-only a third of the feedback loop. A classification of the system must be made by a control mechanism based on the 
-recorded state, and then a modification must be made to the scheduler which should positively 
-effect the state of the system's future. The key is to make sure this effect is transparent and results in minimal
-overhead, while still achieving the objective function.
-
-This objective function, for the purposes of simplicity is typically execution time. However, it can also take into
-account resource utilization, process/channel fairness, fulfillment of real-time guarantees, \etc~to rate the 
-schedule as a whole. Note that this function is an external measure (evaluation) of the schedulers effectiveness,
-which will be brought up further in section~\ref{sec:workevaluation}. For now however, note that the objective 
-function and control metrics are separate and evaluate two different things.
-
-Before discussing Cooperativity as a feedback metric though, it is important to introduce previous metrics and their
-respective control schemes. Interactivity is one metric which evaluates the system's current scheduler. It looks at 
-the ratio of communication to computation currently taking place in the system as a whole. One scheduling system which 
-utilizes this metric indirectly is in CML \cite{reppy1993concurrent}.
-
-It's method by which it grades the system is the recognition of {\em computation}-bound processes versus
-{\em communication}-bound processes. A {\em communication}-bound process is one which has previous blocked itself
-without using it's entire scheduled quantum, the rational for this is only a synchronizing thread would be willing
-to block; thus a {\em computation}-bound process is the opposite (\ie~one that always uses its full quantum). After
-labeling the processes the scheduler pushes {\em computation}-bound processes to a secondary queue so they don't eat
-up all of the time. This improves the time the scheduler can spend attending the processes which need to synchronize,
-which in turn improves the Interactivity of the application (\ie~GUI widgets will finish their message passing while 
-the back end computes).
-
-\section{Cooperativity as a Metric}
-
-\todo[inline]{This section feels off, I wish I had referenced a "generic" definition by which to base all assumptions
-and initial observations off of.}
-
-As mentioned, note that the Interactivity metric looks only at the ratio of {\em communication}-bound processes to {\em computation}-bound
-processes and misses the quantity of communication on a per-process level which could indicate needed changes in
-scheduling quantum or process locality with those which are frequently in touch. 
-This hints at a need to look for some level of cooperation between processes in the phases of an application's
-life-time. 
-
-Rather than a ratio of {\em communication} to {\em computation}, instead we need to look at a 
-frequency of communication and between which processes (\ie~rate at which a process communicates with a particular
-channel). One method this can be achieved by is, in addition to recording which processes are {\em communication} and 
-{\em computation}-bound, the scheduler can also tag the process with it's frequency of communication on each 
-channel it touches over time. By doing so, the scheduler can calculate a process's cooperativity with one or more
-processes by comparing frequency counts on particular channels, perhaps by a sum of ratios.
-
-Cooperativity, in the general sense, has been a probabilistic interpretation of how two actors can be affected by the actions of
-others. This has been a sociological term as well as a biological one. Abeliovich \cite{abeliovich2005empirical}, thusly defines a
-notion of positive cooperativity as: 
-\begin{quote}
-A process involving multiple identical incremental steps, in which intermediate states are statistically underrepresented relative to a hypothetical standard system [...] where the steps occur independently of each other. Likewise, a definition of negative cooperativity would be a process involving multiple identical incremental steps, in which the intermediate states are overrepresented relative to a hypothetical standard state in which individual steps occur independently.
-\end{quote}
-
-In other words, while a process can be cooperative, a system can be shown to possess {\em positive} or {\em negative}
-cooperativity as the set of cooperative processes increases or decreases (respectively). This lends itself quite 
-readily as a metric for an evolving system of phases. Assuming the cooperativity can be directly probed we can check 
-it against an evolving standard state the scheduler proposes. The feedback mechanism would be to attempt to raise or
-lower the cooperativity of the system to get it back to this standard state. It can do so by increasing or decreasing
-the synchronization allowance each scheduler gets per a given time frame for example. This would have the effect of 
-bounding the frequencies of communication.
-
+\todo[inline]{I feel like this section would benefit from some more figures 
+    describing the language primitives involved and their semantics. The key
+    point to make is how much is avaliable to the scheduler in each instance:\\
+    - Async: Potentially nothing, but if so:\\
+    \hspace{.1\textwidth}- Direct: The particular process which it communicated with,\\
+    \hspace{.1\textwidth}- Indirect: The channel/rendezvous it communicated with,\\
+    - Sync: If it blocks, a communication happened, potentially can know order in queue\\
+    \hspace{.1\textwidth}-Asymm: Directionality.\\
+    But noting that for cooperativity purposes, directionality is not meaningful.
+}
+\todo[inline]{Should i talk more about possible implementations and their 
+    considerations? I could go into the process absorption that SML and 
+    Occam-$\pi$ does?
+}
 

@@ -28,16 +28,18 @@
 \usepackage{babel}
 \usepackage{times}
 \usepackage[final]{graphicx}
-\usepackage{amsmath,amsthm,amsfonts,amscd}
+\usepackage{mathrsfs,amsmath,amsthm,amsfonts,amscd}
                 % Some packages to write mathematics.
 \usepackage{eucal}      % Euler fonts
 \usepackage{verbatim}   % Allows quoting source with commands.
+\usepackage{fancyvrb}   % For Grammar
+\usepackage{semantic}   % For Operational Semantics
 \usepackage{makeidx}    % Package to make an index.
 \usepackage{psfig}      % Allows inclusion of eps files.
 \usepackage{epsfig}     % Allows inclusion of eps files.
-\usepackage{citesort}   %
+\usepackage[style=numeric,sorting=none]{biblatex}% instead of citesort
 \usepackage{url}        % Allows good typesetting of web URLs.
-\usepackage{draftcopy}  % Uncomment this line to have the
+%\usepackage{draftcopy}  % Uncomment this line to have the
                 % word, "DRAFT," as a background
                 % "watermark" on all of the pages of
                 % of your draft versions. When ready
@@ -60,6 +62,7 @@
 \newcommand{\ie}  {\emph{i.e.\/}}
 \newtheorem{newdef}{Definition}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{thesis}
 
 \pdfcompresslevel0 % Fix blurry JPGs
 \graphicspath{ {./pics/} } %% Relative to /chapters.
@@ -354,11 +357,11 @@ also introduced.
 % dissertation).
 %
 
-\include{chapters/introduction}
-\include{chapters/background}
-\include{chapters/methodology}
-\include{chapters/results}
-\include{chapters/conclusions}
+\clearpage\input{chapters/introduction}
+\clearpage\input{chapters/background}
+\clearpage\input{chapters/methodology}
+\clearpage\input{chapters/results}
+\clearpage\input{chapters/conclusions}
 
 %\include{chapter-instructions}
 %\include{chapter-howtouse}
@@ -403,8 +406,9 @@ also introduced.
         % is inserted.                %
 
 \index{Bibliography@\emph{Bibliography}}%
-\bibliographystyle{plain}
-\bibliography{thesis}
+%\bibliographystyle{plain}
+%\bibliography{thesis}
+\printbibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

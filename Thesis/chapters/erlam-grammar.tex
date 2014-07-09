@@ -1,0 +1,14 @@
+%%
+%% ErLam BNF Style Grammar.
+%%
+\begin{BVerbatim}[commandchars=\\\{\}]
+<Expression> ::= <Variable> 
+              |  <Integer>
+              |  `\textbf{newchan}'
+              |  `\textbf{(}' <Expression> `\textbf{)}'
+              |  <Expression> <Expression>
+              |  `\textbf{if}' <Expression> <Expression> <Expression>
+              |  `\textbf{swap}' <Channel> <Expression>
+              |  `\textbf{spawn}' <Expression>
+              |  `\textbf{fun}' <Variable> `\textbf{.}' <Expression>
+\end{BVerbatim}
