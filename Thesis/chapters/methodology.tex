@@ -60,19 +60,29 @@ document.
 \label{fig:grammer}
 \end{figure}
 
-\begin{figure}
-\centering
-\input{chapters/erlam-semantics}
-\caption{ErLam basic operational semantics.}
-\label{sec:semantics}
-\end{figure}
-
-
 Figure~\ref{fig:grammer} expresses ErLam in its simplified BN-Form. The 
 semantics for the language is fairly straight forward, but it's operational 
-semantics are layed out in figure~\ref{fig:semantics}. 
+semantics are layed out in appendix~\ref{app:semantics}. All expressions reduce
+to one of the terminal types: Integer, Channel, or Function. To spawn for 
+instance, if any terminal is passed other than a function, it returns a $0$
+(\eg~false). When the function is passed, it is applied with $nil$ to 
+initialize the internal expression. 
 
-\subsection{Channel Implementation}\label{sec:channel implementation}
+Also, note the possible steps $\textbf{swap}$ can take: either returning the 
+null set or another expression and a set of functions. In the former's case, 
+the channel has blocked and the only course of action is to get another 
+expression to work on from the scheduler. In the later's case, we have an
+expression to work on, but we also may have unblocked other processes in the
+process so we need to reschedule them. 
+
+Note however, that return set may be null and the expression returned may be
+another attempt at swapping (\ie~$e = \textbf{swap}\:c\:v)$). This would let 
+the scheduler choose whether to retry immediately or reschedule it for a later
+time and work on something in the mean time.
+
+\subsection{Channel Implementations}\label{sec:channel implementations}
+
+
 \subsection{The Scheduler API}\label{sec:the scheduler api}
 \subsection{Example: The CML Scheduler}\label{sec:example the cml scheduler}
 
