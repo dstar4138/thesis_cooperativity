@@ -68,6 +68,28 @@ instance, if any terminal is passed other than a function, it returns a $0$
 (\eg~false). When the function is passed, it is applied with $nil$ to 
 initialize the internal expression. 
 
+ErLam extends this grammar only a little to add SML style $let$ expressions and
+multiple variable functions which are curried from left to right (see 
+figure~\ref{fig:sugar-transform} for syntactic transformation). We will be using
+this syntactic sugar throughout this document to make our source easier to 
+review.
+
+\begin{figure}
+    \centering
+    \[
+        \textbf{let}\: x\: =\: e_1\: \textbf{in}\: e_2
+        \Rightarrow
+        (\textbf{fun}\: x.e_2\; e_1)
+    \]
+    \[
+        \textbf{fun}\: \textit{x,y,z} . \textit{e}
+        \Rightarrow
+        \textbf{fun}\: \textit{x} . (\textbf{fun}\: \textit{y} . (\textbf{fun}\: \textit{z} . \textit{e} ))
+    \]
+    \caption{Syntactic sugar parse transformations.}
+    \label{fig:sugar-transform}
+\end{figure}
+
 Also, note the possible steps $\textbf{swap}$ can take: either returning the 
 null set or another expression and a set of functions. In the former's case, 
 the channel has blocked and the only course of action is to get another 
@@ -76,81 +98,320 @@ expression to work on, but we also may have unblocked other processes in the
 process so we need to reschedule them. 
 
 Note however, that return set may be null and the expression returned may be
-another attempt at swapping (\ie~$e = \textbf{swap}\:c\:v)$). This would let 
+another attempt at swapping (\ie~$e = (\textbf{swap}\:c\:v)$). This would let 
 the scheduler choose whether to retry immediately or reschedule it for a later
 time and work on something in the mean time.
 
 \subsection{Channel Implementations}\label{sec:channel implementations}
 
+ErLam provides a selection of channel implementations so as to allow for 
+interchangable comparisons to be made with synchronization methods and the 
+schedulers themselves. ErLam comes with two channel implementations the 
+{\sl Blocking} Swap, and the {\sl Absorbing} Swap. 
+We will now look at an example application and it's execution
+using both methods for comparison.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \centering
+\begin{BVerbatim}[commandchars=\\\{\}]
+\textbf{let} c = \textbf{newchan in}
+\textbf{let} f = (\textbf{fun} _.(\textbf{swap} c \textit{42})) \textbf{in}
+\textbf{let} _ = (\textbf{spawn} f) \textbf{in}
+\textbf{in} (\textbf{swap} c \textit{0})
+\end{BVerbatim}
+    \caption{A simple ErLam application which swaps on a channel before returning.}
+    \label{fig:swap-example}
+\end{wrapfigure}
+
+Figure~\ref{fig:swap-example} gives an example ErLam application. It first 
+creates a new channel for processes to communicate on. It then creates a 
+null-function to spawn, who's sole purpose is to swap on the channel the number
+$42$ and then die. Finally, it swaps on the channel the number $0$ and returns
+the result of the whole evaluation, which in this case will be the value passed
+from the other end of the swap, $42$. 
+
+As ErLam is innately concurrent, we do not know which process will ask to swap
+first. It may even be possible that $0$ asks to swap several times before $42$
+even tries. In fact, the {\sl Blocking} channel allows multiple swap attempts,
+We can see an illustration of this in figure~\ref{fig:blockchan-example}; note
+the illustration makes no mention of the scheduler or it's functionality. It may
+be the case that the two processes are on different processing units and are in
+different process queues. Or it may be the case that they both exist in the
+same queue and upon a block, the scheduler chooses the next one, which will 
+immediately unblock the channel.
+
+\begin{figure}
+    \makebox[\textwidth][c]{
+\subfigure[t][Process Blocking Swap]{
+    \includegraphics[scale=0.25]{BlockingSwap.pdf}
+    \label{fig:blockchan-example}
+}  \subfigure[t][Process Absorption Swap]{
+    \includegraphics[scale=0.25]{AbsorbSwap2.pdf}
+    \label{fig:absorbchan-example}
+}}
+\caption{Channel operation over time. Note abitrary time-slice $t_1$ is when the 
+first swap operation is evaluated.}
+\end{figure}
+
+The {\sl Blocking} channel effectively simulates a common spin-lock over a shared 
+piece of memory. These channels represent a worst-case, albeit common, application 
+implemenatation for concurrent software. Even so, they do allow for some hints
+to the scheduler, which can be taken advantage of. Alternatives on the spin-lock 
+could be added to the ErLam toolkit though, such as a push-notifying semaphore, 
+however we provide a simpler and functionally more common alternative: the process 
+absorption channel.
+
+In the {\sl Absorption} channel (figure~\ref{fig:absorbchan-example}), the first 
+process to get to the channel will get absorbed by it. The scheduler in 
+question will be out a process, and but the scheduler which unblocks the channel 
+by arriving second will get back two processes (the one performing the swap, 
+and the absorbed one). In terms of scheduling efficiency this type of message
+passing channel has provideded enormous improvements for runtimes which do not
+wish to introduce channel inspection into their scheduler.
+
+%This channel implementation gets closer to taking advantage of
+%cooperativity as it will relocate communicating processes to the scheduler 
+%which has another process to unblock it. But with this comes the added overhead 
+%of relocating processes and if the scheduler uses a single queue there is no
+%added benefit (at least with $swap$ channels). 
 
 \subsection{The Scheduler API}\label{sec:the scheduler api}
+
+ErLam was written in Erlang, and as such, it takes advantage of Erlang's 
+callback behaviour specifications. An \emph{erlam\_scheduler} behaviour has been 
+defined which requires a minimalistic $5$ callback functions 
+(figure~\ref{fig:scheduler-api}).
+
+\begin{figure}
+    \begin{minted}[frame=lines,fontsize=\footnotesize]{erlang}
+-callback layout( erlang:cpu_topology(), scheduler_opts() ) -> 
+                scheduler_layout().
+
+-callback init( scheduler_opts() ) -> 
+                {ok, scheduler_state()} |
+                {error, log_msg()}      |
+                {warn, log_msg(), scheduler_state()}.
+
+-callback cleanup( scheduler_state() ) -> 
+                ok | {error, log_msg()} | {warn, log_msg()}.
+
+-callback tick( scheduler_status(), scheduler_state() ) -> 
+                {ok, scheduler_status(), scheduler_state()} |
+                {return, term()} | {stop, scheduler_state()}. 
+
+-callback spawn_process( erlam_process(), scheduler_state() ) -> 
+                {ok, scheduler_state()} | {error, log_msg()}.
+\end{minted}
+\caption{The ErLam Scheduler API}
+\label{fig:scheduler-api}
+\end{figure}
+
+Upon instantiation of the runtime the runtime system will call the 
+\emph{layout/2} function with the NUMA layout of the system the application is
+running on, along with any parameters the user specified at runtime. The 
+result of this function is to be the scheduler layout. 
+
+For example, let's assume we are running our application on a Intel Core i7 
+which has 4 logical cores which support hyperthreading. The \emph{layout/2}
+function will be given the following structure: 
+
+{\footnotesize 
+\begin{verbatim}
+   [{processor,[{core,[{thread,{logical,0}},{thread,{logical,1}}]},
+                {core,[{thread,{logical,2}},{thread,{logical,3}}]},
+                {core,[{thread,{logical,4}},{thread,{logical,5}}]},
+                {core,[{thread,{logical,6}},{thread,{logical,7}}]}]}].
+\end{verbatim}
+} 
+
+\noindent
+This indicates to the scheduler implementation that it at max, can spawn $8$
+instances of itself which would be bound to each logical processing unit (LPU).
+We could of course have a scheduler which acts differently based on how the
+architecture. However, the schedulers we have limited ourselves to are either
+single or fully multi-core (\ie~uses all available LPUs).
+
+To spin up an instance of the scheduler on the particular core, the 
+\emph{init/1} function is called which should return the scheduler's state. 
+As Erlang is a functional language, we use this state object as a means to
+maintain some global state for each scheduler process by threading it through
+all subsequent callback calls. Upon shutdown, the oposite function 
+\emph{cleanup/1} is called.
+
+The last two functions are the most interesting as they pertain to the core of
+what each new scheduler provides, namely how to evaluate the world in a given
+timeslice (\emph{tick/2}) and how a new process should be handled 
+(\emph{spawn\_process/2}); but an explaination of these callbacks is best done 
+through example.
+
 \subsection{Example: The CML Scheduler}\label{sec:example the cml scheduler}
 
+Concurrent ML is an extention to SML which adds the \emph{spawn} function, and 
+channel operations. CML's scheduler utilizes a dual-queue structure rather than
+a simple unary-process-queue. The scheduler attempts to differentiate between
+{\em communication} and {\em computation}-bound processes so as to reduce the
+effects of highly computationally intensive processes from choking the system.
+The scheduling system thus improves on application interactivity by demoting 
+{\em computation}-bound processes to the secondary queue (which isn't accessed
+until another process is demoted).
+
+Spawning a process in the CML scheduler (figure~\ref{fig:cml-spawn-process}) 
+does not go onto the primary queue, instead we enqueue the current process and 
+start evaluating the new process. This is a fairly simplistic example, but it 
+shows how one would go about updating the state between ticks.
+
+\begin{figure}
+\begin{minted}[frame=lines,fontsize=\footnotesize]{erlang}
+spawn_process( Process, State ) -> 
+    enqueueAndSwitchCurThread( Process, State ).
+
+enqueueAndSwitchCurThread( Process, #state{curThread=T}=State ) ->
+    case T of
+        nil ->
+            setCurThread( Process, State );
+        _   ->
+            % New process takes over
+            {ok, NewState} = enqueue1( T, State ), 
+            setCurThread( Process, NewState )
+    end.
+\end{minted}
+\caption{CML Process Spawning.}
+\label{fig:cml-spawn-process}
+\end{figure}
+
+In the original CML scheduler, it defined a quantum which it would let the 
+current process run for, and then it would preempt it. The ErLam runtime avoids
+the use of time based quantum as logging and other factors directly effect the
+usefulness of this. Instead it uses a 'tick', which is suppose to emulate one
+step forward in the execution of the application. Thus to simulate a quantum we
+instead keep track of the number of reductions performed on the current process
+and decrement the counter until we reach 0.
+
+\begin{figure}
+\begin{minted}[frame=lines,fontsize=\footnotesize]{erlang}
+tick( _Status, #state{ curReduct=0 }=State ) ->
+    {ok, NState} =  pick_next( State ),
+    reduce( NState );
+tick( _Status, State ) -> reduce( State ).
+
+pick_next( State ) ->
+    {ok, NewState} = preempt( State ),      % Place cur thread onto queue
+    {ok, Top, Next} = dequeue1( NewState ), % Pop next off
+    setCurThread( Top, Next ).              % Set as cur and return state
+\end{minted}
+\caption{CML Process evaluation.}
+\label{fig:cml-tick}
+\end{figure}
+
+The \emph{tick/2} function (figure~\ref{fig:cml-tick}) performs one of two 
+things based on what the state of the system is. If the current reduction count 
+is $0$, then we can pick a new process from the queue, otherwise we can perform
+a reduction. 
+
+Note for our scheduler simulation we ignore the first parameter to the 
+\emph{tick/2} function for either case. The first parameter was the status of 
+the scheduler returned from the previous tick (\eg~running, waiting, \etc). This 
+would be useful if the CML scheduler utilized work-stealing to get work to do
+from other LPUs when in \emph{waiting} mode.
 
 \section{Simulation \& Visualization}\label{sec:simulation and visualization}
 
+The second primary goal of the ErLam toolkit was the ability to visualize 
+how the scheduler proceeded to evaluate a simulated application. Thus we needed
+a way to log all events over time, including unique per-scheduler events, such 
+as the size of both the primary and secondary queues in the CML scheduler.
+
+As a secondary goal, we need a sample set of application simulations to run 
+against our set of schedulers. These simmulations would need to be concise and
+demonstrate various levels of cooperativity and phase changes. We would like
+to also have the ability to mix and match test cases together to better create
+realistic work-sets for the schedulers to react to.
+
 \subsection{Runtime Log Reports}\label{sec:runtime log reports}
+
+Logging in Erlang is a fairly simple matter. We utilize a simplistic data 
+logging module based on syslog. The output of a run of a sample application 
+could look like this:
+{\footnotesize
+\begin{verbatim}
+                    timestamp,lpu,event,value
+                    ...
+                    983847.935268,3,sched_state,running
+                    983847.935333,0,queue_length,59
+                    983847.935677,24,channel_blocked,6102
+                    983847.935683,6,yield,""
+                    983847.936003,0,queue_length,59
+                    983847.936430,3,tick,""
+                    983847.936439,3,reduction,""
+                    ...
+\end{verbatim}
+}
+\noindent
+The timestamp given is a concatenation of the second and microsecond that the
+event happened in. The lpu is the scheduler which caused the event, unless it's
+a channel based event, such as a \emph{channel\_blocked} event, in which case it's
+the channel ID. 
+
+
+\todo[inline]{Discuss reportgen and the types of graphs we are able to generate
+    currently. Note here how these events are captured and introduced into the
+    system. \\
+    Perhaps we should also note how much overhead logging adds to the runtime?
+}
+
 \subsection{Cooperativity Testing}\label{sec:cooperativity testing}
 
-As part of the thought experiment, we needed to implement a set of test cases 
-which would give a decent coverage of applications which 
+As part of the thought experiment, we needed to implement a decent set of test 
+cases which would give us a good coverage of the range of cooperative processes.
+
+\todo[inline]{There needs to be a better way to lay everything out. It would be 
+    nicer if each example application was aligned vert. and we described their 
+    function and primary goal to the left or right of it. 
+}
+
 
 \begin{figure}
-\centering
-\includegraphics[scale=0.35]{PTree.pdf}
-\caption{Graphical representation of $PTree$, $N$ Parallel work groups.}
-\label{fig:PTree}
+\subfigure[t][Graphical representation of $PTree$, $N$ Parallel work groups.]{
+    \includegraphics[scale=0.35]{PTree.pdf}
+    \label{fig:PTree}
+} 
+\hfill
+\subfigure[t][Graphical representation of $PRing$, full system predictable cooperation.]{
+    \includegraphics[scale=0.35]{PRing.pdf}
+    \label{fig:PRing}
+}
+
+\subfigure[t][Graphical representation of $ClusterComm$, $N$ processes to $M$ channels for unpredictable full system cooperation.]{
+    \includegraphics[scale=0.35]{ClusterComm.pdf}
+    \label{fig:ClusterComm}
+}
+\hfill
+\subfigure[t][Graphical representation of $ChugMachine$, $N$ worker processes without cooperation.]{
+    \includegraphics[scale=0.45]{ChugMachine.pdf}
+    \label{fig:ChugMachine}
+}
+
+\subfigure[t][Graphical representation of $UserInput$, single randomly hanging process.]{
+    \includegraphics[scale=0.55]{UserInput.pdf}
+    \label{fig:UserInput}
+}
+\hfill
+\subfigure[t][Graphical representation of $JumpShip$, $N$ Parallel phase shifting work groups.]{
+    \includegraphics[scale=0.35]{JumpShip.pdf}
+    \label{fig:JumpShip}
+}
+\caption{Application simulation examples.}
 \end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.35]{PRing.pdf}
-\caption{Graphical representation of $PRing$, full system predictable 
-cooperation.}
-\label{fig:PRing}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.35]{ClusterComm.pdf}
-\caption{Graphical representation of $ClusterComm$, $N$ processes to $M$ 
-channels for unpredictable full system cooperation.}
-\label{fig:ClusterComm}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.35]{ChugMachine.pdf}
-\caption{Graphical representation of $ChugMachine$, $N$ worker processes 
-without cooperation.}
-\label{fig:}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.35]{UserInput.pdf}
-\caption{Graphical representation of $UserInput$, single randomly hanging 
-process.}
-\label{fig:}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.35]{JumpShip.pdf}
-\caption{Graphical representation of $JumpShip$, $N$ Parallel phase shifting 
-work groups.}
-\label{fig:JumpShip}
-\end{figure}
-
-
-
 
 
 \section{Cooperativity Mechanics}\label{sec:cooperativity mechanics}
 
 \subsection{Overview}\label{sec:cooperativity mechanics overview}
+
 \subsection{Longevity-Based Batching}\label{sec:longevity based batching}
+
 \subsection{Channel Pinning}\label{sec:channel pinning}
+
 \subsection{Bipartite Graph Aided Shuffling}
     \label{sec:bipartite graph aided shuffling}
 
