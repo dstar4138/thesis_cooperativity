@@ -55,7 +55,9 @@ document.
 
 \begin{figure} %% THE ERLAM LANGUAGE BNF WITHOUT SYNTAX SUGAR %%
 \centering
-\input{chapters/erlam-grammar}
+{\footnotesize
+    \input{chapters/erlam-grammar}
+}
 \caption{The ErLam language grammar, without syntax sugar or types.}
 \label{fig:grammer}
 \end{figure}
@@ -79,7 +81,7 @@ review.
     \[
         \textbf{let}\: x\: =\: e_1\: \textbf{in}\: e_2
         \Rightarrow
-        (\textbf{fun}\: x.e_2\; e_1)
+        ((\textbf{fun}\: x.e_2)\; e_1)
     \]
     \[
         \textbf{fun}\: \textit{x,y,z} . \textit{e}
@@ -550,11 +552,17 @@ take advantage of it.
 \subsection{Overview \& Approach}\label{sec:cooperativity mechanics overview}
 
 
+Approach: 
 
 
 \subsection{Longevity-Based Batching}\label{sec:longevity based batching}
 
+
+
 \subsection{Channel Pinning}\label{sec:channel pinning}
+
+
+
 
 \subsection{Bipartite Graph Aided Shuffling}
     \label{sec:bipartite graph aided shuffling}

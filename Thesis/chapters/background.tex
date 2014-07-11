@@ -2,13 +2,6 @@
 \index{Background\emph{Background}}%
 \label{chap:background}
 
-%% TODO SECTIONS: It would be good to rework the below to fit into the following
-%%  primary sections. We can have subsections for each
-%\section{Classical Scheduling}\label{sec:classical scheduling}
-%\section{Feedback-Enabled Scheduling}\label{sec:feedback systems}
-%\section{Message Passing}\label{sec:message passing}
-
-
 \section{A Note on Control Theory}
 \label{sec:a note on control theory}
 
@@ -18,8 +11,8 @@ own models; and run-time schedulers are no exception. This is due, in part, from
 process scheduling in parallel systems being fundamentally an NP-Complete 
 problem \cite{bruno1976computer}. 
 
-Note that the simple case of runtime scheduling is called the Multiprocessor 
-Scheduling Problem which states:
+Note that the base case of runtime scheduling is called the Multiprocessor 
+Scheduling Problem which is used in job-batch scheduling, and states:
 \begin{newdef}
     {\bf MULTIPROCESSOR SCHEDULING PROBLEM}\\ 
     Given a set of jobs $\mathscr{J} = (J_1, J_2, \ldots, J_n)$, a directed 
@@ -33,7 +26,7 @@ Scheduling Problem which states:
     \end{enumerate}
 \end{newdef}
 \noindent
-In runtime scheduling, the deadline, $D$, is incremented for each timeslice we
+In runtime scheduling however, the deadline, $D$, is incremented for each timeslice we
 pass. As such, it is possible for $|\mathscr{J}|$ and thus $C$ to fluctuate 
 causing a need to re-find $S$. The continuous nature of this problem complicates 
 the scheduling problem substantially.
@@ -55,11 +48,25 @@ control theory in classical cybernetic applications versus that of run-time
 systems. This is primarily in the adaptation of the controller in the generic 
 feedback loop (figure~\ref{fig:controller}).
 
+The classic feedback loop starts by making reading the current state of the 
+system and applying some operation to it (via the controller). The operation in
+some way affects the system which can be observed by measuring particular 
+metrics. These measurements can be fed back to the controller along with 
+details about the system's output. If the controller wishes to modify the system
+further via the same or an opposite operation, it may do so. The canonical 
+example is that of an automobile's cruise control. The controller can correct
+the speed of the vehicle by applying or releasing the throttle based on readings
+of the current speed.
+
 In typical physical feedback loops there are two scenarios which need to be 
-avoided: resonance and rapid compensation. It can be seen that most controller 
+avoided: resonance and rapid compensation. Resonance in physical systems is a 
+when a spike in the amplitude of a system's oscillation can cause it to fail at 
+a particular frequency. It can be seen that most controller 
 models will attempt to damp the adjustments to reduce oscillation which could 
 cause resonance or sharp spikes in behavior based on its output. This is due to 
-the limitations of the physical space in which they are having to deal with. 
+the limitations of the physical space in which they are having to work. But 
+frequent or extreme damping or can stress physical systems to the point of
+failure as well.
 
 However, in run-time scheduling systems we would very much like to do the 
 opposite. We would prefer tight oscillations or consistent behavior of our 
@@ -68,9 +75,9 @@ compensate, to reach our reference signal, as quickly as we need to as there
 are no physical restrictions for our modifications.
 
 As such these feedback systems are closely coupled with the design of the 
-scheduling algorithm, rather than being an interchangable sensor, and controller
+scheduling algorithm, rather than being an interchangeable sensor, and controller
 modules. As such we make an effort to trace the feedback optimizations during
-our evaluation and explaination of the scheduler designs.
+our evaluation and explanation of the scheduler designs.
 
 Another distinction must be made as far as the level of foresight the scheduling 
 systems have, at least, within this paper. There is a spectrum of clairvoyance 
@@ -86,9 +93,7 @@ of schedulers can assume. Namely, that the first job will always be the last,
 and all other jobs will spawn from it. Thus there will always be a single 
 process in the queue at the beginning. This is true as the runtime will always 
 require an initial primary process (\eg~the `main' function), and once that 
-function is completed, the system is terminated 
-\todo{Note: So main is required to terminate?}
-(despite the cases of unjoined
+function is completed, the system is terminated (despite the cases of unjoined
 children). Apart from this, all other insights will need to be gleaned from the 
 evaluation of this initial process.
 \todo[inline]{ We mention this due to the implications on our scheduling 
@@ -96,6 +101,99 @@ evaluation of this initial process.
     cooperation networks and the forking/joinging of child processes), but can 
     we tie this back to the above definition and possibly cooperation?
 }
+
+\section{Message-Passing}
+
+In concurrent systems, there are a number of methods for inter-process 
+communication. Arguably though, one of the more popular abstractions is the 
+idea of message passing. This is especially true in functional languages as the
+language assumes shared-nothing by default. Just as compilers can optimize 
+using the language constraints, so can the run-time using the implementation.
+
+\begin{figure}[htp]
+\centering
+\Tree [ .{Message Passing}
+			[ .Async 
+				Direct 
+				Indirect 
+			] 
+			[ .Sync 
+				Asymmetric
+				Symmetric 
+			]
+	   ]
+\caption{A High-Level Message-Passing Taxonomy}
+\label{fig:mptax}
+\end{figure}
+
+Message passing in general can be broken down into two types based on the 
+language's implementation; asynchronous or synchronous. In asynchronous message 
+passing a process can send the message directly to another process like 
+in our example of emailing a coworker, these implementations are aptly named 
+mailbox message passing. Another implementation sends the message indirectly  
+via a rendezvous point, like a socket.
+
+To send a message in either case requires pushing/copying the 
+message into a shared or global memory space for another process to access 
+(possibly) at a later time. This push/copy can be done in a lock free manner 
+with some lower level atomic data structures such as a double-ended queue. But 
+in either a locked or lock-free manner, the process performing the send still 
+forces a block somewhere along in the operation, to push the message into some
+shared storage. As asynchronous operations require the additional capabilities 
+to both store and resend a message at a later time.
+
+In terms of scheduling, a language with asynchronous message passing does not 
+hint much in regard to whether progress is being made. If a consumer process
+requires a value before continuing and therefore is repeatedly trying to receive 
+from the channel, the schedule for the system would be better served by coming 
+back to that process at a later time rather than repeatedly looping. However,
+asynchronous does benefit from process placement so as to take advantage of 
+possible gains in cache affinity \cite{debattista2002cache}. For example, the 
+effects of the cache on direct message passing (\eg~a process mailbox) can be 
+substantial as two processes on different cores share a location to store and
+thus check for content. This shared location if accessed from multiple locations
+will have to be updated in possibly multiple locations and validated for 
+consistency at the cache level. However, if the two processes are local to the 
+same cache there will time saved in context switching and cache-line validation. 
+In indirect message passing the task is even worse as multiple processes may 
+need access to the same space.
+
+In synchronous message passing, a process must meet another at a provided 
+rendezvous point but can either be symmetrical or asymmetrical. Note that the 
+rendezvous point is not a requirement in the sense that direct synchronous 
+messaging isn't possible. Instead we think of a rendezvous point in synchronous 
+communication to be time bound rather than location bound (\ie~two processes are 
+blocked until communication occurs, the implementation of this passing is 
+irrelevant to this classification).
+
+Asymmetrical message passing is synonymous with Milner's Calculus of 
+Communicating Systems \cite{milner1982calculus} or standard $\Pi$-Calculus 
+\cite{palamidessi1997comparing}, in that you have a sender, and then a receiver 
+which will both block on their respective functions around an anonymous channel 
+until the pass has been completed. This differs from a symmetrical message 
+passing in that the only operation on the channel is a blocking function which 
+swaps values with the process at the other end.
+
+It's worth noting that asynchronous message-passing can be simulated using 
+synchronous channels and a secondary buffer process. But by simulating it in 
+this fashion we, as the scheduler, elevate the problem of cache locality to a
+problem of process locality. The same methods suggested to alleviate some of the 
+lost efficiency due to cache locality \cite{markatos1991load,markatos1991memory}
+are the same techniques which could be simulated for process locality. Namely
+process batching and process affinity.
+
+Note also, it is possible to simulate symmetrical message passing on asymmetrical 
+message channels, but in terms of scheduling of synchronizing processes, order 
+is now a factor that needs to be considered. On top of this, directionality can 
+also be a factor which complicates the channel implementation. Namely, the 
+internal queuing of senders or receivers may not percolate hints up to the 
+scheduler regarding their queue position. 
+
+For the alternative, symmetrical message passing or swap channels, the order is 
+directly handled by the scheduling of the system (\ie~the order at which the 
+channels evaluate the $swap$ command can be directly governed). And it is for 
+this purpose along with simplifying our core language we have chosen to base our
+semantics on symmetric synchronous message-passing. 
 
 \section{Classical Runtime Scheduling}
 
@@ -123,91 +221,4 @@ This will tie it over to the message-passing section.
     its relationship with application phasses here.
 }
 
-\section{Message-Passing}
-
-In concurrent systems, there are a number of methods for inter-process 
-communication. Arguably though, one of the more popular abstractions is the 
-idea of message passing. This is expecially true in functional languages as the
-language assumes shared-nothing by default. Just as compilers can optimize 
-using the language constraints, so can the run-time using the implementation.
-
-\begin{figure}[htp]
-\centering
-\Tree [ .{Message Passing}
-			[ .Async 
-				Direct 
-				Indirect 
-			] 
-			[ .Sync 
-				Asymmetric
-				Symmetric 
-			]
-	   ]
-\caption{A High-Level Message-Passing Taxonomy}
-\label{fig:mptax}
-\end{figure}
-
-Message passing in general can be broken down into two types based on the 
-language's implementation; asynchronous or synchronous. In asynchronous message 
-passing a process can either be provided a rendezvous point or an identifier for 
-another process. To send a message in either case requires pushing/copying the 
-message into a shared or global memory space for another process to access 
-(possibly) at a later time.  This push/copy can be done in a lock free manner 
-with some lower level atomic data structures such as a double-ended queue. But 
-in either a locked or lock-free manner, the process performing the send still 
-blocks on the operation to push the message. 
-
-In terms of scheduling, a language with asynchronous message passing can ignore 
-the effects of these blocking operations, but will need to look closer at 
-process placement to take advantage of possible gains in cache affinity 
-\cite{debattista2002cache}. For example, the effects of the cache on direct 
-message passing (\eg~a process mailbox) can be substantial as two processes
-on different cores will need to copy stack frames to memory and back, rather 
-than just a pointer to the message in the originator's stack frame. In indirect 
-message passing the task is even worse as multiple processes may need access to 
-the same data.
-
-In synchronous message passing, a process must meet another at a provided 
-rendezvous point but can either be symmetrical or asymmetrical. Note that the 
-rendezvous point is not a requirement in the sense that direct synchronous 
-messaging isn't possible. Instead we think of a rendezvous point in synchronous 
-communication to be time bound rather than location bound (\ie~two processes are 
-blocked until communication occurs, the implementation of this passing is 
-irrelevant to this classification).
-
-Asymmetrical message passing is synonymous with Milner's Calculus of 
-Communicating Systems \cite{milner1982calculus} or standard $\Pi$-Calculus 
-\cite{palamidessi1997comparing}, in that you have a sender, and then a receiver 
-which will both block on their respective functions around an anonymous channel 
-until the pass has been completed. This differs from a symmetrical message 
-passing in that the only operation on the channel is a blocking function which 
-swaps values with the process at the other end.
-
-Note, it is possible to simulate symmetrical message passing on asymmetrical 
-message channels, but in terms of scheduling of synchronizing processes, order 
-is now a factor that needs to be considered. On top of this, directionality can 
-also be a factor which complicates the channel implementation. Namely, the 
-internal queuing of senders or receivers may not percolate hints up to the 
-scheduler regarding their queue position. 
-
-For the alternative, symmetrical message passing or swap channels, the order is 
-directly handled by the scheduling of the system (\ie~the order at which the 
-channels evaluate the $swap$ command can be directly governed). And it is for 
-this purpose along with simplifying our base language we have chosen to base our
-semantics on symmetric synchronous message-passing. 
-
-\todo[inline]{I feel like this section would benefit from some more figures 
-    describing the language primitives involved and their semantics. The key
-    point to make is how much is avaliable to the scheduler in each instance:\\
-    - Async: Potentially nothing, but if so:\\
-    \hspace{.1\textwidth}- Direct: The particular process which it communicated with,\\
-    \hspace{.1\textwidth}- Indirect: The channel/rendezvous it communicated with,\\
-    - Sync: If it blocks, a communication happened, potentially can know order in queue\\
-    \hspace{.1\textwidth}-Asymm: Directionality.\\
-    But noting that for cooperativity purposes, directionality is not meaningful.
-}
-\todo[inline]{Should i talk more about possible implementations and their 
-    considerations? I could go into the process absorption that SML and 
-    Occam-$\pi$ does?
-}
 

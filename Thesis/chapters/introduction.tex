@@ -9,7 +9,7 @@ responsible for order of task evaluation and the distribution of
 these tasks across the available processing units.
 
 Tasks are typically spawned when there is a chance for parallelism, either 
-explicitly through \texttt{spawn}, or \texttt{fork} commands or implicitly 
+explicitly through \texttt{spawn} or \texttt{fork} commands or implicitly 
 through calls to parallel built-in functions like \texttt{pmap}. In either 
 case it is assumed that the job of a task is to perform some action concurrent 
 to the parent task because it would be quicker if given the chance to be 
@@ -26,31 +26,33 @@ objective, like in the \texttt{pmap} example above.
 Tasks however, in functional language verbiage, are typically called 
 {\em processes} due to the inherent isolation this term brings and the language 
 paradigm calls for. So how do these processes share information or return a 
-value back to their parent? Message passing is a common abstraction to shared
+value back to their parent? Message passing is a common alternative to, and 
+sometimes abstraction of, shared
 memory. Message passing is akin to emailing a colleague a question. You operate
-independently, and your colleague can check her mailbox when they want to and 
+asynchronously, and your colleague can check her mailbox when they want to and 
 respond when they want to. Meanwhile you are free to operate on an assumption 
 until proven wrong, wait until she gets back to you, or even ask someone else.
 
 While message passing is a good method for inter-process communication, it is
 also a nice mechanism for catching when two processes are working together.
-Let's, for example, consider a purely functional \texttt{pmap}, where all 
+For example, consider a purely functional \texttt{pmap}, where all 
 workers are copied subsections of the list. Each worker thread will have no
 need to cooperate and thus no messages will need to be passed amongst them.
-However, suppose the function being mapped uses several processes accessing a 
-piece of shared memory to update it's particular cell in the list. These 
-processes would do little good if treated like the course-grained parallelism
-the \texttt{pmap} workers create. 
-\todo[inline]{Bad example, should be more real world, and doesn't flow well into the next paragraph.}
+However, in the event the function being mapped uses several processes, each 
+accessing a shared resource via message passing, we would see a close coupling.
+This highlights the granularity of process coupling, in that the \texttt{pmap}
+workers exibit a course-grained coupling which allows for greater parallelism,
+the opposite is true for the processes which show close coupling.
 
-There are a large number of mechanics that scheduling systems can use in an 
+There exist a large number of mechanics that scheduling systems can use in an 
 attempt to improve work-load across all processing units. Some of these 
 mechanics use what's called a feedback system. Namely, they observe the 
 running behaviour of the application as a whole, (i.e. collect {\em metrics}),
-and modify themselves to operate better.
+and modify themselves to operate better. We define this granularity of process
+coupling as \textbf{Process Cooperativity}.
 
-Process cooperativity is an interesting metric by which to grade a system. In
-biochemistry the term cooperativity can be defined as an increase or decrease
+Process Cooperativity is an interesting metric by which to grade a system. In
+biochemistry the term cooperativity is defined as an increase or decrease
 in the rate of interaction between a reactant and a protein as the reactant
 concentration increases. We can translate this into an information theoretic 
 definition: 
