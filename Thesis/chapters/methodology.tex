@@ -92,53 +92,69 @@ review.
     \label{fig:sugar-transform}
 \end{figure}
 
-Also, note the possible steps $\textbf{swap}$ can take: either returning the 
-null set or another expression and a set of functions. In the former's case, 
-the channel has blocked and the only course of action is to get another 
-expression to work on from the scheduler. In the later's case, we have an
-expression to work on, but we also may have unblocked other processes in the
-process so we need to reschedule them. 
-
-Note however, that return set may be null and the expression returned may be
+Also, note the possible steps \emph{swap} can take: either returning a block
+or another expression and a set of functions. On a semantic level,
+either event is transparent and results in blocking behaviour until a successful swap.
+However, in the former's case, the channel has blocked and the only course of 
+action for the scheduler is to get another expression to work on. In the 
+later's case, we have an expression to work on, but we also may have unblocked 
+other processes in the process so we need to reschedule them. 
+Note that in this case the function set may be null and the expression returned may be
 another attempt at swapping (\ie~$e = (\textbf{swap}\:c\:v)$). This would let 
 the scheduler choose whether to retry immediately or reschedule it for a later
-time and work on something in the mean time.
+time and work on something in the mean time. Thus, there a several possible
+channel implementations we could provide while still adhering to the above
+semantics.
 
 \subsection{Channel Implementations}\label{sec:channel implementations}
 
-ErLam provides a selection of channel implementations so as to allow for 
-interchangable comparisons to be made with synchronization methods and the 
-schedulers themselves. ErLam comes with two channel implementations the 
-{\sl Blocking} Swap, and the {\sl Absorbing} Swap. 
-We will now look at an example application and it's execution
+ErLam provides a selection of channel implementations to allow for 
+interchangeable scheduler comparisons with different synchronization methods.
+We chose two channel implementations the 
+{\sl Blocking} Swap, and the {\sl Absorbing} Swap as they highlight key differences
+for the runtime. We will now look at an example application and its execution
 using both methods for comparison.
 
 \begin{wrapfigure}{r}{0.5\textwidth}
     \centering
+{\footnotesize
 \begin{BVerbatim}[commandchars=\\\{\}]
 \textbf{let} c = \textbf{newchan in}
 \textbf{let} f = (\textbf{fun} _.(\textbf{swap} c \textit{42})) \textbf{in}
 \textbf{let} _ = (\textbf{spawn} f) \textbf{in}
 \textbf{in} (\textbf{swap} c \textit{0})
 \end{BVerbatim}
-    \caption{A simple ErLam application which swaps on a channel before returning.}
+}
+    \caption{
+        A simple ErLam application which swaps on a channel before returning.}
     \label{fig:swap-example}
 \end{wrapfigure}
 
 Figure~\ref{fig:swap-example} gives an example ErLam application. It first 
 creates a new channel for processes to communicate on. It then creates a 
 null-function to spawn, who's sole purpose is to swap on the channel the number
-$42$ and then die. Finally, it swaps on the channel the number $0$ and returns
+$42$ and quit. Finally, it swaps on the channel the number $0$ and returns
 the result of the whole evaluation, which in this case will be the value passed
 from the other end of the swap, $42$. 
 
 As ErLam is innately concurrent, we do not know which process will ask to swap
 first. It may even be possible that $0$ asks to swap several times before $42$
-even tries. In fact, the {\sl Blocking} channel allows multiple swap attempts,
-We can see an illustration of this in figure~\ref{fig:blockchan-example}; note
-the illustration makes no mention of the scheduler or it's functionality. It may
-be the case that the two processes are on different processing units and are in
-different process queues. Or it may be the case that they both exist in the
+even tries. In fact, the {\sl Blocking} channel allows this behaviour of 
+multiple swap attempts.
+We can see an illustration of this in figure~\ref{fig:blockchan-example}.
+The first row shows the arbitrary timeslice $t_1$ where the process swapping $0$, 
+$p0$, first contacts the channel with its value. The process my be scheduled again,
+repeatedly, to check the channel up to some arbitrary timeslice $t_{n-1}$. At
+$t_n$ however, the process swapping $42$ requests a swap and immediately gets a
+value back and logs that the process which it swapped with can get its value
+when it returns. Thus on the third line, for any arbitrary timeslice in the 
+future $t_{>n}$, the process $p0$ can ask for a swap and get the value $p1$ 
+stored.
+
+Note the illustration makes no explicit mention of the scheduler or its 
+functionality. It may be the case that the two processes are on different 
+processing units and are in different process queues. 
+Or it may be the case that they both exist in the
 same queue and upon a block, the scheduler chooses the next one, which will 
 immediately unblock the channel.
 
@@ -179,9 +195,9 @@ wish to introduce channel inspection into their scheduler.
 
 \subsection{The Scheduler API}\label{sec:the scheduler api}
 
-ErLam was written in Erlang, and as such, it takes advantage of Erlang's 
-callback behaviour specifications. An \emph{erlam\_scheduler} behaviour has been 
-defined which requires a minimalistic $5$ callback functions 
+ErLam was written in Erlang, and as such, can take advantage of Erlang's 
+callback behaviour specifications. An \emph{erlam\_scheduler} behaviour was
+defined which requires a minimal of $5$ callback functions 
 (figure~\ref{fig:scheduler-api}).
 
 \begin{figure}
@@ -208,8 +224,8 @@ defined which requires a minimalistic $5$ callback functions
 \label{fig:scheduler-api}
 \end{figure}
 
-Upon instantiation of the runtime the runtime system will call the 
-\emph{layout/2} function with the NUMA layout of the system the application is
+Upon instantiation the runtime system will call the 
+\emph{layout/2} function with the NUMA layout of the system that the application is
 running on, along with any parameters the user specified at runtime. The 
 result of this function is to be the scheduler layout. 
 
@@ -243,12 +259,12 @@ all subsequent callback calls. Upon shutdown, the oposite function
 The last two functions are the most interesting as they pertain to the core of
 what each new scheduler provides, namely how to evaluate the world in a given
 timeslice (\emph{tick/2}) and how a new process should be handled 
-(\emph{spawn\_process/2}); but an explaination of these callbacks is best done 
+(\emph{spawn\_process/2}). An explanation of these callbacks is best done 
 through example.
 
-\subsection{Example: The CML Scheduler}\label{sec:example the cml scheduler}
+\subsection{Example Usage: The CML Scheduler}\label{sec:example the cml scheduler}
 
-Concurrent ML is an extention to SML which adds the \emph{spawn} function, and 
+Concurrent ML is an extension to SML which adds the \emph{spawn} function, and 
 channel operations. CML's scheduler utilizes a dual-queue structure rather than
 a simple unary-process-queue. The scheduler attempts to differentiate between
 {\em communication} and {\em computation}-bound processes so as to reduce the
@@ -285,10 +301,10 @@ In the original CML scheduler, it defined a quantum which it would let the
 current process run for, and then it would preempt it if it attempted to run 
 for longer. The ErLam runtime avoids the use of time based quantum as logging 
 and other factors directly effect the usefulness of this. Instead it uses a 
-'tick', which is suppose to emulate one
+'tick', which emulates one
 step forward in the execution of the application. Thus to simulate a quantum we
 instead keep track of the number of reductions performed on the current process
-and decrement the counter until we reach 0.
+and decrement the counter until we reach $0$.
 
 \begin{figure}
 \begin{minted}[frame=lines,fontsize=\footnotesize]{erlang}
@@ -347,7 +363,7 @@ on which to compare the behaviour of all subsequent feedback-enabled schedulers.
                 a dequeue for a very short window of time, but involves 
                 accessing "remote" memory.
             \item {\bf Interrupting-Steal {\sl (MTRRWS-IS)}} \\
-                Simulates sending an evil theif-process over to another scheduler.
+                Simulates sending a theif-process over to another scheduler.
                 When the victim scheduler preempts or yields their current process
                 and selects the next one from the queue, they will instead get a
                 theif process which will syphon a process away to the theif's home
@@ -359,21 +375,34 @@ ErLam also comes with three cooperativity-conscious schedulers: the
 Longevity-Based Batching Scheduler (section~\ref{sec:longevity based batching}),
 the Channel Pinning Scheduler (section~\ref{sec:channel pinning}), and the
 Bipartite Graph Aided Shuffling Scheduler (section~\ref{sec:bipartite graph aided shuffling}).
-The first two build on the same shared queue module as provided by $MTRRWS^{\*}$, 
+The first two build on the same shared queue module as provided by $MTRRWS^{*}$, 
 while the third utilizes it's own implementation.
+
+For any compiled ErLam script, the runtime installs a command line option for
+selecting the scheduler used (among several other options). We are able to 
+specify that we wish to run $pfib$, for example, with $MTRRGQ$ with
+the following command:
+\begin{verbatim}
+            ./pfib -s erlam_sched_global_queue 
+\end{verbatim}
+\noindent
+Any new schedulers can be added to the ErLam toolkit without needing to 
+recompile the scripts as they are dynamically fetched and loaded at runtime. 
 
 \section{Simulation \& Visualization}\label{sec:simulation and visualization}
 
 The second primary goal of the ErLam toolkit was the ability to visualize 
-how the scheduler proceeded to evaluate a simulated application. Thus we needed
+how a scheduler proceeded to evaluate an ErLam application. We therefore needed
 a way to log all events over time, including unique per-scheduler events, such 
-as the size of both the primary and secondary queues in the CML scheduler.
+as the size of both the primary and secondary queues in the CML scheduler. It 
+would also be adventagous to be as finely grained as possible and leave it up to 
+the visualization mechanism to dial the accuracy.
 
-As a secondary goal, we need a sample set of application simulations to run 
-against our set of schedulers. These simmulations would need to be concise and
-demonstrate various levels of cooperativity and phase changes. We would like
-to also have the ability to mix and match test cases together to better create
-realistic work-sets for the schedulers to react to.
+We also needed a sample set of application simulations to run our set of 
+schedulers against. These simulations needed to be minimal to reduce
+exteneous data but still demonstrate various levels of cooperativity and phase 
+changes. We would like to also have the ability to compose test cases 
+together to better create realistic work-sets for the schedulers to react to.
 
 \subsection{Runtime Log Reports}\label{sec:runtime log reports}
 
@@ -429,7 +458,7 @@ Scheduler State (running vs waiting) over time.
 \begin{wrapfigure}{r}{0.5\textwidth}
 \centering
 \includegraphics[scale=0.35]{pring-erlam_sched_multi_ws-commdense.pdf}
-\caption{\footnotesize Example of Communication Density graph for the Work-Stealing scheduler 
+\caption{ Example of Communication Density graph for the Work-Stealing scheduler 
 on a Core i7 running the $PRing$ application.}
 \label{fig:commdense-example}
 \end{wrapfigure}
@@ -505,7 +534,8 @@ $X+1$ \textbf{mod} $N$.
 We would have liked to possibly experiment with variations on the ``jump-ship''
 behaviour so as to inject phase changes into $PRing_N$ (by perhaps reversing
 direction) or $ClusterComm_{(N,M)}$ (by switching to $ChugMachine_N$ for a 
-brief period before returning to $ClusterComm_{(N,M)}$).
+brief period before returning to $ClusterComm_{(N,M)}$). Yet time constraints
+have limited us to the aforementioned.
 
 \begin{figure}
 \subfigure[t][Graphical representation of $PTree$, $N$ Parallel work groups.]{
@@ -544,27 +574,194 @@ brief period before returning to $ClusterComm_{(N,M)}$).
 \section{Cooperativity Mechanics}\label{sec:cooperativity mechanics}
 
 As mentioned previously, ErLam provides a number of feedback-enabled 
-cooperativity-conscious schedulers for comparison purposes. However, before a
-detailed description of their function, we will discuss an overview of practical
-cooperativity recognition as well as our approach to designing mechanisms to
-take advantage of it.
+cooperativity-conscious schedulers for comparison purposes. Through our 
+exploration of cooperative behaviour we noticed that
+cooperativity, on some level in previous scheduling systems, has been captured 
+before. Through techniques keeping in mind Cache-Affinity, channel efficiency,
+and work-stealing efficiency, we see a common theme of keeping processes which
+communicate together, in close proximity. 
 
-\subsection{Overview \& Approach}\label{sec:cooperativity mechanics overview}
-
-
-Approach: 
-
+Ultimately cooperativity gives us a mechanism for recognizing when processes 
+may be moving along the spectrum of application parallelism. We would therefore 
+like to look at systems which recognise particular behaviours which affect this.
 
 \subsection{Longevity-Based Batching}\label{sec:longevity based batching}
 
+As we've mentioned before, batching processes together has been a common 
+mechanism in capturing some of the lost efficiency of cache locality. To take
+advantage of the cache a message passing language is required to be considerate 
+of their channel implementation to allow for it. For example, Occam-$\Pi$ makes sure
+their channel fits into a single 32 bit cache line (technically two, as they
+have asymmetrical channels and split it based on send and receive).
+
+However, ErLam elevates the concerns of cache locality into an issue of process 
+locality by relying only on symmetrical message passing. Note that 
+a channel is loaded into memory at the location (\ie~LPU) of whichever process 
+first blocks it and then again at whichever process unblocks it. Thus to reduce
+the number of times the channel needs to be loaded, we can still use the 
+batching mechanism. Namely, if two processes are communicating frequently, the
+channel never needs to be migrated if they exist in the same batch and on the
+same LPU. This mechanism would be applicable to any other language which uses 
+message passing too.
+
+However, this batching mechanism is great when the application is going through
+a phase of frequent communication and thus fine-grained parallelism. But in the
+event the phase changes or the system is course-grained, then a batch actually
+harms the ability of the scheduler to parallelize to the fullest. This issue 
+however is one we've seen before, the struggle of computation and communication
+bound processes.
+
+The CML Interactivity based scheduler breaks up the processes into groups of
+long running (computation-bound) and short running (communication-bound)
+processes. We can take advantage of this in our case by kicking processes which
+are too long-running out of a batch (into a singleton batch for example). To 
+merge communicating processes back together in the same batch would be as easy
+as turning on Process Absorption for our channels. A process would then be
+batched with processes that have all begun communicating on a particular set
+of channels.
+
+The mechanism we just described has been implemented as the Longevity-Based
+Batching Scheduler. A process belongs to a batch as long as it does not exceed
+it's quantum (reduction count). If it is preempted, it is thusly kicked out 
+from the batch it's apart of (unless it's a singleton). There are of course
+alternatives to this (\eg~allow for $N$ quantum to pass before kicking a 
+process from a batch), but we for testing purposes we can just extend the size
+of the quantum for the same effect.
+
+To gain entry back into a batch, all a process needs to do is perform a swap 
+with Process Absorption turned on. Note as Process Absorption must be toggled
+on for this to work, we can experiment with max-parallelism possible in the 
+application. Our assumption prior to experimentation was that, the 
+longevity-batching scheduler would drop-down into a common work-stealing
+scheduler in the worst case (\ie~all processes are singleton batches). We talk 
+more on these assumptions in Chapter~\ref{chap:results}.
 
 
 \subsection{Channel Pinning}\label{sec:channel pinning}
 
+An alternative approach to batching, which moves the channels to the processes,
+is to set an affinity to a core based on which channels you cooperate on. We 
+call this mechanism Channel Pinning, as we bind a channel upon creation to a
+particular LPU and force processes to that location to perform a swap. 
+There are a large number of interesting mechanics for this behaviour. But we 
+will look at three: 
+\begin{inparaenum}
+\item How to spread the channel pinnings?
+\item How should processes react when attempting a swap on a remotely bound channel?
+\item And based on the decisions made in the previous, how should a scheduler steal/spawn a process?
+\end{inparaenum}
 
+When choosing a channel spread algorithm there are two things which need to be
+compared, cost of creating a channel and channel usage of the application it 
+would be running with. In stark contrast to the previous scheduler, channel
+pinning would either need to be an expensive heuristic or a programmer-aided
+decision based on the application itself.
+For example, if our channel pinning algorithm was a sane even spread across all
+processors we would have ignored the possibility that a subset of the channels
+could be used more frequently. This could therefore cause more harm than good.
+If we chose to do an expensive check across all processors to compute the 
+saturation each time we create a channel we would be harming the application 
+which uses a map-reduce style, and uses a lot of temporary one-use channels.
 
+On top of this complication, this also ignores the possibility of phase changes.
+It may be the case that during a start up phase, the frequency of particular 
+channel usage may offset the saturation to such a degree that any further 
+checks will suggest alternate processors despite possibly being inaccurate.
+However, these issues are beyond the scope of this discussion and we will 
+instead focus on scheduling around channel pinning. As such we only provide the
+following channel pinning implementations: 
+\begin{inparaenum}
+\item \emph{same}, which pins the channel to the same processor it is created 
+    on (\ie~ the processor which evaluates $newchan$).
+\item \emph{even}, which pins the channel in a round-robin fashion starting at
+    LPU $0$.
+\end{inparaenum}
+
+Note \emph{same} pinning, would not be ideal for an application which creates
+all channels in one process and then hands them out to it's children like in
+$JumpShip_{(W,P)}$, or $ClusterComm_{(N,M)}$. However, \emph{even} pinning will
+be perfect for them. We expect experimentation with composed application will
+have interesting effects in this scheduler.
+
+We have a couple of possible mechanisms for how a process should be handled when
+it comes time to communicate. In the event it is wanting to communicate on a 
+channel that is not local, we propose the following mechanism: let them anyway
+but if they block, spawn them to the LPU which owns the channel.
+
+The rational for this is, in the event of a block, the local LPU won't gain 
+anything from having it in its queue (if process absorption is turned on it would 
+loose it anyway). However, if the process completes a swap, both the remote
+LPU and the local can continue in parallel.
+
+Due to this selective spawn feature, we have the opportunity to look at a 
+selective steal opportunity. Namely, when stealing we can attempt to grab from
+a random scheduler, one or more processes which have communicated with a 
+randomly selected channel which the thief owns. This is akin to the children's
+card game "Go Fish" where in our case a scheduler may ask if another "has any
+channel 3's".
+
+However, with this mechanism it may be the case that there is never any work
+for a particular scheduler. In this case, we have added the post condition that
+if a process has never communicated, or if the scheduler is not the owner of a
+channel, then they act as wild cards and can match anything. This is both a 
+simplistic algorithm, but it also makes sure the scheduler falls back to a 
+standard work-stealing algorithm by default.
+
+We would like to see how this type of mechanism fairs against both a best and
+worst case scenario. We first thought the worst case scenario would be a 
+$ChugMachine_N$ due to the reliance on wild-cards, however after more 
+consideration a single $ClusterComm_{N,1}$ may end up having a worse behaviour
+due to the constant re-spawning of processes back to the owner of the primary
+channel. A best case in this scenario would be a $PTree_W$ when $W$ is equal
+to the number of processing units available.
 
 \subsection{Bipartite Graph Aided Shuffling}
     \label{sec:bipartite graph aided shuffling}
 
+Both of the previous schedulers ignore the concept ignore the effects ordering
+can have on execution behaviour. We hypothesize that order of process execution
+could have a drastic consequence on highly cooperative processes by pairing 
+channels such that if a process where to block, the unblock would happen as soon
+as possible (\ie~the scheduler would not choose a process which could not unblock it).
+
+Granted the extreme of this type of scheduler would be excruciatingly unfair, and
+as such we still maintain a round-robin like behaviour, except now we rely on 
+a sorted process queue. Sorting the process queue would allow us the chance to 
+increase the likelihood of immediately unblocking a blocked channel, while still
+maintaining execution fairness. 
+Sorting the process queue would also have the aided side effect of making 
+work-stealing potentially more efficient when stealing more than one from a 
+victim queue. Namely, it would be much more likely that the group of processes
+stolen are cooperating. 
+
+Due to this, we hope to show an interesting case where process absorption may 
+not be the preferred channel implementation. The blocking channel, one which will
+immediately return, will allow for the process to stay sorted and allow for the 
+next process following it to unblock it for it's next turn. Thus relying on 
+work-stealing alone to migrate processes in a potentially smarter and 
+more-grouped way.
+
+There are three metrics which could effect the order of processes, and which would
+subsequently trigger a resorting of the process queue. A process yielding, 
+returning, or spawned could all mean that a particular process or set of 
+processes need to be relocated. However, frequent sorting may cause the scheduler's
+fairness to suffer. We therefore set a variable, $\Gamma$ which defines how many 
+"events" can happen before causing a resort.
+
+To provide a mechanism for sorting, we structure our process queue as a bipartite 
+graph, where one side is our process queue, and the other is the set of channels.
+Our default sorting mechanism sorts based on recency of the communications over
+the number of channels it's communicated with. Namely, we sort the process queue
+by $\Delta(P_i) = \Sigma E_i / |C_i|$ where $E_i$ is the edge set of timestamps,
+and $C_i$ is the set of channels $P_i$ communicated with. The default sort, $\Delta$,
+is intended to give our processes which communicate frequently, a head start, and
+all other processes can be pushed to the end (and more likely stolen). 
+
+If our process queue is long, we maintain preferential treatment for the set of 
+interactive processes. If our process queue is short, then the effects of 
+sorting are non-existent. As such, we should only be concerned with sorting 
+a process queue after a particular size. This is another chance for heuristic
+analysis. Due to this though, we would expect to see poorer behaviour on most
+simple simulated applications, but would steadily gain in advantage when 
+subjected to composed applications.
 

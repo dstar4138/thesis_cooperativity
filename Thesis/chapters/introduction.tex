@@ -25,8 +25,7 @@ objective, like in the \texttt{pmap} example above.
 
 Tasks however, in functional language verbiage, are typically called 
 {\em processes} due to the inherent isolation this term brings and the language 
-paradigm calls for. So how do these processes share information or return a 
-value back to their parent? Message passing is a common alternative to, and 
+paradigm calls for. Instead, message passing is a common alternative to, and 
 sometimes abstraction of, shared
 memory. Message passing is akin to emailing a colleague a question. You operate
 asynchronously, and your colleague can check her mailbox when they want to and 
@@ -42,7 +41,7 @@ However, in the event the function being mapped uses several processes, each
 accessing a shared resource via message passing, we would see a close coupling.
 This highlights the granularity of process coupling, in that the \texttt{pmap}
 workers exibit a course-grained coupling which allows for greater parallelism,
-the opposite is true for the processes which show close coupling.
+and the opposite is true for the processes which show close coupling.
 
 There exist a large number of mechanics that scheduling systems can use in an 
 attempt to improve work-load across all processing units. Some of these 

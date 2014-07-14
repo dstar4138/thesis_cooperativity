@@ -73,7 +73,6 @@ opposite. We would prefer tight oscillations or consistent behavior of our
 runtime so as to achieve minimal overhead from our modifications. We can also 
 compensate, to reach our reference signal, as quickly as we need to as there 
 are no physical restrictions for our modifications.
-
 As such these feedback systems are closely coupled with the design of the 
 scheduling algorithm, rather than being an interchangeable sensor, and controller
 modules. As such we make an effort to trace the feedback optimizations during
@@ -90,25 +89,22 @@ that this paper discusses do not have.
 
 However, as it is a spectrum, there is a single point of knowledge this subrange 
 of schedulers can assume. Namely, that the first job will always be the last, 
-and all other jobs will spawn from it. Thus there will always be a single 
+and all other jobs will spawn from it. Thus there will always be only a single 
 process in the queue at the beginning. This is true as the runtime will always 
 require an initial primary process (\eg~the `main' function), and once that 
 function is completed, the system is terminated (despite the cases of unjoined
 children). Apart from this, all other insights will need to be gleaned from the 
 evaluation of this initial process.
-\todo[inline]{ We mention this due to the implications on our scheduling 
-    problem (dynamicly evolving lattice which is altered based on evolving
-    cooperation networks and the forking/joinging of child processes), but can 
-    we tie this back to the above definition and possibly cooperation?
-}
 
 \section{Message-Passing}
 
 In concurrent systems, there are a number of methods for inter-process 
 communication. Arguably though, one of the more popular abstractions is the 
 idea of message passing. This is especially true in functional languages as the
-language assumes shared-nothing by default. Just as compilers can optimize 
-using the language constraints, so can the run-time using the implementation.
+language assumes shared-nothing by default. Also, just as compilers can optimize 
+using language constraints, so can a run-time using the language implementation.
+We will therefore examine possible message passing designs and how their 
+implementation might effect our schedulers.
 
 \begin{figure}[htp]
 \centering
@@ -128,8 +124,8 @@ using the language constraints, so can the run-time using the implementation.
 
 Message passing in general can be broken down into two types based on the 
 language's implementation; asynchronous or synchronous. In asynchronous message 
-passing a process can send the message directly to another process like 
-in our example of emailing a coworker, these implementations are aptly named 
+passing, a process can send the message directly to another process like 
+in our example of emailing a coworker; these implementations are aptly named 
 mailbox message passing. Another implementation sends the message indirectly  
 via a rendezvous point, like a socket.
 
@@ -151,12 +147,12 @@ asynchronous does benefit from process placement so as to take advantage of
 possible gains in cache affinity \cite{debattista2002cache}. For example, the 
 effects of the cache on direct message passing (\eg~a process mailbox) can be 
 substantial as two processes on different cores share a location to store and
-thus check for content. This shared location if accessed from multiple locations
+thus check for content. This shared location if accessed from two processes
 will have to be updated in possibly multiple locations and validated for 
 consistency at the cache level. However, if the two processes are local to the 
 same cache there will time saved in context switching and cache-line validation. 
-In indirect message passing the task is even worse as multiple processes may 
-need access to the same space.
+In indirect message passing the task is even worse as more than two processes 
+may need access to the same space.
 
 In synchronous message passing, a process must meet another at a provided 
 rendezvous point but can either be symmetrical or asymmetrical. Note that the 
@@ -195,17 +191,76 @@ channels evaluate the $swap$ command can be directly governed). And it is for
 this purpose along with simplifying our core language we have chosen to base our
 semantics on symmetric synchronous message-passing. 
 
-\section{Classical Runtime Scheduling}
+\section{Classic Runtime Scheduling}
 
-\todo[inline]{ I would like to discuss current methods of distributing processes
- accross processors, as I am assuming later that readers know of terms like:\\
- - work-stealing \& sharing \\
- - round-robin \\
- - global/local process queues\\
- - spawning and joining methods\\
- Then somehow lead into process dependencies and thus process synchronization. 
-This will tie it over to the message-passing section.
-}
+To follow up our note on control theory we would like to discuss the pertinent 
+topics of classic, note common rather than classical, scheduling. In other words,
+we would like to discuss the current methods commonly found to distribute and 
+schedule processes across processing units.
+
+There are several mechanisms, first, to choose a process from the set of 
+processes. We could use a First-Come, First-Serve method, which means ordering 
+the processes in a queue and running them as they come. However, if a particular
+process is computationally intensive, processes involved with user-interaction 
+for example would have to wait. This results in an obvious lag or hang in the 
+system as the interactivity of the system stalls. 
+
+To solve this problem a scheduler can $preempt$ a process after a certain amount
+of time has passed. This time slice is also called a time interval or a $quantum$
+and has quite a literature involved with its selection. \todo{cite}
+Too short doesn't allow a process enough time to progress and the runtime system
+starts to spend more time context switching than computation. Too long and the
+preemptive-scheduler effectively becomes non-preemptive as all computation-bound
+processes hog the CPU from the interactive ones.
+
+After preempting the process, the scheduler has a choice as to where the process
+is placed. The common choice is to place it at the end of the queue, his 
+behaviour is called Round-Robin. It is a common choice, not necessarily because
+of its simplicity, but due to its fairness. Each process in the queue is 
+guaranteed an equal amount of time on the CPU and starvation of processes can 
+therefore never happen. However, this isn't always the case based on how the 
+implementation of process spawning. For example, if the newly spawned process
+was placed at the front of the queue or preempts the currently running process,
+a fork-bomb like process could hog the CPU and effectively shut out all other 
+processes. Spawning to the end of the queue is the only effective way to avoid
+these scenarios.
+
+However, this has all been using the assumption of a single process queue. While
+it is possible to implement a single global queue for all $N$ schedulers, we will
+eventually get into an issue of contention where all the schedulers are 
+attempting to take or add a process to the queue while another one is. However,
+in the event of multiple process queues there needs to be a mechanism in place 
+for dispersing the processes across them all in an even or at least fair way.
+
+There are two mechanisms for this, \emph{work-sharing} and 
+\emph{work-stealing}. In work-sharing, the processor with more than enough work
+to do, will offload any new processes onto another (either randomly or by some
+heuristic). In work-stealing, it's the scheduler with the empty or small process 
+queue that wishes it had more work to do that contacts another scheduler (either 
+randomly or by some heuristic) so as to steal one or more. In the case of 
+work-stealing the victim processor can be working on a process while another
+processor steals from it. This means that the cost of performing the process
+transfer is potentially hidden by the parallelism gained. However, in the case 
+of work-sharing there is always an additional cost involved on top of the time
+of execution as the overloaded processor must wait to work until after the 
+transfer is complete.
+
+This is why most schedulers which support multiple processing units utilize 
+some work-stealing implementation. Of the implementations, there are two which 
+we would like to highlight as they are provided by the ErLam toolkit: 
+Shared-Queues and Interrupting-Steal. The Shared-Queues work-stealing scheduler
+allows other processes to directly access an end of their local process queue. 
+This means, while a processor is potentially popping from one end of the queue,
+another could be stealing from the other (assuming a lock-free doubly-ended 
+queue like structure).
+
+The alternative, Interrupting-Steal, has gone by several names like 
+Work-Requesting, and Thief Processes. It's mechanism is to send a fake or 
+dummy process to one or more other schedulers so when they run them they steal
+a process and send it back to its parent process. This reduces the overhead 
+involved in synchronizing on the victim's process queue, but will instead stall
+it during the steal.
+
 
 \section{Feedback-Enabled Scheduling}
 
