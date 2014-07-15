@@ -45,5 +45,6 @@ I will attempt to answer the following questions:
 
 Links:
 * [ErLam](https://github.com/dstar4138/erlam) (The tool I'm working on to aid in this thesis.)
-* [My Homepage](http://dstar4138.com) (Where I will blog about progress and interesting research.)
+* [Thesis Blog](http://cs.rit.edu/~ard4138/blog-posts) (Where I blog about thesis work and progress.)
+* [My Homepage](http://dstar4138.com) (Where I will blog about other interesting research and my life.)
 * [Professor Fluet's Homepage](http://cs.rit.edu/~mtf) (My Chair for my MSc work.)
