@@ -264,8 +264,7 @@ through example.
 
 \subsection{Example Usage: The CML Scheduler}\label{sec:example the cml scheduler}
 
-Concurrent ML is an extension to SML which adds the \emph{spawn} function, and 
-channel operations. CML's scheduler utilizes a dual-queue structure rather than
+CML's scheduler utilizes a dual-queue structure rather than
 a simple unary-process-queue. The scheduler attempts to differentiate between
 {\em communication} and {\em computation}-bound processes so as to reduce the
 effects of highly computationally intensive processes from choking the system.
