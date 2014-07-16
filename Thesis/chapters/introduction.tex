@@ -19,35 +19,37 @@ It is up to the scheduler of these tasks to try and optimize for where there
 is opportunity for parallelism. However, it's not as simple as evenly 
 distributing the tasks over the set of processing units. Sometimes, these 
 tasks need particular resources which other tasks are currently using,
-or maybe some tasks are waiting for user input and don't have anything to
+or perhaps some tasks are waiting for user input and don't have anything to
 do. Still worse, some tasks may be trying to work together to complete an 
-objective, like in the \texttt{pmap} example above.
+objective, and rely on dynamic dependencies that change over time.
 
 Tasks however, in functional language verbiage, are typically called 
 {\em processes} due to the inherent isolation this term brings and the language 
 paradigm calls for. Instead, message passing is a common alternative to, and 
 sometimes abstraction of, shared
 memory. Message passing is akin to emailing a colleague a question. You operate
-asynchronously, and your colleague can check her mailbox when they want to and 
-respond when they want to. Meanwhile you are free to operate on an assumption 
+asynchronously, and your colleague can check her mailbox and then
+respond at her leisure. Meanwhile you are free to operate on an assumption 
 until proven wrong, wait until she gets back to you, or even ask someone else.
 
 While message passing is a good method for inter-process communication, it is
 also a nice mechanism for catching when two processes are working together.
 For example, consider a purely functional \texttt{pmap}, where all 
-workers are copied subsections of the list. Each worker thread will have no
-need to cooperate and thus no messages will need to be passed amongst them.
-However, in the event the function being mapped uses several processes, each 
-accessing a shared resource via message passing, we would see a close coupling.
+workers are given subsections of the list. Each worker thread will have no
+need to access another's subsection and thus no messages will need to be passed.
+However, what in the event the function being mapped on a particular subsection uses 
+several processes? Each may access a shared resource via message passing. 
+We would see a close coupling in this case.
 This highlights the granularity of process coupling, in that the \texttt{pmap}
-workers exibit a course-grained coupling which allows for greater parallelism,
-and the opposite is true for the processes which show close coupling.
+workers exhibit course-grained coupling, which allows the scheduler greater 
+flexibility to run them in parallel. The opposite is true for the processes 
+which show close coupling, like the mapped function.
 
-There exist a large number of mechanics that scheduling systems can use in an 
+There exists a large number of mechanisms that scheduling systems can use in an 
 attempt to improve work-load across all processing units. Some of these 
-mechanics use what's called a feedback system. Namely, they observe the 
+mechanisms use what's called a feedback system. Namely, they observe the 
 running behaviour of the application as a whole, (i.e. collect {\em metrics}),
-and modify themselves to operate better. We define this granularity of process
+and modify themselves to improve operation. We define the granularity of process
 coupling as \textbf{Process Cooperativity}.
 
 Process Cooperativity is an interesting metric by which to grade a system. In
@@ -69,7 +71,7 @@ scheduler able to recognize these clusters of cooperative and non-cooperative
 processes should have an edge over those that don't.
 
 Chapter~\ref{chap:background} will look first at the background of classical 
-scheduling systems as well as the recent feedback-enabled approaches. Then we 
+scheduling systems as well as the recent feedback-enabled approaches. Then, we 
 will also examine the types of message passing implementations and how these
 effect scheduling decisions, now that we are looking at process cooperativity.
 Chapter~\ref{chap:methodology} introduces our work on a language and compiler,

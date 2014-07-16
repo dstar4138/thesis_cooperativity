@@ -1,17 +1,18 @@
-\chapter{ErLam Operational Semantics}\nopagebreak
+\chapter{ErLam Operational Semantics}
 \index{Appendix!Erlam Operational Semantics@\emph{ErLam Operational Semantics}}%
 \label{app:semantics}
 %
 % The ErLam Semantics together with formatting.
 %
 \begin{center}
+\setlength{\extrarowheight}{10pt}
 \begin{tabular*}{\textwidth}{l c}
 %\begin{gather}
     \inference[Variable]{ E(x) \Rightarrow v }
                         { S,C,E : x \rightarrow S,C,E : v } &
 %
 %
-    \inference[Integer]{ }{ S,C,E : n \rightarrow S,C,E : n } \\[3ex]
+    \inference[Integer]{ }{ S,C,E : n \rightarrow S,C,E : n } \\
 %
 %
     \inference[Fun]{ }
@@ -20,36 +21,36 @@
 %
     \inference[Unwrap]{ }
                       { S,C,E : \textbf{(} e \textbf{)} \rightarrow 
-                        S,C,E : e } \\[3ex]
+                        S,C,E : e } \\
 %
 \multicolumn{2}{c}{
     \inference[NewChan]{ |C|+1 = n & C \downarrow n \Rightarrow chan_n }
                        { S,C,E : \textbf{newchan} \rightarrow 
                          S,C;\{chan_n\},E : chan_n } 
-} \\[3ex]
+} \\
 %
 \multicolumn{2}{c}{
     \inference[App(1)]{ S,C,E : e_1 \rightarrow S',C',E' : e'_1 }
                      { S,C,E : e_1 e_2 \rightarrow S',C',E' : e'_1 e_2 } 
-} \\[3ex]
+} \\
 %
 \multicolumn{2}{c}{
     \inference[App(2)]{ S,C,E : e_2 \rightarrow S',C',E' : e'_2 }
                       { S,C,E  : \textbf{fun}\: x \textbf{.} e_1 e_2 \rightarrow
                         S',C',E' : \textbf{fun}\: x \textbf{.} e_1 e'_2 } 
-} \\[3ex]
+} \\
 %
 \multicolumn{2}{c}{
     \inference[App(3)]{ }
                       { S,C,E : \textbf{fun}\: x \textbf{.} e_1 v \rightarrow
                         S,C,E;(x,v) : e_1 } 
-} \\[3ex]
+} \\
 %
 \multicolumn{2}{c}{
     \inference[If(1)]{ S,C,E : e_1 \rightarrow S',C',E' : e'_1 }
                      { S,C,E  : \textbf{if}\: e_1\: e_2\: e_3 \rightarrow 
                        S',C',E' : \textbf{if}\: e'_1\: e_2\: e_3 } 
-}\\[3ex]
+}\\
 %
     \inference[If(2)]{ v \geq 1 } 
                      { S,C,E : \textbf{if}\: v\: e_2\: e_3 \rightarrow 
@@ -63,34 +64,34 @@
     \inference[Swap(1)]{ S,C,E : e_1 \rightarrow S',C',E' : e'_1 }
                        { S,C,E : \textbf{swap}\: e_1 e_2 \rightarrow
                          S',C',E' : \textbf{swap}\: e'_1 e_2 } 
-}\\[3ex]
+}\\
 %%
 \multicolumn{2}{c}{
     \inference[Swap(2)]{ S,C,E : e_2 \rightarrow S',C',E' : e'_2 }
                        { S,C,E : \textbf{swap}\: c e_2 \rightarrow
                          S',C',E' : \textbf{swap}\: c e'_2 } 
-}\\[3ex]
+}\\
 %
 \multicolumn{2}{c}{
     \inference[Swap(3)]{ C(c, v) \Rightarrow \emptyset &
                          S \downarrow (S',e)}
                        { S,C,E : \textbf{swap}\: c v \rightarrow
                          S',C,E : e } 
-}\\[3ex]
+}\\
 %
 \multicolumn{2}{c}{
     \inference[Swap(4)]{ C(c, v) \Rightarrow (e, F) & 
                          \{S\uparrow f \Rightarrow S' : \forall f \in F \} }
                        { S,C,E : \textbf{swap}\: c v \rightarrow
                          S',C,E : e } 
-}\\[3ex]
+}\\
 %
 %
 \multicolumn{2}{c}{
     \inference[Spawn(1)]{ S,C,E : e \rightarrow S',C',E' : e' }
                         { S,C,E : \textbf{spawn} e \rightarrow 
                           S',C',E' : \textbf{spawn} e'} 
-}\\[3ex]
+}\\
 %
     \inference[Spawn(2)]{  S\uparrow f \Rightarrow S' }
                         { S,C,E : \textbf{spawn}\: f \rightarrow 

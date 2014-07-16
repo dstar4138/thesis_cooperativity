@@ -21,8 +21,10 @@ Scheduling Problem which is used in job-batch scheduling, and states:
     and an integer $D$ (the deadline), is there a function $S$ (the schedule)
     mapping $\mathscr{J} \rightarrow \{1, 2, \ldots D\}$ such that:
     \begin{enumerate}
-        \item For all $t \leq D, |\{J_i : S(J_i) = t \}| \leq P$. (\# of jobs scheduled per time slice is no more than \# of processors)
-        \item If $(J_i, J_j) \in C$, then $S(J_i) < S(J_j)$. (\# jobs cannot be scheduled before their dependencies)
+        \item For all $t \leq D, |\{J_i : S(J_i) = t \}| \leq P$.\\ 
+        (\ie~The quantity of processors is greater than the quantity of jobs per time slice.)
+        \item If $(J_i, J_j) \in C$, then $S(J_i) < S(J_j)$. \\
+        (\ie~Jobs cannot be scheduled before their dependencies.)
     \end{enumerate}
 \end{newdef}
 \noindent
@@ -59,7 +61,7 @@ the speed of the vehicle by applying or releasing the throttle based on readings
 of the current speed.
 
 In typical physical feedback loops there are two scenarios which need to be 
-avoided: resonance and rapid compensation. Resonance in physical systems is a 
+avoided: resonance and rapid compensation. Resonance in physical systems is 
 when a spike in the amplitude of a system's oscillation can cause it to fail at 
 a particular frequency. It can be seen that most controller 
 models will attempt to damp the adjustments to reduce oscillation which could 
@@ -150,7 +152,7 @@ substantial as two processes on different cores share a location to store and
 thus check for content. This shared location if accessed from two processes
 will have to be updated in possibly multiple locations and validated for 
 consistency at the cache level. However, if the two processes are local to the 
-same cache there will time saved in context switching and cache-line validation. 
+same cache there will be time saved in context switching and cache-line validation. 
 In indirect message passing the task is even worse as more than two processes 
 may need access to the same space.
 
@@ -166,16 +168,16 @@ Asymmetrical message passing is synonymous with Milner's Calculus of
 Communicating Systems \cite{milner1982calculus} or standard $\Pi$-Calculus 
 \cite{palamidessi1997comparing}, in that you have a sender, and then a receiver 
 which will both block on their respective functions around an anonymous channel 
-until the pass has been completed. This differs from a symmetrical message 
+until the pass has been completed. This differs from symmetrical message 
 passing in that the only operation on the channel is a blocking function which 
 swaps values with the process at the other end.
 
 It's worth noting that asynchronous message-passing can be simulated using 
-synchronous channels and a secondary buffer process. But by simulating it in 
+synchronous channels with a secondary buffer process. But by simulating it in 
 this fashion we, as the scheduler, elevate the problem of cache locality to a
 problem of process locality. The same methods suggested to alleviate some of the 
 lost efficiency due to cache locality \cite{markatos1991load,markatos1991memory}
-are the same techniques which could be simulated for process locality. Namely
+are the same techniques which could be simulated for process locality; namely
 process batching and process affinity.
 
 Note also, it is possible to simulate symmetrical message passing on asymmetrical 
@@ -195,10 +197,10 @@ semantics on symmetric synchronous message-passing.
 
 Operating Systems research have long been a leading front for scheduling topics. 
 However, most of the early concern in scheduling was devoted to job scheduling 
-over a group/shared system. As such their concerns have been largely devoted to 
+over a group/shared system. As such, their concerns were largely devoted to 
 fairness and job priority. Choosing processes based on job-length are also not
-a possiblity due to a lack of {\sl a priori} knowledge. Yet there are a few 
-topics of scheduling in general, which lend themselves to runtimes too, such as 
+a possibility due to a lack of {\sl a priori} knowledge. Yet there are a few 
+topics of scheduling in general, which lend themselves to run-times too, such as 
 how to distribute a set of processes across processing units.
 
 There are several mechanisms, first, to choose a process from the set of 
@@ -211,35 +213,35 @@ system as the interactivity of the system stalls to finish computation.
 To solve this problem a scheduler can $preempt$ a process after a certain amount
 of time has passed. This time slice is also called a time interval or a $quantum$
 and has quite a literature involved with its selection. \todo{cite}
-Too short doesn't allow a process enough time to progress and the runtime system
+Too short, doesn't allow a process enough time to progress and the runtime system
 starts to spend more time context switching than computation. Too long and the
 preemptive-scheduler effectively becomes non-preemptive as all computation-bound
 processes hog the CPU from the interactive ones.
 
-After preempting the process, the scheduler has a choice as to where the process
+After preempting a process, the scheduler has a choice as to where the process
 is placed. The common choice is to place it at the end of the queue, his 
 behaviour is called Round-Robin. It is a common choice, not necessarily because
 of its simplicity, but due to its fairness. Each process in the queue is 
 guaranteed an equal amount of time on the CPU and starvation of processes can 
 therefore never happen. However, this isn't always the case as it's based on how
-process spawning is implementated. For example, if the newly spawned process
+process spawning is implemented. For example, if the newly spawned process
 was placed at the front of the queue or preempts the currently running process,
 a fork-bomb like process could hog the CPU and effectively shut out all other 
 processes. Spawning to the end of the queue is the only effective way to avoid
-these scenarios.
+these scenarios in Round-Robin.
 
 This, however, has all been using the assumption of a single process queue. While
-it is possible to implement a single global queue for all $N$ schedulers, we will
-eventually get into an issue of contention where all the schedulers are 
+it is possible to implement a single global queue for all $P$ processors, we will
+eventually get into an issue of contention where all the processors are 
 attempting to take or add a process to the queue while another one is. However,
 in the event of multiple process queues there needs to be a mechanism in place 
-for dispersing the processes across them all in an even or at least fair way.
+for dispersing the processes across them all in an even or fair way.
 
 There are two mechanisms for this, \emph{work-sharing} and 
 \emph{work-stealing}. In work-sharing, the processor with more than enough work
 to do, will offload any new processes onto another (either randomly or by some
 heuristic). In work-stealing, it's the scheduler with the empty or small process 
-queue that wishes it had more work to do that contacts another scheduler (either 
+queue that contacts another scheduler (either 
 randomly or by some heuristic) so as to steal one or more. In the case of 
 work-stealing the victim processor can be working on a process while another
 processor steals from it. This means that the cost of performing the process
@@ -254,7 +256,7 @@ we would like to highlight as they are provided by the ErLam toolkit:
 Shared-Queues and Interrupting-Steal. The Shared-Queues work-stealing scheduler
 allows other processes to directly access an end of their local process queue. 
 This means, while a processor is potentially popping from one end of the queue,
-another could be stealing from the other (assuming a lock-free doubly-ended 
+another could be stealing from the other end (assuming a lock-free doubly-ended 
 queue like structure).
 
 The alternative, Interrupting-Steal, has gone by several names like 
@@ -267,7 +269,7 @@ it during the steal.
 
 \section{Feedback-Enabled Scheduling}
 
-Operating systems have also had motivation for designing intellegent 
+Operating systems have also had motivation for designing intelligent 
 feedback-enabled schedulers. As systems move away from perfect knowledge about 
 the jobs it will be running, scheduling has needed to make guesses about the 
 length of time jobs will need to run. A well-known example to this effect is
@@ -280,7 +282,7 @@ subsequently demoted if they ended up running their whole designated quantum.
 However, a process may inadvertently game the system by running just up to the
 quantum before yielding. To fix this, after some time, $S$, the MLFQ is reset 
 and all processes are boosted to the highest priority. This helps with adapting 
-to new system behaviour which may arrise as well as coping with process 
+to new system behaviour which may arise as well as coping with process 
 starvation.
 
 The goal of the MLFQ model is two-fold: to prefer interactive processes and 
@@ -294,7 +296,7 @@ priority queue is using. If a lower priority queue is being starved, it could
 trigger a reset \cite{hoganson2009reducing}.
 
 The MLFQ idea in general is highly maliable and can be adapted to a number of 
-situations though. As such it transferred well into the level of runtime 
+situations. As such it transferred well into the level of runtime 
 systems quite well. Concurrent ML (CML), uses this idea of a MLFQ to improve 
 application interactivity. 
 
@@ -306,16 +308,16 @@ difference: CML uses process tagging to mark whether a process has
 communicated in the past. 
 
 As all newly spawned processes are appended to the
-primary queue, CML tells the difference between these newcommers and the
+primary queue, CML tells the difference between these newcomers and the
 short-running processes by tagging any process which makes a communication, or
 demoting it if not. A promotion can only happen if a previously marked process
 gets a demotion. However, the demotion process of a marked process is just a 
 mark removal. Thus, the primary queue is essentially two queues in one. 
 
 CML's dual-queue system has the effect of reacting to new processes by testing 
-them. It then makes an assumption about their behaviour immediately. However, a
+them for longevity. It then makes an assumption about their behaviour immediately, but a
 process can change the scheduler's first impression of them through consistent
-behaviour to the contrary. A marked communication-bound process, will, if it
+behaviour to the contrary. A marked communication-bound process will, if it
 continues to use it's entire quantum, eventually be demoted. A computation-bound
 process can eventually be promoted and marked as a communication-bound if it 
 continues to communicate. Thus the system eventually adapts it's behaviour to
@@ -329,29 +331,29 @@ This has two side effects: cache-affinity, and informed work-stealing.
 
 The goal of the KRoC scheduler is primarily to take advantage of cache-locality
 when scheduling processes. It does so by reducing the chances for cache-misses
-by groups processes which have a higher likelihood to communicate. The rational
+by grouping processes which have a higher likelihood to communicate. The rational
 being, if two processes communicate, the data which is being shared will be in
 cache unless too many context-switches forces it out, thus place them close
 together in the queue. As a side effect of this, instead of stealing single 
-processes, the KRoC schedulers will steal batches from eachother. This results
+processes, the KRoC schedulers will steal batches from each-other. This results
 in a quicker equilibrium in work-load saturation than stealing single processes.
 
 Process migration between batches is done in two ways: 
 \begin{inparaenum}
-\item A channel synchronization and causes the process to be descheduled from
-one scheduler to the one which unblocks it.
-\item More than one process in a batch is active, so the head of the batch
-becomes a new one.
+\item A channel synchronizes and causes the process to be de-scheduled from
+one scheduler and sent to the one which unblocks it.
+\item A batch is split when more than one process in a batch is active, by 
+popping the head of the batch into a new one.
 \end{inparaenum}
-We explain this descheduling method in greater detail in 
+We explain this de-scheduling method in greater detail in 
 Section~\ref{sec:channel implementations}, as we've implemented this mechanic for
 testing purposes. However, the mechanism absorbs a blocking process into the 
 channel it's blocked on until another process unblocks it. At that time, the
 scheduler which unblocked it, now becomes its owner. Occam-$\pi$ uses this 
 mechanism as a method to build up batches of cooperating processes.
 
-Ritson \etal mention however, that without a method to break up the batches, the
-system will eventually become one large batch. Thus, whenever a new process 
+Ritson \etal~mention however, that without a method to break up the batches, the
+system will eventually become one large batch. Therefore, whenever a new process 
 joins a batch, the batch is allowed to split if there are more than one currently
 active processes within it (\eg~non-blocked or waiting processes). Thus, if a
 parent spawns a large number of processes (\ie~passed the batch size limit), the
@@ -360,33 +362,68 @@ parent can start a new batch, while the batch of children can be stolen.
 While KRoC's primary goal was cache-affinity, and CML's was optimizing 
 interactivity, their feedback systems enabled a closer to optimal schedule than
 would have otherwise been possible with a classical scheduler focused on 
-work-saturation. We now discuss another feedback metric, process cooperativity, 
+work-saturation. We now discuss another feedback metric, 
+\emph{Process Cooperativity}, 
 which KRoC's scheduler, and our algorithms presented later, were able to 
 benefit from.
 
 \subsection{Cooperativity as a Metric}
 
-A feedback metric provides a reading to determine a particular quality about
-the system which needs to be graded. A metric which stands out in 
-process-oriented programming, is the recognition of fine and course grained 
-parallelism. We call this metric the degree of cooperativity.
+Process Cooperativity stands out as a critical feedback metric in process-oriented
+programming. In fact the KRoC scheduler showed this through their performance gains. 
+They showed that when a scheduler can recognize when two or more processes form
+a subcomponent, treating them that way improves cache utilization, reduces context 
+switching time, and makes for smarter work-stealing. 
+From this, we can take that recognizing cooperativity gives a good mechanism for
+determining a potential for fine-grained parallelism. 
 
-Note however, that both a system and a singular process can be said to have a 
-degree of cooperativity. From definition~\ref{def:degree of cooperativity}, 
-we see that
-a highly cooperative system (one with a high degree of cooperativity) is one
-were the \emph{rate} of interaction between the set of processes and the
-set of channels is greater than some arbitrary value. This value isn't 
-strictly neccessary if our goal is to adapt to changes, as we can compare the 
-rate to it's previously measured value to get a trend. A singluar process can 
-be said to have a high degree of cooperativity if its \emph{frequency} of 
-interaction with the channel set is higher than the system average. 
+However, we would like to revisit the concern Ritson \etal~expressed regarding 
+when a component becomes too large. They introduced the mechanism of splitting
+batches based on an arbitrary max size of a batch, without regard to the 
+substructure of the component expressed by the processes cooperation.
 
-Namely, a system which exhibits finely-grained parallelism, will have highly
-cooperative processes. The recognition of which has consequences for the 
-possible schedules we should be allowed to produce. It is not enough to 
-recognize the degree to which the whole system cooperates, but we must also
-capture the subcomponents and their structure as defined by the connections
-of processes.
+\begin{figure} 
+\centering
+\includegraphics[scale=0.4]{RingVCluster.pdf}
+\caption{Two subcomponents formed by process cooperativity. Black dots 
+represent processes, and the white dots represent a channel.}
+\label{fig:RingVCluster}
+\end{figure}
 
+To illustrate this problem, figure~\ref{fig:RingVCluster} visualizes two 
+possible components which may occur naturally. On the left we get a ring like
+structure, where the dependency of one process is the one to it's right.
+We can abstractly envision a data-flow like application which acts like
+a token ring network. On the right we have a cluster of processes, all 
+communicating with a random other on the same channel. We can envision this
+as an abstraction over a single shared resource.
+
+Both the ring and cluster subcomponents would gradually become grouped into a 
+KRoC batch. This is optimal for the ring component, no matter how large the 
+ring may be. There is nothing to be gained from splitting it into multiple 
+batches, and by doing so, we may actually hinder it. However, the cluster 
+component may improve if given the chance for more parallelism, this would
+depend entirely on the longevity of the processes.
+KRoC attempts to account for this by recognizing if there are multiple active
+processes in a batch, and splitting an arbitrary one into a new batch (which
+ever happens to be at the head of the process queue). 
+
+While this may not be avoidable based on observing structure alone, we may now 
+run into an issue. Suppose all processes are active, but run for a length of time under their
+designated time quantum. At every preemption, when the size of the batch forces 
+a split, we will create a singleton batch which must be reabsorbed after a 
+single run. Ignoring the overhead, fairness properties also start to percolate.
+Namely, the processes within the batch after being trimmed will get preferential
+treatment to the processes in the singleton queue. Especially in the case of 
+a single processor. Inevitably, the worst-case scenario for KRoC is below that
+of the work-stealing scheduler.
+
+From this we can take that the longevity of a process can effect it's 
+cooperativity. In fact, looking at 
+definition~\ref{def:degree of cooperativity}, we can apply it to a single 
+process too. Now, a \emph{process' degree of cooperativity} can be defined as 
+its \emph{frequency} of interaction with a set of channels.
+Thus, a cooperativity-conscious scheduler should also want to consider both
+the longevity of a process, and which channels it communicates with. This would
+give a much more complete picture of cooperativity.
 

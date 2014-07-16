@@ -4,7 +4,7 @@
 
 \section{Overview}\label{sec:method overview}
 
-To examine the effects of cooperativity conscious schedulers we needed to have 
+To examine the effects of cooperativity-conscious schedulers we needed to have 
 a method for comparing several scheduler implementations without needing to 
 modify the underlying implementation of processes, channels, or application
 source code. It would be also beneficial if our solution were able to visualize
@@ -16,7 +16,7 @@ scheduler mechanisms and an optional logging system which can be fed into a
 custom report generator.
 We break up our solution description into three parts; 
 Section~\ref{sec:erlam}
-will duscuss our language syntax and semantics. It will also demonstrate our
+will discuss our language syntax and semantics. It will also demonstrate our
 Runtime Scheduler API by breaking down the CML Interactivity scheduler. 
 Section~\ref{sec:simulation and visualization} 
 will go more into depth about
@@ -95,7 +95,7 @@ review.
 Also, note the possible steps \emph{swap} can take: either returning a block
 or another expression and a set of functions. On a semantic level,
 either event is transparent and results in blocking behaviour until a successful swap.
-However, in the former's case, the channel has blocked and the only course of 
+However, in the former case, the channel has blocked and the only course of 
 action for the scheduler is to get another expression to work on. In the 
 later's case, we have an expression to work on, but we also may have unblocked 
 other processes in the process so we need to reschedule them. 
@@ -142,12 +142,12 @@ first. It may even be possible that $0$ asks to swap several times before $42$
 even tries. In fact, the {\sl Blocking} channel allows this behaviour of 
 multiple swap attempts.
 We can see an illustration of this in figure~\ref{fig:blockchan-example}.
-The first row shows the arbitrary timeslice $t_1$ where the process swapping $0$, 
+The first row shows the arbitrary time-slice $t_1$ where the process swapping $0$, 
 $p0$, first contacts the channel with its value. The process my be scheduled again,
-repeatedly, to check the channel up to some arbitrary timeslice $t_{n-1}$. At
+repeatedly, to check the channel up to some arbitrary time-slice $t_{n-1}$. At
 $t_n$ however, the process swapping $42$ requests a swap and immediately gets a
 value back and logs that the process which it swapped with can get its value
-when it returns. Thus on the third line, for any arbitrary timeslice in the 
+when it returns. Thus on the third line, for any arbitrary time-slice in the 
 future $t_{>n}$, the process $p0$ can ask for a swap and get the value $p1$ 
 stored.
 
@@ -167,13 +167,13 @@ immediately unblock the channel.
     \includegraphics[scale=0.25]{AbsorbSwap2.pdf}
     \label{fig:absorbchan-example}
 }}
-\caption{Channel operation over time. Note abitrary time-slice $t_1$ is when the 
+\caption{Channel operation over time. Note arbitrary time-slice $t_1$ is when the 
 first swap operation is evaluated.}
 \end{figure}
 
 The {\sl Blocking} channel effectively simulates a common spin-lock over a shared 
 piece of memory. These channels represent a worst-case, albeit common, application 
-implemenatation for concurrent software. Even so, they do allow for some hints
+implementation for concurrent software. Even so, they do allow for some hints
 to the scheduler, which can be taken advantage of. Alternatives on the spin-lock 
 could be added to the ErLam toolkit though, such as a push-notifying semaphore, 
 however we provide a simpler and functionally more common alternative: the process 
@@ -184,14 +184,8 @@ process to get to the channel will get absorbed by it. The scheduler in
 question will be out a process, and but the scheduler which unblocks the channel 
 by arriving second will get back two processes (the one performing the swap, 
 and the absorbed one). In terms of scheduling efficiency this type of message
-passing channel has provideded enormous improvements for runtimes which do not
+passing channel has provided enormous improvements for run-times which do not
 wish to introduce channel inspection into their scheduler.
-
-%This channel implementation gets closer to taking advantage of
-%cooperativity as it will relocate communicating processes to the scheduler 
-%which has another process to unblock it. But with this comes the added overhead 
-%of relocating processes and if the scheduler uses a single queue there is no
-%added benefit (at least with $swap$ channels). 
 
 \subsection{The Scheduler API}\label{sec:the scheduler api}
 
@@ -230,7 +224,7 @@ running on, along with any parameters the user specified at runtime. The
 result of this function is to be the scheduler layout. 
 
 For example, let's assume we are running our application on a Intel Core i7 
-which has 4 logical cores which support hyperthreading. The \emph{layout/2}
+which has 4 logical cores which support hyper-threading. The \emph{layout/2}
 function will be given the following structure: 
 
 {\footnotesize 
@@ -253,12 +247,12 @@ To spin up an instance of the scheduler on the particular core, the
 \emph{init/1} function is called which should return the scheduler's state. 
 As Erlang is a functional language, we use this state object as a means to
 maintain some global state for each scheduler process by threading it through
-all subsequent callback calls. Upon shutdown, the oposite function 
+all subsequent callback calls. Upon shutdown, the opposite function 
 \emph{cleanup/1} is called.
 
 The last two functions are the most interesting as they pertain to the core of
 what each new scheduler provides, namely how to evaluate the world in a given
-timeslice (\emph{tick/2}) and how a new process should be handled 
+time-slice (\emph{tick/2}) and how a new process should be handled 
 (\emph{spawn\_process/2}). An explanation of these callbacks is best done 
 through example.
 
@@ -362,10 +356,10 @@ on which to compare the behaviour of all subsequent feedback-enabled schedulers.
                 a dequeue for a very short window of time, but involves 
                 accessing "remote" memory.
             \item {\bf Interrupting-Steal {\sl (MTRRWS-IS)}} \\
-                Simulates sending a theif-process over to another scheduler.
+                Simulates sending a thief-process over to another scheduler.
                 When the victim scheduler preempts or yields their current process
                 and selects the next one from the queue, they will instead get a
-                theif process which will syphon a process away to the theif's home
+                thief process which will syphon a process away to the thief's home
                 scheduler.
         \end{itemize}
 \end{itemize}
@@ -394,12 +388,12 @@ The second primary goal of the ErLam toolkit was the ability to visualize
 how a scheduler proceeded to evaluate an ErLam application. We therefore needed
 a way to log all events over time, including unique per-scheduler events, such 
 as the size of both the primary and secondary queues in the CML scheduler. It 
-would also be adventagous to be as finely grained as possible and leave it up to 
+would also be advantageous to be as finely grained as possible and leave it up to 
 the visualization mechanism to dial the accuracy.
 
 We also needed a sample set of application simulations to run our set of 
 schedulers against. These simulations needed to be minimal to reduce
-exteneous data but still demonstrate various levels of cooperativity and phase 
+extraneous data but still demonstrate various levels of cooperativity and phase 
 changes. We would like to also have the ability to compose test cases 
 together to better create realistic work-sets for the schedulers to react to.
 
@@ -423,7 +417,7 @@ could look like this:
 \end{verbatim}
 }
 \noindent
-The timestamp given is a concatenation of the second and microsecond that the
+The time-stamp given is a concatenation of the second and microsecond that the
 event happened in. The lpu is the scheduler which caused the event, unless it's
 a channel based event, such as a \emph{channel\_blocked} event, in which case it's
 the channel ID. 
@@ -454,6 +448,7 @@ Process Queue Length per LPU over time,
 Reductions (Computation Density) over time, and
 Scheduler State (running vs waiting) over time.
 
+\clearpage
 \begin{wrapfigure}{r}{0.5\textwidth}
 \centering
 \includegraphics[scale=0.35]{pring-erlam_sched_multi_ws-commdense.pdf}
@@ -466,14 +461,14 @@ Communication Density for example (see figure~\ref{fig:commdense-example},
 creates a heatmap based on the frequency of
 \emph{yield} events which occur whenever a process attempts a $swap$. Each cell
 of the heatmap is a color intensity based on the number of \emph{yield} events 
-seen in a given timeslice for a given LPU. This timeslice is where the averages
+seen in a given time-slice for a given LPU. This time-slice is where the averages
 come into play. R heatmaps have a max number of colors of $9$, so any range we 
 select must be modulo $9$. However, the constant multiplicand is based on the
-mean amount of time $N$ ticks take place accross each LPU.
+mean amount of time $N$ ticks take place across each LPU.
 We can obviously tune the accuracy of these averages on a per-LPU basis by
-modifying $N$. Anecdotally, this turned out to be adventagous on several 
+modifying $N$. Anecdotally, this turned out to be advantageous on several 
 occasions when debugging scheduler implementations. As decreasing the number of
-ticks to average for, pushed the number of samples (and thus accuracy) higher.
+ticks to average over, increased the number of samples and thus accuracy.
 
 \subsection{Cooperativity Testing}\label{sec:cooperativity testing}
 
@@ -489,10 +484,10 @@ processes. On the other side of the axis, we would have a system which had
 absolutely no parallelism possible. We called this behaviour $PRing_N$ (figure~\ref{fig:PRing}), as it
 would spawn $N$ processes in a ring formation and pass a token in one direction.
 Each process has a channel to its left and right and would synchronize to the 
-right until it recieves a token to continue. 
+right until it receives a token to continue. 
 
 $PRing_N$ also gives an example of full-system cooperation, except we would 
-instead like some degree of parallelism possible. To expirement with that, we 
+instead like some degree of parallelism possible. To experiment with that, we 
 would have to throttle the degree of cooperativity. This behaviour is called
 $ClusterComm_{(N,M)}$ (figure~\ref{fig:ClusterComm}) as it spawns $N$ processes and $M$ channels which can be
 synchronized with by any process. Note for this system to work with swap 
