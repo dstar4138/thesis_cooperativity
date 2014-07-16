@@ -2,18 +2,55 @@
 \index{Results and Discussion@\emph{Results and Discussion}}%
 \label{chap:results}
 
-
-
-
 \section{Evaluation}\label{sec:results-evaluation}
 
+\todo[inline]{Evaluation of each scheduler will consist of complete testing:\\
+- Run $PTree_N$ for $1 \leq N \leq P+1$ where $P$ is number of processors.\\
+- Run $PRing_N$ for $N \in \{ 1, P, B-1, B, 2*B \}$ where $B$ is max batch size where applicable.\\
+- Run $ClusterComm_{(N,M)}$ for $N \in \{ 2, 4, ..., P, B, 2*B \}$ and $ 1 \leq M \leq \lfloor N / 2 \rfloor$ \\
+- Run $ChugMachine_N$ for $1 \leq N \leq P+2$  \\
+- Run $JumpShip_{(W,H)}$ for $2 \leq W \leq P+1$ and $1 \leq H \leq 3$ 
+}
 
+\todo[inline]{Composing simulations may lead to interesting results though. 
+I would like to test, at least: \\
+
+- $UserInput$ and $ChugMachine$ to examine Interactivity.\\
+- $PTree$ and $ChugMachine$ or $ClusterComm$ to have both structured subcomponents, and otherwise.
+}
 
 \subsection{Classical Schedulers}\label{sec:results-evaluation-classical}
 
-\subsection{Feedback Schedulers}\label{sec:results-evaluation-feedback}
+\todo[inline]{ There are 5 schedulers, STRR, STDQ, MTRRGQ, MTRRWS-SQ, MTRRWS-IS which 
+need to be evaluated. However, I wont know what's interesting until after all tests have
+been run.}
+
+\subsection{Cooperativity Feedback Schedulers}\label{sec:results-evaluation-feedback}
+
+\todo[inline]{ There are 3 schedulers, Longevity-Batcher, Channel-Pinner, Graph Shuffling.
+I will primarily be looking at:\\
+
+- How does Longevity Batcher degrade? Does it turn into MTRRWS?\\
+- How quickly and thoroughly can Channel-Pinner saturate the cores with work?\\
+- How does Graph Shuffling handle large and small process queues?
+}
 
 
 \section{Comparisons}\label{sec:results-comparisons}
 
+\todo[inline]{ Including the above, I will want to compare:\\
+- MTRRWS-SQ and MTRRWS-IS \\
+- STRR and MTRRGQ \\
+- Long-Batcher and Channel-Pinner in terms of work-stealing \\
+- All feedback schedulers in terms of: execution time (tick count), saturation, evenness of work-load.
+}
 
+\section{A Comment on Swap Channels}\label{sec:results-swap-channels}
+
+\todo[inline]{Namely, we're using an odd channel implementation that most 
+languages do not choose. How did that work out for us?\\
+
+- In implementing example applications, \\
+- In terms of applicability of findings to other message-passing implementations,\\
+- etc.
+}
