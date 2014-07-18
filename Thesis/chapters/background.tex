@@ -2,102 +2,6 @@
 \index{Background\emph{Background}}%
 \label{chap:background}
 
-\section{A Note on Control Theory}
-\label{sec:a note on control theory}
-
-Since the formalization of feedback driven systems and the advent of 
-Cybernetics, multiple fields have attempted to mold these principles to their 
-own models; and run-time schedulers are no exception. This is due, in part, from
-process scheduling in parallel systems being fundamentally an NP-Complete 
-problem \cite{bruno1976computer}. 
-
-Note that the base case of runtime scheduling is called the Multiprocessor 
-Scheduling Problem which is used in job-batch scheduling, and states:
-\begin{newdef}
-    {\bf MULTIPROCESSOR SCHEDULING PROBLEM}\\ 
-    Given a set of jobs $\mathscr{J} = (J_1, J_2, \ldots, J_n)$, a directed 
-    acyclic graph (lattice) $L = (\mathscr{J}, C)$ (indicating job dependence,
-    and thus precedence constraints), an integer $P$ (the number of processors) 
-    and an integer $D$ (the deadline), is there a function $S$ (the schedule)
-    mapping $\mathscr{J} \rightarrow \{1, 2, \ldots D\}$ such that:
-    \begin{enumerate}
-        \item For all $t \leq D, |\{J_i : S(J_i) = t \}| \leq P$.\\ 
-        (\ie~The quantity of processors is greater than the quantity of jobs per time slice.)
-        \item If $(J_i, J_j) \in C$, then $S(J_i) < S(J_j)$. \\
-        (\ie~Jobs cannot be scheduled before their dependencies.)
-    \end{enumerate}
-\end{newdef}
-\noindent
-In runtime scheduling however, the deadline, $D$, is incremented for each timeslice we
-pass. As such, it is possible for $|\mathscr{J}|$ and thus $C$ to fluctuate 
-causing a need to re-find $S$. The continuous nature of this problem complicates 
-the scheduling problem substantially.
-Instead, focus has been more fruitful when pursuing the optimization of various 
-measurements using some particular objective function 
-\cite{garey1978performance} 
-to tune for particular edge cases. As such, scheduling based on such feedback 
-metrics is not a new practice \cite{dietz1997use}.
-
-\begin{figure}[htp]
-\centering
-\includegraphics[scale=0.55]{\detokenize{Feedback_loop_with_descriptions.pdf}} %detoken because of '_' char.
-\caption{A classical feedback loop representation.}
-\label{fig:controller}
-\end{figure}
-
-There is a big distinction though, which can be made between the effects of 
-control theory in classical cybernetic applications versus that of run-time 
-systems. This is primarily in the adaptation of the controller in the generic 
-feedback loop (figure~\ref{fig:controller}).
-
-The classic feedback loop starts by making reading the current state of the 
-system and applying some operation to it (via the controller). The operation in
-some way affects the system which can be observed by measuring particular 
-metrics. These measurements can be fed back to the controller along with 
-details about the system's output. If the controller wishes to modify the system
-further via the same or an opposite operation, it may do so. The canonical 
-example is that of an automobile's cruise control. The controller can correct
-the speed of the vehicle by applying or releasing the throttle based on readings
-of the current speed.
-
-In typical physical feedback loops there are two scenarios which need to be 
-avoided: resonance and rapid compensation. Resonance in physical systems is 
-when a spike in the amplitude of a system's oscillation can cause it to fail at 
-a particular frequency. It can be seen that most controller 
-models will attempt to damp the adjustments to reduce oscillation which could 
-cause resonance or sharp spikes in behavior based on its output. This is due to 
-the limitations of the physical space in which they are having to work. But 
-frequent or extreme damping or can stress physical systems to the point of
-failure as well.
-
-However, in run-time scheduling systems we would very much like to do the 
-opposite. We would prefer tight oscillations or consistent behavior of our 
-runtime so as to achieve minimal overhead from our modifications. We can also 
-compensate, to reach our reference signal, as quickly as we need to as there 
-are no physical restrictions for our modifications.
-As such these feedback systems are closely coupled with the design of the 
-scheduling algorithm, rather than being an interchangeable sensor, and controller
-modules. As such we make an effort to trace the feedback optimizations during
-our evaluation and explanation of the scheduler designs.
-
-Another distinction must be made as far as the level of foresight the scheduling 
-systems have, at least, within this paper. There is a spectrum of clairvoyance 
-in classical job-scheduling, in that on one end, job-schedulers have full 
-foresight over the jobs which will enter the queue and their order 
-(\ie~the full $\mathscr{J}$ set will always be known). These schedulers have the 
-opportunity to optimize for future events (by constructing a valid lattice $L$ 
-based on the current time $t \leq D$), which is a luxury the scheduling systems 
-that this paper discusses do not have.
-
-However, as it is a spectrum, there is a single point of knowledge this subrange 
-of schedulers can assume. Namely, that the first job will always be the last, 
-and all other jobs will spawn from it. Thus there will always be only a single 
-process in the queue at the beginning. This is true as the runtime will always 
-require an initial primary process (\eg~the `main' function), and once that 
-function is completed, the system is terminated (despite the cases of unjoined
-children). Apart from this, all other insights will need to be gleaned from the 
-evaluation of this initial process.
-
 \section{Message-Passing}
 
 In concurrent systems, there are a number of methods for inter-process 
@@ -137,24 +41,29 @@ message into a shared or global memory space for another process to access
 with some lower level atomic data structures such as a double-ended queue. But 
 in either a locked or lock-free manner, the process performing the send still 
 forces a block somewhere along in the operation, to push the message into some
-shared storage. As asynchronous operations require the additional capabilities 
-to both store and resend a message at a later time.
+shared storage. Asynchronous operations require the additional capabilities 
+to both store and resend a message at a later time, so at some point, a process
+will need to synchronize; this will therefore, inevitably need to be behind the 
+scenes.
 
-In terms of scheduling, a language with asynchronous message passing does not 
+In terms of scheduling, a language with asynchronous message passing will not 
 hint much in regard to whether progress is being made. If a consumer process
 requires a value before continuing and therefore is repeatedly trying to receive 
 from the channel, the schedule for the system would be better served by coming 
 back to that process at a later time rather than repeatedly looping. However,
-asynchronous does benefit from process placement so as to take advantage of 
-possible gains in cache affinity \cite{debattista2002cache}. For example, the 
+asynchronous can benefit from process placement so as to take advantage of 
+possible gains in cache affinity \cite{debattista2002cache}. 
+
+For example, the 
 effects of the cache on direct message passing (\eg~a process mailbox) can be 
-substantial as two processes on different cores share a location to store and
-thus check for content. This shared location if accessed from two processes
+substantial if two processes on different cores share a location to store and
+therefore check for content. This shared location, if accessed from two cores
 will have to be updated in possibly multiple locations and validated for 
 consistency at the cache level. However, if the two processes are local to the 
 same cache there will be time saved in context switching and cache-line validation. 
-In indirect message passing the task is even worse as more than two processes 
-may need access to the same space.
+In indirect message passing the task can be even worse as it's common that more
+than two processes may need access to the same space. Note, however, that recognizing
+cache effects can also lead to gains in synchronous message passing.
 
 In synchronous message passing, a process must meet another at a provided 
 rendezvous point but can either be symmetrical or asymmetrical. Note that the 
@@ -198,17 +107,37 @@ semantics on symmetric synchronous message-passing.
 Operating Systems research have long been a leading front for scheduling topics. 
 However, most of the early concern in scheduling was devoted to job scheduling 
 over a group/shared system. As such, their concerns were largely devoted to 
-fairness and job priority. Choosing processes based on job-length are also not
-a possibility due to a lack of {\sl a priori} knowledge. Yet there are a few 
-topics of scheduling in general, which lend themselves to run-times too, such as 
-how to distribute a set of processes across processing units.
+fairness and job priority. They frequently had {\sl a priori} knowledge regarding
+their jobs which gave them an opportunity to decide on a complete schedule 
+beforehand.
 
-There are several mechanisms, first, to choose a process from the set of 
-processes. We could use a First-Come, First-Serve method, which means ordering 
-the processes in a queue and running them as they come. However, if a particular
+\begin{figure}
+    \[
+        \inference{ P \xRightarrow{\sigma} P_i \uplus P' &
+                    P_i \Downarrow \sigma \rightarrow (P_i',\sigma') &
+                    \{ P_i' \}  \uplus_{\sigma'} P' \rightarrow P''
+                  }
+                  { S(\sigma, P ) \rightarrow S(\sigma', P'') }
+    \]
+    \caption{A Runtime scheduler semantics.}
+    \label{fig:scheduler-step}
+\end{figure}
+
+Instead the systems for which we can schedule must be defined differently.
+A runtime scheduler may only have access to the processes which it observes, 
+and can only speculate about their future based on their current state and any
+recorded historical information. These schedulers can be imagined to have a 
+simple step like that of figure~\ref{fig:scheduler-step}. In other words, for
+each time step, a scheduler must pick a process using what it knows about the 
+world, and reduce it. 
+
+One possible selection mechanism could be to use a First-Come, First-Serve method, 
+which means ordering 
+the processes in a queue and running them as they spawn and enqueuing them as they 
+block. However, if a particular
 process is computationally intensive, processes involved with user-interaction 
 for example would have to wait. This results in an obvious lag or hang in the 
-system as the interactivity of the system stalls to finish computation. 
+system as the interactivity of the system stalls to finish computation.
 
 To solve this problem a scheduler can $preempt$ a process after a certain amount
 of time has passed. This time slice is also called a time interval or a $quantum$
@@ -265,6 +194,58 @@ dummy process to one or more other schedulers so when they run them they steal
 a process and send it back to its parent process. This reduces the overhead 
 involved in synchronizing on the victim's process queue, but will instead stall
 it during the steal.
+
+\section{A Note on Control Theory}
+\label{sec:a note on control theory}
+
+There has never been a scheduler which works optimal in all cases. Instead,
+focus has been the most fruitful when pursuing the optimization of various 
+measurements using some particular objective function 
+\cite{garey1978performance} 
+to tune for particular edge cases. As such, scheduling based on such feedback 
+metrics is not a new practice \cite{dietz1997use}.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=0.55]{\detokenize{Feedback_loop_with_descriptions.pdf}} %detoken because of '_' char.
+\caption{A classical feedback loop representation.}
+\label{fig:controller}
+\end{figure}
+
+There is a big distinction though, which can be made between the effects of 
+control theory in classical cybernetic applications versus that of run-time 
+systems. This is primarily in the adaptation of the controller in the generic 
+feedback loop (figure~\ref{fig:controller}).
+
+The classic feedback loop starts by making reading the current state of the 
+system and applying some operation to it (via the controller). The operation in
+some way affects the system which can be observed by measuring particular 
+metrics. These measurements can be fed back to the controller along with 
+details about the system's output. If the controller wishes to modify the system
+further via the same or an opposite operation, it may do so. The canonical 
+example is that of an automobile's cruise control. The controller can correct
+the speed of the vehicle by applying or releasing the throttle based on readings
+of the current speed.
+
+In typical physical feedback loops there are two scenarios which need to be 
+avoided: resonance and rapid compensation. Resonance in physical systems is 
+when a spike in the amplitude of a system's oscillation can cause it to fail at 
+a particular frequency. It can be seen that most controller 
+models will attempt to damp the adjustments to reduce oscillation which could 
+cause resonance or sharp spikes in behavior based on its output. This is due to 
+the limitations of the physical space in which they are having to work. But 
+frequent or extreme damping or can stress physical systems to the point of
+failure as well.
+
+However, in run-time scheduling systems we would very much like to do the 
+opposite. We would prefer tight oscillations or consistent behavior of our 
+runtime so as to achieve minimal overhead from our modifications. We can also 
+compensate, to reach our reference signal, as quickly as we need to as there 
+are no physical restrictions for our modifications.
+As such these feedback systems are closely coupled with the design of the 
+scheduling algorithm, rather than being an interchangeable sensor, and controller
+modules. As such we make an effort to trace the feedback optimizations during
+our evaluation and explanation of the scheduler designs.
 
 
 \section{Feedback-Enabled Scheduling}
