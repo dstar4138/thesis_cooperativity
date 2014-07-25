@@ -45,12 +45,72 @@ I will primarily be looking at:\\
 - All feedback schedulers in terms of: execution time (tick count), saturation, evenness of work-load.
 }
 
+\subsection{Channel Implementations}\label{sec:results-channel-implementations}
+
+\todo[inline]{ There are 3 mechanisms provided by ErLam which modify the channel
+  implementation: Blocking Channels, Absorption Channels, and then channel pinning
+based on a spreading algorithm. In this section I'd primarily like to look at the
+first two.
+}
+
 \section{A Comment on Swap Channels}\label{sec:results-swap-channels}
 
-\todo[inline]{Namely, we're using an odd channel implementation that most 
-languages do not choose. How did that work out for us?\\
+Swap channels provided a number of benefits on the side of the language 
+designer. They reduce the complexity of channel implementation, and as shown, 
+they lend themselves to a number of possible designs. We demonstrated just two 
+possible implementations, the Blocking and Absorption channels. As such, the 
+concept of a swap channel as a language primitive is extremely attractive. 
+However, swapping poses some problems for realistic applications which we would
+now like to discuss.
 
-- In implementing example applications, \\
-- In terms of applicability of findings to other message-passing implementations,\\
-- etc.
-}
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/badclustercomm.els}
+\caption{A naive but ineffectual $ClusterComm_{(N,M)}$ implementation.} 
+\label{fig:bad-clustercomm}
+\end{figure}
+
+First, a swap channel does not lend itself to a level of fairness that would be
+expected by a programmer. We lead with our implementation of 
+$ClusterComm_{(N,M)}$ as example, which due to being on top of swap channels, 
+was made to be much more enigmatic. Figure~\ref{fig:bad-clustercomm} gives an
+example implementation of $ClusterComm_{(N,M)}$. Note the third parameter to
+the application, which denotes the number of time's each of the $N$ processes
+should communicate. The system therefore blocks until all processes synchronize
+$X$ times before quiting.
+
+Due to this, we must pose several restrictions on the possible values of $N$ and
+$M$. Namely, $N$ must be an even number, since all processes would need to have a 
+partner to swap with, and $M$ must be no greater than $\lfloor N/2 \rfloor$, any
+more and it would be possible for a process to hang indefinitely.
+
+However, these two restrictions are not enough to guarantee the process terminates.
+In fact, most runs of this application, with any value of $N > 2$ would most 
+likely hang forever. This is due to the bias our program creates when spawning
+processes, as well as the type of fairness the swap channel semantics provides.
+
+First, our bias we introduce is merely because we cannot batch spawn a set of
+processes at the same time. As such we will spawn one process at a time which
+may get a chance to run before all others. As such the first several processes
+may reach their synchronization limit before we are even done spawning the rest
+of the processes. Due to this, we may have a case where all but $M$ processes
+have completed, and thus all channels are blocked indefinitely.
+
+Secondly, the channel semantics have no inherent preference for unseen 
+or new processes. The scheduler may easily get in a loop of running the same
+subset of processes repeatedly, this would have the same effect as the above
+even if we were able to solve the bias problem. As such, this is inherently an
+issue with the capabilities of swap channels. 
+
+Thus, the best we can do for $ClusterComm_{(N,M)}$, is to run until at least 
+$N-M$ processes have met their quota. Note this approach is only acceptable 
+under Symmetric message passing constructs. In asymmetrical, even if there was
+a guarantee of an equal number of senders and receivers, all senders could be
+blocked on one channel while all receivers could be blocked on another. 
+
+But this issue points to another problem with swap channels, insofar as they do
+not lend themselves to being primitives at all. Due to this fairness issue, a 
+language with swap channels would be unable to build the asymmetrical constructs
+most user's would like. As such, they have been useful merely for simulation 
+purposes.
+
