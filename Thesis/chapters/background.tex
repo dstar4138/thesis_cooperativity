@@ -104,7 +104,7 @@ semantics on symmetric synchronous message-passing.
 
 \section{Classic Runtime Scheduling}
 
-Operating Systems research have long been a leading front for scheduling topics. 
+Operating Systems research have long been the leading front for scheduling topics. 
 However, most of the early concern in scheduling was devoted to job scheduling 
 over a group/shared system. As such, their concerns were largely devoted to 
 fairness and job priority. They frequently had {\sl a priori} knowledge regarding
@@ -198,7 +198,7 @@ it during the steal.
 \section{A Note on Control Theory}
 \label{sec:a note on control theory}
 
-There has never been a scheduler which works optimal in all cases. Instead,
+There has never been a scheduler which works optimally in all cases. Instead,
 focus has been the most fruitful when pursuing the optimization of various 
 measurements using some particular objective function 
 \cite{garey1978performance} 
@@ -276,7 +276,7 @@ For example, one could observe how much of a particular time period each
 priority queue is using. If a lower priority queue is being starved, it could
 trigger a reset \cite{hoganson2009reducing}.
 
-The MLFQ idea in general is highly maliable and can be adapted to a number of 
+The MLFQ idea in general is highly malleable and can be adapted to a number of 
 situations. As such it transferred well into the level of runtime 
 systems quite well. Concurrent ML (CML), uses this idea of a MLFQ to improve 
 application interactivity. 
@@ -299,9 +299,9 @@ CML's dual-queue system has the effect of reacting to new processes by testing
 them for longevity. It then makes an assumption about their behaviour immediately, but a
 process can change the scheduler's first impression of them through consistent
 behaviour to the contrary. A marked communication-bound process will, if it
-continues to use it's entire quantum, eventually be demoted. A computation-bound
+continues to use its entire quantum, eventually be demoted. A computation-bound
 process can eventually be promoted and marked as a communication-bound if it 
-continues to communicate. Thus the system eventually adapts it's behaviour to
+continues to communicate. Thus the system eventually adapts its behaviour to
 the new phase of the process.
 
 However, recently an alternative mechanism has been utilized to adapt to system
@@ -312,7 +312,7 @@ This has two side effects: cache-affinity, and informed work-stealing.
 
 The goal of the KRoC scheduler is primarily to take advantage of cache-locality
 when scheduling processes. It does so by reducing the chances for cache-misses
-by grouping processes which have a higher likelihood to communicate. The rational
+by grouping processes which have a higher likelihood to communicate. The concept 
 being, if two processes communicate, the data which is being shared will be in
 cache unless too many context-switches forces it out, thus place them close
 together in the queue. As a side effect of this, instead of stealing single 
@@ -327,7 +327,7 @@ one scheduler and sent to the one which unblocks it.
 popping the head of the batch into a new one.
 \end{inparaenum}
 We explain this de-scheduling method in greater detail in 
-Section~\ref{sec:channel implementations}, as we've implemented this mechanic for
+Section~\ref{sec:channel implementations}, as we've implemented this mechanism for
 testing purposes. However, the mechanism absorbs a blocking process into the 
 channel it's blocked on until another process unblocks it. At that time, the
 scheduler which unblocked it, now becomes its owner. Occam-$\pi$ uses this 
@@ -373,7 +373,7 @@ represent processes, and the white dots represent a channel.}
 
 To illustrate this problem, figure~\ref{fig:RingVCluster} visualizes two 
 possible components which may occur naturally. On the left we get a ring like
-structure, where the dependency of one process is the one to it's right.
+structure, where the dependency of one process is the one to its right.
 We can abstractly envision a data-flow like application which acts like
 a token ring network. On the right we have a cluster of processes, all 
 communicating with a random other on the same channel. We can envision this
@@ -395,11 +395,11 @@ designated time quantum. At every preemption, when the size of the batch forces
 a split, we will create a singleton batch which must be reabsorbed after a 
 single run. Ignoring the overhead, fairness properties also start to percolate.
 Namely, the processes within the batch after being trimmed will get preferential
-treatment to the processes in the singleton queue. Especially in the case of 
-a single processor. Inevitably, the worst-case scenario for KRoC is below that
-of the work-stealing scheduler.
+treatment to the processes in the singleton batches. This is exacerbated in the case of 
+a single processor, as all singleton batches would need to wait for the large batch to run. 
+Inevitably, the worst-case scenario for KRoC is below that of the work-stealing scheduler.
 
-From this we can take that the longevity of a process can effect it's 
+From this we can take that the longevity of a process can affect its 
 cooperativity. In fact, looking at 
 definition~\ref{def:degree of cooperativity}, we can apply it to a single 
 process too. Now, a \emph{process' degree of cooperativity} can be defined as 

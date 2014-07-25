@@ -47,13 +47,6 @@ purely for ease of use. It also provides a symmetric synchronous Channel type
 for interprocess communication. As a note, this language can also be classified 
 as a Simply-Typed Lambda Calculus.
 
-ErLam also makes a number of ease-of-use decisions like providing a default 
-branch operator and has some useful syntactic sugar such as SML style $let$ 
-expressions and multi-variable function definitions. There is also a set of
-built in functions for numeric operations, type checking, and standard 
-functional behaviors (\eg~combinators, \etc) which are ignored in this 
-document.
-
 \begin{figure} %% THE ERLAM LANGUAGE BNF WITHOUT SYNTAX SUGAR %%
 \centering
 {\footnotesize
@@ -71,24 +64,29 @@ instance, if any terminal is passed other than a function, it returns a $0$
 (\eg~false). When the function is passed, it is applied with $nil$ to 
 initialize the internal expression. 
 
-ErLam extends this grammar only a little to add SML style $let$ expressions and
-multiple variable functions which are curried from left to right (see 
-figure~\ref{fig:sugar-transform} for syntactic transformation). We will be using
-this syntactic sugar throughout this document to make our source easier to 
-review.
+ErLam also makes a number of ease-of-use decisions like providing a default 
+branch operator and a library system for providing a set of built in functions 
+such as numeric operations, type checking, and standard functional behaviors 
+(\eg~combinators, \etc). However, these built-ins will be largely ignored in 
+this document. 
+
+ErLam also extends this base grammar with some useful syntactic sugar (see 
+figure~\ref{fig:sugar-transform} for syntactic transformations) such as SML 
+style $let$ expressions and multi-variable function definitions (which are 
+curried from left to right). We will use the syntactic sugar throughout this 
+document to make our source easier to review.
 
 \begin{figure}
     \centering
-    \[
+    \begin{align*}
         \textbf{let}\: x\: =\: e_1\: \textbf{in}\: e_2
-        \Rightarrow
-        ((\textbf{fun}\: x.e_2)\; e_1)
-    \]
-    \[
+        & \Rightarrow
+        ((\textbf{fun}\: x.e_2)\; e_1) \\
+% 
         \textbf{fun}\: \textit{x,y,z} . \textit{e}
-        \Rightarrow
+        & \Rightarrow
         \textbf{fun}\: \textit{x} . (\textbf{fun}\: \textit{y} . (\textbf{fun}\: \textit{z} . \textit{e} ))
-    \]
+    \end{align*}
     \caption{Syntactic sugar parse transformations.}
     \label{fig:sugar-transform}
 \end{figure}
@@ -133,7 +131,7 @@ using both methods for comparison.
 
 Figure~\ref{fig:swap-example} gives an example ErLam application. It first 
 creates a new channel for processes to communicate on. It then creates a 
-null-function to spawn, who's sole purpose is to swap on the channel the number
+null-function to spawn, whose sole purpose is to swap on the channel the number
 $42$ and quit. Finally, it swaps on the channel the number $0$ and returns
 the result of the whole evaluation, which in this case will be the value passed
 from the other end of the swap, $42$. 
@@ -220,7 +218,8 @@ defined which requires a minimum of $5$ callback functions
 \end{figure}
 
 Upon instantiation the runtime system will call the 
-\emph{layout/2} function with the NUMA layout of the system that the application is
+\emph{layout/2} function with the Non-uniform Memory Access (NUMA) layout 
+of the system that the application is
 running on, along with any parameters the user specified at runtime. The 
 result of this function is to be the scheduler layout. 
 
@@ -355,7 +354,7 @@ on which to compare the behaviour of all subsequent feedback-enabled schedulers.
         The provided implementation gives two example stealing mechanisms:
         \begin{itemize}
             \item {\bf Shared-Queue {\sl (MTRRWS-SQ)}} \\
-                Stealing a process involved performing an atomic dequeue from 
+                Stealing a process involves performing an atomic dequeue from 
                 the bottom (rather than the top) of another scheduler's process 
                 queue. This will only block the other scheduler from performing
                 a dequeue for a very short window of time, but involves 
@@ -460,7 +459,8 @@ Scheduler State (running vs waiting) over time.
 \centering
 \includegraphics[scale=0.35]{pring-erlam_sched_multi_ws-commdense.pdf}
 \caption{ Example of Communication Density graph for the Work-Stealing scheduler 
-on a Core i7 running the $PRing$ application.}
+on a Core i7 running the $PRing$ (defined in section~\ref{sec:cooperativity testing})
+application.}
 \label{fig:commdense-example}
 %\end{wrapfigure}
 \end{figure}
@@ -470,13 +470,13 @@ creates a heatmap based on the frequency of
 \emph{yield} events which occur whenever a process attempts a $swap$. Each cell
 of the heatmap is a color intensity based on the number of \emph{yield} events 
 seen in a given time-slice for a given LPU. This time-slice is where the averages
-come into play. R heatmaps have a max number of colors of $9$, so any range we 
-select must be modulo $9$. However, the constant multiplicand is based on the
+come into play. R heatmaps have a maximum of $9$ colors, so any range we 
+select must be scaled to $9$. However, the constant multiplicand is based on the
 mean amount of time $N$ ticks take place across each LPU.
 We can obviously tune the accuracy of these averages on a per-LPU basis by
 modifying $N$. Anecdotally, this turned out to be advantageous on several 
 occasions when debugging scheduler implementations. As decreasing the number of
-ticks to average over, increased the number of samples and thus accuracy.
+ticks to average together, increased the number of samples and thus accuracy.
 
 \subsection{Cooperativity Testing}\label{sec:cooperativity testing}
 
@@ -580,8 +580,8 @@ have limited us to the aforementioned.
 As mentioned previously, ErLam provides a number of feedback-enabled 
 cooperativity-conscious schedulers for comparison purposes. Through our 
 exploration of cooperative behaviour we noticed that
-cooperativity has, on some level, been captured in previous scheduling systems
-before. Through techniques keeping in mind cache locality, channel efficiency,
+cooperativity has, on some level, been captured in previous scheduling systems.
+Through techniques keeping in mind cache locality, channel efficiency,
 and work-stealing efficiency, we see a common theme of keeping processes which
 communicate together, in close proximity. 
 
@@ -627,7 +627,7 @@ of channels.
 The mechanism we just described has been implemented as the Longevity-Based
 Batching Scheduler. A process belongs to a batch as long as it does not exceed
 it's quantum (reduction count). If it is preempted, it is thusly kicked out 
-from the batch it's apart of (unless it's a singleton). There are of course
+from the batch it's a part of (unless it's a singleton). There are of course
 alternatives to this (\eg~allow for $N$ quantum to pass before kicking a 
 process from a batch), but we, for testing purposes, can just extend the size
 of the quantum for the same effect.
@@ -692,7 +692,7 @@ it comes time to communicate. In the event it is wanting to communicate on a
 channel that is not local, we propose the following mechanism: let them anyway
 but if they block, spawn them to the LPU which owns the channel.
 
-The rational for this is, in the event of a block, the local LPU won't gain 
+The theory for this is, in the event of a block, the local LPU won't gain 
 anything from having it in its queue (if process absorption is turned on it would 
 loose it anyway). However, if the process completes a swap, both the remote
 LPU and the local can continue in parallel.
@@ -750,7 +750,7 @@ more-grouped way.
 There are three metrics which could effect the order of processes, and which would
 subsequently trigger a resorting of the process queue. A process yielding, 
 returning, or spawned could all mean that a particular process or set of 
-processes need to be relocated. However, frequent sorting may cause the scheduler's
+processes should to be relocated. However, frequent sorting may cause the scheduler's
 fairness to suffer. We therefore set a variable, $\Gamma$ which defines how many 
 "events" can happen before causing a resort.
 
@@ -765,7 +765,7 @@ all other processes can be pushed to the end (and more likely stolen).
 
 If our process queue is long, we maintain preferential treatment for the set of 
 interactive processes. If our process queue is short, then the effects of 
-sorting are non-existent. As such, we should only be concerned with sorting 
+sorting are negligible. As such, we should only be concerned with sorting 
 a process queue after a particular size. This is another chance for heuristic
 analysis. Due to this though, we would expect to see poorer behaviour on most
 simple simulated applications, but would steadily gain in advantage when 
