@@ -1,0 +1,44 @@
+//
+// ClusterComm: Parallel Full-App Communication
+//  Simulates unstructured communication across all processes in the 
+//
+fun N, // Number of Processes in the system.
+    M, // Number of channels for synchronization.
+    X. // Number of times each process should synch.
+(
+    // Result Notification:
+    let win_chan = newchan in
+    let result_chan = newchan in
+    let wait_for = (sub N M) in
+    let _ = (spawn fun _.(omega fun f.(ignore (swap win_chan result_chan) 
+                                              (f f)))) in
+
+    // Channel List setup:
+    let chanlist = (omega fun f,l,s.(if (leq s 0) l 
+                                    (f f (cons newchan l) (dec s)))
+                     newlist M)
+    in
+    let rswap = fun _.(swap (index chanlist (rand M)) nil) in
+
+    // WORKER:
+    let rchug = fun n.(chug (rand n)) in
+    let finish = fun _.(omega fun f.(let r = (swap win_chan nil) 
+                                     in (if (is_chan r) 
+                                            (swap r 1) 
+                                            (ignore (rchug 5) (f f))))) in
+    let worker_t = fun _.(omega fun f,c.(if (leq c 0) (finish nil)
+                                            (ignore (rswap 0) (f f (dec c)))) X) 
+    in
+
+    // MAIN FUNCTION:
+    let _ = // Spawn Worker Set
+        (spawn fun _.(omega fun f,c.(if (leq c 1) 
+                                        (worker_t nil)
+                                        (ignore (spawn worker_t)
+                                                (f f (dec c)))) 
+                                  N))
+    in // Hang for Result 
+        (omega fun f,c.(if (leq c 0) 1 
+                           (ignore (swap result_chan nil) (f f (dec c)))) 
+                wait_for)
+)

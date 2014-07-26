@@ -1,0 +1,47 @@
+//
+// JumpShip: Parallel Workgroups which hop channels
+//
+fun N,M,C, // Number of Processes, Channels and Chugs.
+    T,X, // Number of Rounds and itterations per Round.
+(
+    // List Access
+    let chanlist = (omega fun f,l,s.(if (leq s 0) 
+                                        l 
+                                        (f f (cons newchan l) (dec s))) 
+                    newlist M) in
+    let next_chan_index = fun i.(if (eq i M) 1 (inc i)) in 
+
+    // WORKER:
+    let worker = fun cl,init,_.( 
+                let run_round = (fun c.(ignore (chug C) (swap c nil)))      in
+                (omega fun f,r,i,c,n.(
+                             if (leq r 0) 1
+                                (if (gt i 1) 
+                                    (ignore (run_round c) (f f r (dec i) c n))
+                                    (let new_n = (next_chan_index n) in
+                                     let new_c = (index cl new_n) in
+                                     (f f (dec r) X new_c new_n)))) 
+                 T X (nth cl init) init))
+    in
+
+    // MANAGER:
+    let worker_t = (worker chanlist) in
+    let workers_per_chan = (div N M) in
+    let manager_t = fun ci,_.(omega fun f,c.(
+                                if (leq c 1) (worker_t ci nil)
+                                             (merge (fun _.(f f (dec c)))
+                                                    (worker_t ci)
+                                                    ignore)) 
+                              workers_per_chan)
+    in
+
+    // MAIN Function: - Spawn M managers for each initial channel group.
+    // The groups all start at their respective index in the channel list (i.e.
+    // group 1 is index 1, group 2 is index 2, etc.) On each round their channel
+    // index is incremented and modulo M.
+    (omega fun f,c.(
+            if (leq c 1) (manager_t c nil) 
+                         (merge (fun _.(f f (dec c)))
+                                (manager_t c)
+                                ignore)) M)
+)

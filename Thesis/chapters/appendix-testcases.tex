@@ -1,0 +1,63 @@
+\chapter{ErLam Test Cases}
+\index{Appendix!ErLam Test Cases@\emph{ErLam Test Cases}}%
+\label{app:testcases}
+
+We provide here, for the reader's analysis, the source code of the ErLam test 
+cases we utilized throughout the testing and evaluation phases of our document.\\
+
+\begin{figure}[h!]
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/ChugMachine.els}
+\caption{ChugMachine application, generates $N$ processes to just compute.}
+\label{fig:chugmachine-code}
+\end{figure}
+
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/UserInput.els}
+\caption{UserInput application, utilized in the Interactivity composure, it
+artificially hangs without anything to do for a random period of time so as to
+simulate an interactive process.}
+\label{fig:userinput-code}
+\end{figure}
+
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/ClusterComm.els}
+\caption{ClusterComm application, generates $N$ processes and $M$ channels, and
+waits for at least $N-M$ processes to finish synchronizing $X$ times.}
+\label{fig:clustercomm-code}
+\end{figure}
+
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/PRing.els}
+\caption{PRing application, simulates full-system cooperativity, where $N$ processes
+pass a token around a ring network.}
+\label{fig:pring-code}
+\end{figure}
+
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/PTree.els}
+\caption{PTree application, utilizes composure of ClusterComm to simulate partial-system
+cooperativity as a set of work-groups.}
+\label{fig:ptree-code}
+\end{figure}
+
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/Interactivity.els}
+\caption{Interactivity Application, utilizes a composure of UserInput.els and ChugMachine.els
+to test a scheduler's ability to handle interactivity.}
+\label{fig:interactivity-code}
+\end{figure}
+
+\begin{figure}
+\centering
+\inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/JumpShip.els}
+\caption{JumpShip application, similar to PTree and ClusterComm, except posses to 
+demonstrate application phases as the work-groups change channels.}
+\label{fig:jumpship-code}
+\end{figure}
+

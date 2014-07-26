@@ -1,0 +1,25 @@
+//
+// P-TREE: Parallel Cooperative Sets
+//  Spawns W work-set and M cooperative processes per set. The processes
+//  then run a random number of reductions and then proceed to synchronize.
+//  They do this X times before stopping.
+//
+fun W, // Number of Work-Sets
+    M, // Number of Members per Work-Set
+    X. // Number of times members should synch
+(
+    let clustercomm = (
+{{{ClusterComm.els}}}
+    ) in
+
+    // A workgroup thread of M processes and X syncs
+    let workgroup_t = (fun _.(clustercomm M 1 X)) in
+    
+    // Run W workgroups
+    (omega fun f,w.(if (leq w 1) 
+                       (workgroup_t nil)
+                       (merge (fun _.(f f (dec w))) 
+                              workgroup_t 
+                              ignore)) 
+            W)
+)

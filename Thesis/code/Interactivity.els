@@ -1,0 +1,29 @@
+// 
+// Interactivity Testing
+//
+fun X, // Number of UserInput processes to spawn.
+    Y. // Number of processes to spawn in the ChugMachine
+(
+    // IMPORTED FUNCTION DEFINITIONS
+    let userinput = ( 
+{{{UserInput.els}}}
+    ) in
+    let chugmachine = (
+{{{ChugMachine.els}}}
+    ) in
+
+    // User Input thread and generation loop.
+    let ui_t = fun _.(userinput 10 5 1) in
+    let ui_l = (omega fun f,c.(if (leq c 1) 
+                                  (ui_t nil)
+                                  (merge ui_t
+                                         fun _.(f f (dec c))
+                                         ignore)))
+
+    // Spawn X User inputs and Y computational-bound processes
+    //  - Wait for all to finish before returning.
+    in (merge (fun _.(chugmachine Y 200 150))
+              (fun _.(ui_l X))
+              ignore)
+)
+

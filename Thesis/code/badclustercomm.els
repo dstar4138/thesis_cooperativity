@@ -1,6 +1,4 @@
-fun N, // Number of Processes
-    M, // Number of Channels
-    X. // Number of times a Process should Synchronize
+fun N,M,X. // Number of Processes, Channels, and times a Process should Swap
 (
     // Create the list of channels for random access.
     let chanlist = (omega fun f,L,s.(if (leq s 0) 

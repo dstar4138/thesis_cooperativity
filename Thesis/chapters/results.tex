@@ -4,27 +4,163 @@
 
 \section{Evaluation}\label{sec:results-evaluation}
 
-\todo[inline]{Evaluation of each scheduler will consist of complete testing:\\
-- Run $PTree_N$ for $1 \leq N \leq P+1$ where $P$ is number of processors.\\
-- Run $PRing_N$ for $N \in \{ 1, P, B-1, B, 2*B \}$ where $B$ is max batch size where applicable.\\
-- Run $ClusterComm_{(N,M)}$ for $N \in \{ 2, 4, ..., P, B, 2*B \}$ and $ 1 \leq M \leq \lfloor N / 2 \rfloor$ \\
-- Run $ChugMachine_N$ for $1 \leq N \leq P+2$  \\
-- Run $JumpShip_{(W,H)}$ for $2 \leq W \leq P+1$ and $1 \leq H \leq 3$ 
+We begin our discussion by first stepping back and performing a meta-validation 
+of the ErLam toolkit itself, before comparing the scheduling mechanisms amongst 
+themselves. We ask:
+\vspace{-3mm}\begin{itemize}
+    \item How complex must our implementations be to create our test primitives? 
+    \item For each scheduler, does our implementation work as expected, despite a minimalistic scheduler API?
+    \item Does the channel implementation lend itself to scheduling improvements? If so, in what case?
+\end{itemize}\vspace{-3mm}
+These questions will evaluate ErLam, both as a language and runtime, but also as a 
+simulator for scheduler experimentation, comparison, and evaluation. We attend to
+these questions in order;
+Section~\ref{sec:results-test-case-implementation} critiques the language as a 
+medium for simulation design through the development of our test primitives.
+Section~\ref{sec:results-evaluation-classical} discusses our evaluation of the
+scheduler API using several of the testing primitives on the aforementioned 
+classical schedulers. 
+Then in section~\ref{sec:results-channel-implementations}, we discuss our findings 
+regarding channel implementation differences and their subsequent effects on 
+scheduling behavior.
+
+\subsection{Test Case Implementation}\label{sec:results-test-case-implementation}
+
+Our intentions when choosing our base language constructs were primarily focused on 
+simplifying the base language. This minimalism we hoped would remove any noise 
+which may be caused by the implementation details. We hoped to make, for lack of a better
+term, a concurrent functional assembly language. As such, there was some concern
+as to the level of ease we would be able to implement our testing primitives.
+
+We start with a critique of the first implemented test case: $ChugMachine_N$. It
+soon became apparent that we would need to standardize on a successive spawning
+method for producing several of the same process at once. Rather than modifying
+our $spawn$ expression we decided to implement this as a fuction in the language
+as it was. The reasoning behind this was to keep consistent the effects of 
+spawning a process into a process queue. If we allowed the process to produce $N$
+processes at once, the lag caused by the runtime to produce them would be 
+more noticable.
+
+\begin{figure}
+    \centering
+{\footnotesize
+\begin{BVerbatim}[commandchars=\\\{\}]
+merge = \textbf{fun} a.(\textbf{let} x = \textbf{newchan} \textbf{in}
+               \textbf{let} _ = (\textbf{spawn} \textbf{fun} _.(\textbf{swap} x (a nil))) \textbf{in}
+               \textbf{fun} b.(\textbf{let} y = \textbf{newchan} \textbf{in} 
+                      \textbf{let} _ = (\textbf{spawn} \textbf{fun} _.(\textbf{spawn} y (b nil))) \textbf{in}
+                      \textbf{fun} m.(m (\textbf{swap} x nil) (\textbf{swap} y nil))))
+// ...
+(omega \textbf{fun} f,n.(\textbf{if} (leq n \textit{1}) 
+                   (worker_t nil) 
+                   (merge \textbf{fun} _.(f f (dec n)) worker_t ignore)) 
+             N)
+\end{BVerbatim}
 }
+    \caption{Our implementation for a map-reduce style fork-branch, and it's 
+    subsequent standardized usage.}
+    \label{fig:merge-code}
+\end{figure}
 
-\todo[inline]{Composing simulations may lead to interesting results though. 
-I would like to test, at least: \\
+We settled on the $merge$ function (figure~\ref{fig:merge-code}), along with a 
+standard method of invoking it. Our $omega$ function would enable recursion, 
+for us to use one branch of the $merge$ call to create a left-loaded binary
+tree. This would keep a consistent behavior despite a bias towards the initial 
+processes. Note that a work-stealing or global-queue scheduler would gain
+access to the most recent processes sooner (and would thusly get a chance to
+reduce sooner). 
 
-- $UserInput$ and $ChugMachine$ to examine Interactivity.\\
-- $PTree$ and $ChugMachine$ or $ClusterComm$ to have both structured subcomponents, and otherwise.
+Also as a side effect of our decision, there is a channel for every process which
+immediately blocks. This has the added effect of giving us the ability to track when 
+processes terminate, as the long-term blocked channels will start closing. For
+example, figure~\ref{fig:fibonacci-channel-demo}, gives an example parallel
+Fibonacci program written in this style and it's subsequent channel graph. This
+is reminiscent of a map-reduce style approach, and the language lends itself
+to it. Note on the channel graph, a dark line indicates a channel which 
+becomes blocked until the point at which it becomes unblocked. 
+
+\begin{SaveVerbatim}[commandchars=\\\{\}]{FibCode}
+(omega \textbf{fun} f,m.(
+    \textbf{if} (leq m 1) 
+       m
+       (merge \textbf{fun} _.(f f (sub m 1))
+              \textbf{fun} _.(f f (sub m 2))
+              add)) \textit{8})
+\end{SaveVerbatim}
+\begin{figure}[h!]
+
+\subfigure{
+    \includegraphics[scale=0.40]{fibonacci-channel-demo.pdf}
+    \label{fig:fibonacci-channel-demo-chart}
+}%
+\subfigure{
+    \centering
+    \raisebox{20mm}{\footnotesize \BUseVerbatim{FibCode} }
+\label{fig:fibonacci-channel-demo-code}
 }
+    \caption{Parallel Fibonacci implementation and a potential channel graph.}
+    \label{fig:fibonacci-channel-demo}
+\end{figure}
 
-\subsection{Classical Schedulers}\label{sec:results-evaluation-classical}
+You may also note that the chart gives an indication as to the size of the time
+quantum selected for the application's execution. The order in which a channel
+becomes blocked, and it's order in the processes execution give that hint. The
+large block of channels at the top of the graph indicate the last batch of 
+spawned processes got time on the cpu before the one's which spawned it, as the
+scheduler which evaluated the spawn ran out of reductions for that process. 
+These observations will become useful for later scheduler critiques.
 
-\todo[inline]{ There are 5 schedulers, STRR, STDQ, MTRRGQ, MTRRWS-SQ, MTRRWS-IS which 
-need to be evaluated. However, I wont know what's interesting until after all tests have
-been run.}
+\subsection{Scheduler API}\label{sec:results-evaluation-classical}
 
+The ErLam Scheduler API was minimally constructed around the single-step 
+scheduling semantics presented earlier in figure~\ref{fig:scheduler-step}.
+We were motivated by the simplicity of the description and thus the ability
+to bring some formalism to the implementations. That being said, we would still
+require the option to observe practical statistics such as runtime overhead 
+during our scheduler comparisons. 
+
+\begin{figure}[h!]
+    \subfigure[Tick disparity, or the average time between scheduler ticks per 
+    LPU, per Task run. Typical ranges tend to spike in groups, which show 
+    consistency based on scheduler implementation, rather than OS intervention.]{
+        \includegraphics[width=\textwidth]{tick-disparity.png}
+        \label{fig:tick-disparity}
+    }
+    \subfigure[Tick disparity consistently matches up with increased computation, 
+    which is indicitive of inter-scheduler communication requirements.]{
+        \includegraphics[width=\textwidth]{tick-disparity-to-reductions.png}
+        \label{fig:tick-disparity-match}
+    }
+    \caption{Tick Disparity over nearly $900$ tests.}
+\end{figure}
+
+However,
+wne of the concerns early on, and as described in section~\ref{sec:runtime log reports}, 
+was that the LPUs could greatly differ in the number of ticks they are able to 
+provide their process queue. This could be caused by the OS preempting the 
+ErLam scheduling thread to execute something else. However, from our tests, we
+found these gaps to be minimal and mainly caused by the scheduling implementation
+itself. 
+
+Figure~\ref{fig:tick-disparity} shows the average time between ticks averaged over
+the LPUs for a large subsection of the tests we ran. We call this average time 
+between ticks per LPU the Tick Disparity of the test. From the figure, we notice
+obvious clustering, and figure~\ref{fig:tick-disparity-match} leads us to believe this
+is primarily caused by spikes in reduction counts. A scheduler chugging on 
+processes the entire time, must wait until preemption in-order to handle any 
+inter-scheduler communication, as in the case of work-stealing schedulers. Thus,
+for our purposes, all talk of tick-disparity could be considered a discussion of
+scheduler overhead. As such, comparative analysis of scheduler implementation 
+overhead from test case execution would still be a valid comparison despite our 
+design.
+
+\subsection{Channel Implementations}\label{sec:results-channel-implementations}
+
+\todo[inline]{ There are 3 mechanisms provided by ErLam which modify the channel
+  implementation: Blocking Channels, Absorption Channels, and then channel pinning
+based on a spreading algorithm. In this section I'd primarily like to look at the
+first two.
+}
 \subsection{Cooperativity Feedback Schedulers}\label{sec:results-evaluation-feedback}
 
 \todo[inline]{ There are 3 schedulers, Longevity-Batcher, Channel-Pinner, Graph Shuffling.
@@ -38,6 +174,16 @@ I will primarily be looking at:\\
 
 \section{Comparisons}\label{sec:results-comparisons}
 
+Secondly, using our classical scheduler results as a base line we can evaluate 
+the feedback schedulers independently. This will give an indication of what
+may warrant further investigation, and testing. However, there are three 
+questions which are of immediate interest:
+\vspace{-3mm}\begin{itemize}
+    \item Are there instances where the stealing mechanism matters?
+    \item When does being cooperativity-conscious lead to better schedules?
+    \item Does the overhead of feedback systems outweigh the benefits?
+\end{itemize}
+
 \todo[inline]{ Including the above, I will want to compare:\\
 - MTRRWS-SQ and MTRRWS-IS \\
 - STRR and MTRRGQ \\
@@ -45,13 +191,6 @@ I will primarily be looking at:\\
 - All feedback schedulers in terms of: execution time (tick count), saturation, evenness of work-load.
 }
 
-\subsection{Channel Implementations}\label{sec:results-channel-implementations}
-
-\todo[inline]{ There are 3 mechanisms provided by ErLam which modify the channel
-  implementation: Blocking Channels, Absorption Channels, and then channel pinning
-based on a spreading algorithm. In this section I'd primarily like to look at the
-first two.
-}
 
 \section{A Comment on Swap Channels}\label{sec:results-swap-channels}
 
@@ -114,3 +253,8 @@ language with swap channels would be unable to build the asymmetrical constructs
 most user's would like. As such, they have been useful merely for simulation 
 purposes.
 
+However, for further simulation of cooperativity, it may be adventagous to also 
+consider the directionality of communication. The recognition of consumer and 
+producer processes may lend itself to further gains as the recognition of 
+communication and computation bound processes did. This is not to say all gains
+in utilizing pure synchronization have been obtained. 

@@ -1,0 +1,24 @@
+//
+// UserInput: Single Event processing simulation
+//
+fun X, // Number of events to consume before quiting.
+    H, // Max number of seconds to wait for an event.
+    L. // Min number of seconds to wait for an event.
+(
+    // Event Channel
+    let chan = newchan in
+
+    // User
+    let get_event = fun c.(ignore (hang (add L (rand (sub H L))))  
+                                  (swap chan c)) in
+    let user_t = fun start,_.(omega fun f,c.(
+                        if (leq c 0) (swap chan nil)
+                                     (ignore (get_event c)
+                                             (f f (dec c))))
+                              start)
+    in
+    let _ = (spawn (user_t X)) in
+
+    // Consumer/MAIN
+    (omega fun f.(if (swap chan nil) (f f) 1))
+)

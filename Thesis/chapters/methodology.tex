@@ -61,14 +61,14 @@ semantics for the language is fairly straight forward, but it's operational
 semantics are layed out in appendix~\ref{app:semantics}. All expressions reduce
 to one of the terminal types: Integer, Channel, or Function. To spawn for 
 instance, if any terminal is passed other than a function, it returns a $0$
-(\eg~false). When the function is passed, it is applied with $nil$ to 
-initialize the internal expression. 
+(\eg~false). When a function is passed, it is applied with $nil$ to 
+initialize the internal expression in another ErLam process, and evaluates to $1$ (\eg~true) in the parent process.
 
 ErLam also makes a number of ease-of-use decisions like providing a default 
 branch operator and a library system for providing a set of built in functions 
 such as numeric operations, type checking, and standard functional behaviors 
 (\eg~combinators, \etc). However, these built-ins will be largely ignored in 
-this document. 
+this document but explained when neccessary. 
 
 ErLam also extends this base grammar with some useful syntactic sugar (see 
 figure~\ref{fig:sugar-transform} for syntactic transformations) such as SML 
@@ -120,7 +120,7 @@ using both methods for comparison.
 \begin{BVerbatim}[commandchars=\\\{\}]
 \textbf{let} c = \textbf{newchan in}
 \textbf{let} f = (\textbf{fun} _.(\textbf{swap} c \textit{42})) \textbf{in}
-\textbf{let} _ = (\textbf{spawn} f) \textbf{in}
+\textbf{let} _ = (\textbf{spawn} f)
 \textbf{in} (\textbf{swap} c \textit{0})
 \end{BVerbatim}
 }
@@ -373,7 +373,7 @@ ErLam also comes with three cooperativity-conscious schedulers: the
 Longevity-Based Batching Scheduler (section~\ref{sec:longevity based batching}),
 the Channel Pinning Scheduler (section~\ref{sec:channel pinning}), and the
 Bipartite Graph Aided Shuffling Scheduler (section~\ref{sec:bipartite graph aided shuffling}).
-The first two build on the same shared queue module as provided by $MTRRWS^{*}$, 
+The first two build on the same shared queue module as provided by $MTRRWS-^{*}$, 
 while the third utilizes it's own implementation.
 
 For any compiled ErLam script, the runtime installs a command line option for
@@ -441,7 +441,8 @@ yet, there may be a large gap of time missing from one scheduler to the next.
 For our purposes though we would like to compare the state of the scheduler
 while it is executing and would be fine with averaging over the largest gap. These
 from experimentation have not been found to be very frequent or large on an
-otherwise unoccupied processor.\todo{Anecdotal! I need to prove this}
+otherwise unoccupied processor (see section~\ref{sec:results-evaluation-classical} 
+for details).
 
 To explain this averaging technique we'll now discuss the report generation 
 method. The ErLam toolkit comes with a secondary R script which can be given a 
@@ -571,7 +572,7 @@ have limited us to the aforementioned.
     \includegraphics[scale=0.35]{JumpShip.pdf}
     \label{fig:JumpShip}
 }
-\caption{Simulated behaviour examples.}
+\caption{Simulated behaviour examples and test primitives.}
 \end{figure}
 
 

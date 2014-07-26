@@ -1,0 +1,43 @@
+//
+// PRing: Simulate full-system cooperativity via a ring network
+//
+fun N, // Ring size in number of processes.
+    L, // Number of times to pass the token around the ring.
+    C. // Number of times to chug at each loop around the ring.
+(
+    let token = 1 in
+    let kill_token = 2   
+
+    // An individual node in the ring. 
+    in let node = fun rside,lside,_.(omega fun f.(
+                 let recv = (swap rside nil)     in
+                 let _    = (chug C)             in
+                 let dead = (eq kill_token recv) in
+                 let _ = (swap lside recv)       in
+                     if dead nil //(printl 1) 
+                             (f f)))
+
+    // Parent node which will count the loops.
+    in let pnode = fun rside,lside.(omega fun f,c.(
+                     let recv = (swap rside nil)                    in
+                     let dead = (eq c L)                            in
+                     let _ = (swap lside (if dead kill_token recv)) in
+                         if dead nil //(printl 1) 
+                                 (f f (inc c)))) 
+
+    // Start the Parent node after starting the token passing.
+    in let start_pnode = fun rside,lside.(
+                            let _ = (swap lside token) in
+                            (pnode rside lside 1))
+
+    // Spawns a new node with a channel and returns it's left side channel.
+    in let spawnnode = fun rside.(
+            let lside = newchan in
+                (ignore (spawn (node rside lside)) lside))
+
+    // Generate the ring and connects the last two. Then triggers the 
+    // ring to start passing.
+    in let mychan = newchan 
+    in let last_chan = (rep N spawnnode mychan)
+    in (start_pnode last_chan mychan)
+)
