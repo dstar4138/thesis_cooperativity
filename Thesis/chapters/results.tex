@@ -274,36 +274,30 @@ table~\ref{tab:ptree9-10-5-wsis-wssq}) were generated, using the CML-like Proces
 Absorption channels. We would like to now breifly visualize how a blocking channel
 may effect the scheduling of an application.
 
-\subsection{Cooperativity Feedback Schedulers}\label{sec:results-evaluation-feedback}
-
-\todo[inline]{ There are 3 schedulers, Longevity-Batcher, Channel-Pinner, Graph Shuffling.
-I will primarily be looking at:\\
-
-- How does Longevity Batcher degrade? Does it turn into MTRRWS?\\
-- How quickly and thoroughly can Channel-Pinner saturate the cores with work?\\
-- How does Graph Shuffling handle large and small process queues?
-}
+\todo[inline]{Give example of two runs with the same test/scheduler but with ca and cb.}
 
 
-\section{Comparisons}\label{sec:results-comparisons}
+\section{Cooperativity Mechanics}\label{sec:results-evaluation-feedback}
 
-%Secondly, using our classical scheduler results as a base line we can evaluate 
-%the feedback schedulers independently. This will give an indication of what
-%may warrant further investigation, and testing. However, there are three 
-%questions which are of immediate interest:
-%\vspace{-3mm}\begin{itemize}
-%    \item Are there instances where the stealing mechanism matters?
-%    \item When does being cooperativity-conscious lead to better schedules?
-%    \item Does the overhead of feedback systems outweigh the benefits?
-%\end{itemize}
+We now turn to the discussion of cooperativity-conscious scheduling.
+Using our classical scheduler results as a base line we can evaluate 
+the feedback schedulers independently. This will give an indication of what
+may warrant further investigation, and testing. However, there are three 
+questions which are of immediate interest:
+\vspace{-3mm}\begin{itemize}
+    \item Are there instances where the stealing mechanism matters?
+    \item When does being cooperativity-conscious lead to better schedules?
+    \item Does the overhead of feedback systems outweigh the benefits?
+\end{itemize}
 
-\todo[inline]{ Including the above, I will want to compare:\\
-- MTRRWS-SQ and MTRRWS-IS \\
-- STRR and MTRRGQ \\
-- Long-Batcher and Channel-Pinner in terms of work-stealing \\
-- All feedback schedulers in terms of: execution time (tick count), saturation, evenness of work-load.
-}
 
+
+
+
+
+\subsection{Longevity-Based Batching}\label{sec:results-longbatcher}
+\subsection{Channel Pinning}\label{sec:results-channelpinner}
+\subsection{Bipartite-Graph Aided Shuffling}\label{sec:results-smartsort}
 
 \section{A Comment on Swap Channels}\label{sec:results-swap-channels}
 
