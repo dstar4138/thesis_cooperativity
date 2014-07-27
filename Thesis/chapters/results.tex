@@ -172,13 +172,13 @@ coherent data). We then subsequently ran this primitive with $STRR$ and $STDQ$
 using multiple values for $N$ and $M$. Table~\ref{tab:interativity8-16-strr-stdq}
 compares an instance of this test set: $Interactivity_{(8,16)}$.
 
-\begin{table}[h]
+\begin{table}[!p]
     \begin{tabular}{@{}ccc}
 $Interactivity_{(8,16)}$ & \textbf{$STRR$}       & \textbf{$STDQ$}       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Channel State over Time}}} & 
     \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0001.pdf}} & 
     \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0001.pdf}} \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Communication Density}}}   & 
+    \multicolumn{1}{@{}c|}{\rotatebox{90}{\textbf{Communication Density}}}   & 
     \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0002.pdf}} & 
     \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0002.pdf}} \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Reduction Density}}}       & 
@@ -210,16 +210,70 @@ the currently running process with the child process it spawned, enqueuing the p
 We therefore can confirm our understanding, in this case, that the scheduler is reacting
 to the test primitives as expected.
 
+The work-stealing mechanic is another instance for interesting comparison. We've built
+two of the cooperativity-conscious schedulers we discuss on top of the $MTRRWS$-$*$ 
+process queue implementation. It is this unified queue implementation which allows 
+us to toggle between the two implementations. With $MTRRWS$-$SQ$, the process queue
+will respond to function calls from schedulers for other LPUs, it will perform a
+quick dequeue from the bottom only blocking the host LPU from accessing the queue
+for a minimal amount of time. With $MTRRWS$-$IS$, the process queue goes untouched
+by other LPUs, instead the scheduler on the LPU itself will receive the messages
+and respond during periods inbetween process operations.
+
+To compare these, we would expect to see minor differences in the processes scheduler 
+state as we could expect $MTRRWS$-$IS$ to wait longer for responses from their theif
+messages. But otherwise we would like to make sure the saturation of the cores are 
+as identical as possible. In other words, if either method is unable to saturate the 
+cores effectually, then it would not be worth further testing (or there is an issue 
+with the implementation). 
+
+However, work-stealing schedulers work best if there is a constant probability of 
+loosing a process by completion. Our test primitives, as they stand, do not account for
+application phases in terms of process quantity. Thus, to effectively examine these
+stealing mechanisms, we substitute process loss via completion with process loss via 
+channel absorption. Thus, table~\ref{tab:ptree9-10-5-wsis-wssq} gives a comparison of the 
+two work-stealing techniques in terms of scheduler state over time and the process 
+queue length with a run of $PTree_{(9,10)}$ with channel absorption turned on.
+
+\begin{table}[!p]
+    \begin{tabular}{@{}ccc}
+$PTree_{(9,10)}$ & \textbf{$MTRRWS$-$IS$}       & \textbf{$MTRRWS$-$SQ$}       \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Scheduler State}}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0005.pdf}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0005.pdf}} \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Process Queue Length}}}   & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0003.pdf}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0003.pdf}} \\ \cline{2-3} 
+\end{tabular}
+    \caption{Comparison of $MTRRWS$-$IS$ and $MTRRWS$-$SQ$ using Scheduler State and Queue Size.}
+    \label{tab:ptree9-10-5-wsis-wssq}
+\end{table}
+
+
+Upon review of this comparison, our initial assumptions are validated. The process queue
+length looks extremely similar. The LPU which owns the initial process maintains the 
+largest queue, where all others work steal a single process and work on it. Any gains in
+queue size for these LPUs are via channel absorption, but this can not compare with the
+initial spawns. We note here that an obvious introduction of smarter work-balancing
+would be critical for a realistic or even practically useful scheduler. However, for our
+purposes of verifying the work-stealing mechanism, this is sufficient.
+
+The scheduler state comparison is however, in this instance, not consistent with all
+the original assumptions. Namely, $MTRRWS$-$IS$ seems not stay in waiting mode as long
+as $MTRRWS$-$SQ$ does. However, we can pose two possible reasons for this reaction:
+there is an obvious scaling bias introduced by squeezing over $11000$ ticks into the same length
+of space as $SQ$ does with $8000$. Alternatively, the scheduling reduction quantum for 
+this execution was $20$ and all processes chug for only $5$ max, this allows the 
+scheduler more opportunity to tend to inter-process communication at a detriment to
+the shared-queue implementation due to higher chance of blocked queue access.
+
 \subsection{Channel Implementations}\label{sec:results-channel-implementations}
 
-The above graphs (\eg~table~\ref{tab:interativity8-16-strr-stdq}) were generated, 
-using the CML-like Process Absorption channels.
+The above graphs (\eg~table~\ref{tab:interativity8-16-strr-stdq}, and 
+table~\ref{tab:ptree9-10-5-wsis-wssq}) were generated, using the CML-like Process 
+Absorption channels. We would like to now breifly visualize how a blocking channel
+may effect the scheduling of an application.
 
-\todo[inline]{ There are 3 mechanisms provided by ErLam which modify the channel
-  implementation: Blocking Channels, Absorption Channels, and then channel pinning
-based on a spreading algorithm. In this section I'd primarily like to look at the
-first two.
-}
 \subsection{Cooperativity Feedback Schedulers}\label{sec:results-evaluation-feedback}
 
 \todo[inline]{ There are 3 schedulers, Longevity-Batcher, Channel-Pinner, Graph Shuffling.
@@ -233,15 +287,15 @@ I will primarily be looking at:\\
 
 \section{Comparisons}\label{sec:results-comparisons}
 
-Secondly, using our classical scheduler results as a base line we can evaluate 
-the feedback schedulers independently. This will give an indication of what
-may warrant further investigation, and testing. However, there are three 
-questions which are of immediate interest:
-\vspace{-3mm}\begin{itemize}
-    \item Are there instances where the stealing mechanism matters?
-    \item When does being cooperativity-conscious lead to better schedules?
-    \item Does the overhead of feedback systems outweigh the benefits?
-\end{itemize}
+%Secondly, using our classical scheduler results as a base line we can evaluate 
+%the feedback schedulers independently. This will give an indication of what
+%may warrant further investigation, and testing. However, there are three 
+%questions which are of immediate interest:
+%\vspace{-3mm}\begin{itemize}
+%    \item Are there instances where the stealing mechanism matters?
+%    \item When does being cooperativity-conscious lead to better schedules?
+%    \item Does the overhead of feedback systems outweigh the benefits?
+%\end{itemize}
 
 \todo[inline]{ Including the above, I will want to compare:\\
 - MTRRWS-SQ and MTRRWS-IS \\

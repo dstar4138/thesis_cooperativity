@@ -505,7 +505,7 @@ channels we limit $M$ to be at most $\lfloor N/2 \rfloor$ for all tests.
 $ClusterComm_{(N,M)}$ is also an example of full-system cooperation, we also
 want to have a possible case for partial-system cooperation. We begin this range
 of experiments with a behaviour which acts like a bunch of $ClusterComm_{(N,1)}$
-running in parallel. We call this special case behaviour $PTree_W$ (figure~\ref{fig:PTree}); where $W$ is 
+running in parallel. We call this special case behaviour $PTree_{(W,N)}$ (figure~\ref{fig:PTree}); where $W$ is 
 the number of work groups to run in parallel. This is the cleanest case of 
 partial-system cooperation. We would expect to see obvious clustering of 
 processes by work-group affiliation if the scheduler was 
@@ -530,7 +530,7 @@ would simulate ``waiting for user input''. This simple behaviour would also
 compose with the others.
 
 For the former missing behaviour, phase changes, we decided to make a variation
-of $PTree_W$ called $JumpShip_{(W,P)}$ (figure~\ref{fig:JumpShip}) which would act like $PTree_W$ but would
+of $PTree_{(W,N)}$ called $JumpShip_{(W,P)}$ (figure~\ref{fig:JumpShip}) which would act like $PTree_{(W,N)}$ but would
 ``change phase'' $P$ times before completion. The act of ``changing phase'' would 
 be the successive relocation of all the processes from one work-group to 
 another, effectively having all processes from work-group $X$ ``jump-ship'' to
@@ -719,7 +719,7 @@ worst case scenario. We first thought the worst case scenario would be a
 $ChugMachine_N$ due to the reliance on wild-cards, however after more 
 consideration a single $ClusterComm_{N,1}$ may end up having a worse behaviour
 due to the constant re-spawning of processes back to the owner of the primary
-channel. A best case in this scenario would be a $PTree_W$ when $W$ is greater than or equal
+channel. A best case in this scenario would be a $PTree_{(W,N)}$ when $W$ is greater than or equal
 to the number of processing units available.
 
 \subsection{Bipartite Graph Aided Shuffling}
