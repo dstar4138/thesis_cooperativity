@@ -151,10 +151,69 @@ processes the entire time, must wait until preemption in-order to handle any
 inter-scheduler communication, as in the case of work-stealing schedulers. Thus,
 for our purposes, all talk of tick-disparity could be considered a discussion of
 scheduler overhead. As such, comparative analysis of scheduler implementation 
-overhead from test case execution would still be a valid comparison despite our 
+overhead from test case execution would still be a valid comparison with our
 design.
 
+Further, to validate that our scheduler implementations functioned as expected 
+after translation was another concern. We gave the example of the CML 
+Dual-Queue translation ($STDQ$) previously in section~\ref{sec:example the cml scheduler}.
+We will now examine it's execution and compare it to $STRR$, a single queue naive
+scheduler to confirm our understanding.
+
+The key differences we would expect to see in a comparison would be that the CML
+prefers to, and attempts to run the interactive processes first. It would push
+all computational processes onto the secondary queue, only promoting them when 
+the need arises. To observe this property, we compose the $UserInput_{(T,C)}$ 
+test with $ChugMachine_N$ to create an interactivity test primitive 
+$Interactivity_{(N,M)}$ (figure~\ref{fig:interactivity-code}). The primitive
+launches $ChugMachine_N$ and $M$ instances of $UserInput_{(5,10)}$ (the values
+of which were arbitrarily chosen so as to execute for long enough to collect
+coherent data). We then subsequently ran this primitive with $STRR$ and $STDQ$
+using multiple values for $N$ and $M$. Table~\ref{tab:interativity8-16-strr-stdq}
+compares an instance of this test set: $Interactivity_{(8,16)}$.
+
+\begin{table}[h]
+    \begin{tabular}{@{}ccc}
+$Interactivity_{(8,16)}$ & \textbf{$STRR$}       & \textbf{$STDQ$}       \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Channel State over Time}}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0001.pdf}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0001.pdf}} \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Communication Density}}}   & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0002.pdf}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0002.pdf}} \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Reduction Density}}}       & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0003.pdf}} & 
+    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0004.pdf}} \\ \cline{2-3} 
+\end{tabular}
+    \caption{Comparison of $STRR$ and $STDQ$ using Channel State, Reduction and Communication Densities.}
+    \label{tab:interativity8-16-strr-stdq}
+\end{table}
+
+The Reduction Density graphs explain everything we need to know. The darkened portions
+at the beginning of the chart indicate that the $STRR$ scheduler has no regard for the
+interactive processes, whereas the $STDQ$ scheduler remains spread out. This seems to be
+on the opposite if we were to consult the Communication Density charts though. It would appear
+here that $STRR$ is getting more frequent communication, and $STDQ$ condenses all 
+synchronizations to the end. This is however an issue of verbiage as Interactivity
+does not correlate to Communication Density. By this we mean, $STRR$ is indeed allowing 
+communication to happen evenly due to a round-robin schedule, but it is not attending to
+spontanious events (\ie~responses back from $hang$). $STDQ$ on the otherhand pushes all 
+inter-process communication backwards as it waits to respond to the $hang$ing processes.
+
+We see this effect more clearly once we compare with the Channel State charts. In $STRR$
+we see an even regard for all processes. The tapering of the channel blocks at the 
+beginning of the graph is consistent with our understanding of the $merge$-based
+successive spawning. However, $STDQ$ is completely different, and all $UserInput_{(T,C)}$
+processes seem to be pushed to the beginning of the execution pool. This is infact due
+to another difference between the execution styles of the two schedulers. $STDQ$ replaces
+the currently running process with the child process it spawned, enqueuing the parent.
+We therefore can confirm our understanding, in this case, that the scheduler is reacting
+to the test primitives as expected.
+
 \subsection{Channel Implementations}\label{sec:results-channel-implementations}
+
+The above graphs (\eg~table~\ref{tab:interativity8-16-strr-stdq}) were generated, 
+using the CML-like Process Absorption channels.
 
 \todo[inline]{ There are 3 mechanisms provided by ErLam which modify the channel
   implementation: Blocking Channels, Absorption Channels, and then channel pinning
