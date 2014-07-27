@@ -176,14 +176,14 @@ compares an instance of this test set: $Interactivity_{(8,16)}$.
     \begin{tabular}{@{}ccc}
 $Interactivity_{(8,16)}$ & \textbf{$STRR$}       & \textbf{$STDQ$}       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Channel State over Time}}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0001.pdf}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0001.pdf}} \\ \cline{2-3} 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0001.pdf}} \\ \cline{2-3} 
     \multicolumn{1}{@{}c|}{\rotatebox{90}{\textbf{Communication Density}}}   & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0002.pdf}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0002.pdf}} \\ \cline{2-3} 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0002.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0002.pdf}} \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Reduction Density}}}       & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0003.pdf}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0004.pdf}} \\ \cline{2-3} 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/single/pg_0003.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/cml/pg_0004.pdf}} \\ \cline{2-3} 
 \end{tabular}
     \caption{Comparison of $STRR$ and $STDQ$ using Channel State, Reduction and Communication Densities.}
     \label{tab:interativity8-16-strr-stdq}
@@ -239,11 +239,11 @@ queue length with a run of $PTree_{(9,10)}$ with channel absorption turned on.
     \begin{tabular}{@{}ccc}
 $PTree_{(9,10)}$ & \textbf{$MTRRWS$-$IS$}       & \textbf{$MTRRWS$-$SQ$}       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Scheduler State}}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0005.pdf}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0005.pdf}} \\ \cline{2-3} 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0005.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0005.pdf}} \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Process Queue Length}}}   & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0003.pdf}} & 
-    \multicolumn{1}{l|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0003.pdf}} \\ \cline{2-3} 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0003.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0003.pdf}} \\ \cline{2-3} 
 \end{tabular}
     \caption{Comparison of $MTRRWS$-$IS$ and $MTRRWS$-$SQ$ using Scheduler State and Queue Size.}
     \label{tab:ptree9-10-5-wsis-wssq}
@@ -258,23 +258,60 @@ initial spawns. We note here that an obvious introduction of smarter work-balanc
 would be critical for a realistic or even practically useful scheduler. However, for our
 purposes of verifying the work-stealing mechanism, this is sufficient.
 
-The scheduler state comparison is however, in this instance, not consistent with all
+Although the scheduler state comparison, in this instance, does not look consistent with 
 the original assumptions. Namely, $MTRRWS$-$IS$ seems not stay in waiting mode as long
 as $MTRRWS$-$SQ$ does. However, we can pose two possible reasons for this reaction:
 there is an obvious scaling bias introduced by squeezing over $11000$ ticks into the same length
-of space as $SQ$ does with $8000$. Alternatively, the scheduling reduction quantum for 
-this execution was $20$ and all processes chug for only $5$ max, this allows the 
+of space as $MTRRWS$-$SQ$ does with $8000$. Additionally, the scheduling reduction quantum for 
+this execution was $20$ and all processes were set to chug for only $5$ max, this allows the 
 scheduler more opportunity to tend to inter-process communication at a detriment to
 the shared-queue implementation due to higher chance of blocked queue access.
+The simulation's log was able to support the former rational.
 
 \subsection{Channel Implementations}\label{sec:results-channel-implementations}
 
 The above graphs (\eg~table~\ref{tab:interativity8-16-strr-stdq}, and 
 table~\ref{tab:ptree9-10-5-wsis-wssq}) were generated, using the CML-like Process 
-Absorption channels. We would like to now breifly visualize how a blocking channel
-may effect the scheduling of an application.
+Absorption channels. We would like to now breifly visualize how a Blocking channel
+may operate and effect our visualization of the application's scheduling. In this example 
+(table~\ref{tab:interactivity16-8-sq}), we ran the interactivity composure again
+to test a large sampling of processes, but some with communication so as to see the 
+flow of processes due to absorption.
 
-\todo[inline]{Give example of two runs with the same test/scheduler but with ca and cb.}
+\begin{table}[!p]
+    \begin{tabular}{@{}ccc}
+        $Interactivity_{(16,8)}$ & \textbf{Absorption}       & \textbf{Blocking}       \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Communication Density}}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/ca/pg_0002.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/cb/pg_0002.pdf}} \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Process Queue Length}}}   & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/ca/pg_0003.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/cb/pg_0003.pdf}} \\ \cline{2-3} 
+\end{tabular}
+\caption{Comparison of two runs of $Interactivity_{(16,8)}$ on $MTRRWS$-$SQ$ using either Absorption or Blocking swap channels.}
+    \label{tab:interactivity16-8-sq}
+\end{table}
+
+Note the effects of blocking on the apparent communication density of the 
+application. Instead of visualizing only the completion of a swap, this chart
+shows any attempted communication, even if it results in a block. Thus if a 
+process is allowed to continuously check a required channel for a value, the 
+density will increase, as it does for the Blocking channel chart. 
+
+This difference is also apparent in the number of avaliable processes each scheduler has
+access to. The lengths of the process queues, fluxuate frequently in both
+charts, however the absorption channel does so to quite a large degree. This
+is to be expected since any communication which results in a block 
+removes a process and any which results in a value returns an extra one.
+Whereas the blocking channel chart, the queue size rapidly switches up and
+down as it adds it's current process and gets the next one. We are also able 
+to notice the tell-tail signs of the naive shared-queue work-stealing approach 
+in the Blocking channel too (\ie~the single dominate process queue).
+
+We discuss these channel differences further in the next section as we compare 
+the cooperativity-conscious schedulers. At this point the operation of the 
+blocking scheduler seems unmotivated, however, its effects on the 
+Bipartite-Graph Aided Shuffling scheduler support the additional study.
 
 
 \section{Cooperativity Mechanics}\label{sec:results-evaluation-feedback}
@@ -290,14 +327,17 @@ questions which are of immediate interest:
     \item Does the overhead of feedback systems outweigh the benefits?
 \end{itemize}
 
-
-
-
-
-
 \subsection{Longevity-Based Batching}\label{sec:results-longbatcher}
+
+
+
 \subsection{Channel Pinning}\label{sec:results-channelpinner}
+
+
 \subsection{Bipartite-Graph Aided Shuffling}\label{sec:results-smartsort}
+
+
+
 
 \section{A Comment on Swap Channels}\label{sec:results-swap-channels}
 
