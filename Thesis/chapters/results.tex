@@ -280,11 +280,12 @@ flow of processes due to absorption.
 
 \begin{table}[!p]
     \begin{tabular}{@{}ccc}
-        $Interactivity_{(16,8)}$ & \textbf{Absorption}       & \textbf{Blocking}       \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Communication Density}}} & 
+     \multicolumn{3}{c}{$Interactivity_{(16,8)}$ } \\ \cline{2-3}
+        & \textbf{Absorption}       & \textbf{Blocking}       \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Communication Density}}}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/ca/pg_0002.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/cb/pg_0002.pdf}} \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Process Queue Length}}}   & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Process Queue Length}}}}   & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/ca/pg_0003.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/wssq/cb/pg_0003.pdf}} \\ \cline{2-3} 
 \end{tabular}
@@ -298,8 +299,8 @@ shows any attempted communication, even if it results in a block. Thus if a
 process is allowed to continuously check a required channel for a value, the 
 density will increase, as it does for the Blocking channel chart. 
 
-This difference is also apparent in the number of avaliable processes each scheduler has
-access to. The lengths of the process queues, fluxuate frequently in both
+This difference is also apparent in the number of available processes each scheduler has
+access to. The lengths of the process queues, fluctuate frequently in both
 charts, however the absorption channel does so to quite a large degree. This
 is to be expected since any communication which results in a block 
 removes a process and any which results in a value returns an extra one.
@@ -319,25 +320,160 @@ Bipartite-Graph Aided Shuffling scheduler support the additional study.
 We now turn to the discussion of cooperativity-conscious scheduling.
 Using our classical scheduler results as a base line we can evaluate 
 the feedback schedulers independently. This will give an indication of what
-may warrant further investigation, and testing. However, there are three 
-questions which are of immediate interest:
-\vspace{-3mm}\begin{itemize}
-    \item Are there instances where the stealing mechanism matters?
-    \item When does being cooperativity-conscious lead to better schedules?
-    \item Does the overhead of feedback systems outweigh the benefits?
-\end{itemize}
+may warrant further investigation, and testing. We direct the readers attention
+to appendix~\ref{app:testcases} for full source descriptions of the test 
+primitives used throughout this discussion. For any non-explicitly defined
+parameter selections, the appendix will have their default values.
 
 \subsection{Longevity-Based Batching}\label{sec:results-longbatcher}
+
+The Longevity-Based Batcher was an experiment of worst-case scenarios. We
+mention in section~\ref{sec:longevity based batching}, that a worst case 
+scenario would be one where all processes were seen as long running and 
+thus incapable of being batched. Our desire was for it to drop down into 
+a common work-stealing mechanism, and should be the case despite the 
+channel implementation or time quantum.
+
+We would also like to look at how it would react to a $PRing_N$ execution. This
+would be an optimal case as it would batch all processes up to the point where
+$N$ is larger than the batch cut-off. Effectively, the longevity batcher would
+act like a single threaded scheduler and forgo having to communicate accross
+processors. We would subsequently be able to verify this positive result given
+a communication and reduction density chart. If a single LPU were completely
+saturated while all others were kept in waiting mode, this would indicate the
+batching process was a success.
+
+We also would like to look at a number of other possible tests to see the
+common cases and how a batching scheduler would handle such applications.
+Namely, various $ClusterComm_N$ and $PTree_{(W,N)}$ executions would allow 
+for testing of process-absorption based rebatching. We may expect logical
+work-groups to form batches, and only show poorer results in instances where
+the worker thread computes for longer than the time quantum. We would be able
+to verify this functionality by observing the process queue size and the work
+load of each LPU. 
+
+
+\subsubsection{Boundary-Case Scenarios}\label{sec:results-longbatcher-worstcase}
+
+We will first consider the case of $ChugMachine_N$ for several values of $N$ where 
+$0 <  N < P + 2$ and $P$ is the max number of LPUs on the machine, which in our case 
+is $8$ \footnote{All testing was performed using an Intel Core i7-2820QM.}.  We will 
+compare it to the graphs of $MTRRWS$-$SQ$ to determine how close to naive
+work-stealing our implementation achieves. We will then subsequently consider
+the case of $PRing_N$ for various values of $N$ surrounding the batch size, $B$,
+to verify the absorption and batching assumptions.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ccccc}
+        \multicolumn{5}{c}{$PRing_N$} \\ \cline{2-5}
+        & \multicolumn{2}{c}{$MTRRWS$-$SQ$}  & \multicolumn{2}{c}{Long. Batcher}    \\ \cline{2-5}
+    \multicolumn{1}{c|}{~} & \multicolumn{1}{c|}{Queue Length} & \multicolumn{1}{c|}{Reduc. Density} & 
+        \multicolumn{1}{c|}{Queue Length} & \multicolumn{1}{c|}{Reduc. Density} \\ \cline{2-5}
+        \multicolumn{1}{c|}{ \rotatebox{90}{\rlap{$N=P=8$}~} } & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/chugmachine/wssq/8/pg_0003.pdf}} &
+        \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/chugmachine/wssq/8/pg_0004.pdf}} & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/chugmachine/longbatcher/8/pg_0003.pdf}}&
+        \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/chugmachine/longbatcher/8/pg_0004.pdf}} \\ \cline{2-5}
+
+        \multicolumn{1}{c|}{ \rotatebox{90}{\rlap{$N=2P=16$}~} } & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/chugmachine/wssq/16/pg_0003.pdf}} &
+        \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/chugmachine/wssq/16/pg_0004.pdf}} & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/chugmachine/longbatcher/16/pg_0003.pdf}}&
+        \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/chugmachine/longbatcher/16/pg_0004.pdf}} \\ \cline{2-5}
+ 
+        \multicolumn{1}{c|}{ \rotatebox{90}{\rlap{$N=4P=32$}~} } & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/chugmachine/wssq/32/pg_0003.pdf}} &
+        \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/chugmachine/wssq/32/pg_0004.pdf}} & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/chugmachine/longbatcher/32/pg_0003.pdf}}&
+        \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/chugmachine/longbatcher/32/pg_0004.pdf}} \\ \cline{2-5}
+ 
+\end{tabular}
+\caption{Comparison of $ChugMachine_N$ spread on the Longevity-Batching Scheduler and $MTRRWS$-$SQ$.}
+    \label{tab:chugmachine-longbatcher-testing}
+\end{table}
+
+First, table~\ref{tab:chugmachine-longbatcher-testing} visualizes a
+$ChugMachine_N$ comparison with the Longevity-Based Batcher and $MTRRWS$-$SQ$. 
+With the Longevity-Batcher, we can observe the common work-stealing behaviour 
+with a primary LPU and minimal queue lengths on all others. It initially spreads
+work out as the primary queue continues to chug. However, the $MTRRWS$-$SQ$ seem
+to have an easier time of stealing the primary process which is in the process of
+spawning the worker threads. Therefore the spread seems to be consistently more
+even.
+
+We hypothesized that the mechanism we were using for spawning into a batch was 
+somehow making it improbable that it would be migrated to another core. In fact 
+there are two mechanisms we have implemented for Long. Batcher to handle a spawn.
+\begin{itemize}
+    \item In `singleton' batching mode, if a spawn would cause the current batch 
+    to be $\geq B$ then a new batch is created for the child and set as the 
+    current batch. The old batch with the parent is placed on the queue.
+
+    \item In `push-back' batching mode, if a spawn forces a new batch to be made, 
+    we push the current batch onto the queue and keep the current process in the 
+    same batch with as the new child. This will keep the parent close to it's 
+    immediate child and also allow it to be quickly re-tested for more new spawns.
+\end{itemize}
+Note that in `push-back' mode, the scheduler with the primary process will never
+be in a position to give it up until all children are finished being spawned. This
+was our default for the Longevity Batcher in the test. As such, 
+table~\ref{tab:chugmachine-longbatcher-singleton-testing} shows a re-execution of 
+$PRing_{32}$ with `singleton'-mode turned on.
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{ccc}
+        & \multicolumn{2}{c}{$PRing_N$} \\ \cline{2-3}
+        \multicolumn{1}{c|}{~} & \multicolumn{1}{c|}{Queue Length} & \multicolumn{1}{c|}{Reduc. Density} \\ \cline{2-3}
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$N=P=8$}~} } & 
+    \multicolumn{1}{c}{\includegraphics[scale=0.20]{tests/chugmachine/longbatcher/32_singleton/pg_0003.pdf}}&
+    \multicolumn{1}{c|}{\includegraphics[scale=0.20]{tests/chugmachine/longbatcher/32_singleton/pg_0004.pdf}} \\ \cline{2-3}
+\end{tabular}
+\caption{Re-run of $ChugMachine_N$ with Longevity-Batching Scheduler in `singlton' batching mode.}
+    \label{tab:chugmachine-longbatcher-singleton-testing}
+\end{table}
+
+Despite giving it every oportunity to increase the spread, the catch of the parent
+process being a short-running process (as it would spawn a new process before it would
+hit it's time quantum) is just too great. There is a higher chance for it to get stolen,
+but it will have a higher chance of staying batched until it reaches the point of waiting
+for completion. This obviously limits our chances at immediate parallelism, thus the 
+conclusion that Longevity-Based Batching is $MTRRWS$-$WS$ in the worst-case scenario 
+is not quite true.
+
+\begin{table}[ht!]
+    \begin{tabular}{@{}cccc}
+        & \multicolumn{3}{c}{$PRing_N$} \\ \cline{2-4}
+    & $N=P=8$ & $N=B=10$ & $N=2*B=20$     \\ \cline{2-4} 
+        \multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Reduction Density}}}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.20]{tests/pring/longbatcher/8/pg_0004.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.20]{tests/pring/longbatcher/10/pg_0004.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.20]{tests/pring/longbatcher/20/pg_0004.pdf}} \\ \cline{2-4} 
+\end{tabular}
+\caption{Comparison of different sized $PRing_N$ on a the Longevity Batching Scheduler with batch size $B=10$.}
+    \label{tab:pring-longbatcher-testing}
+\end{table}
+
+Finally, table ~\ref{tab:pring-longbatcher-testing} visualizes the reduction 
+densities of several $PRing_N$ executions using the Longevity-Based Batcher 
+with Absorption Channels turned on. We note the obvious agreement with our 
+assumption that the $PRing_N$ would get absorbed into a single batch and thus
+contained to a single core. The spill-over at the beginning of the $PRing_{20}$
+execution was due to the spawning of more than $B$ processes. However, after
+their absorption due to communication, the Longevity-Based Batcher was free to
+absorb all processes into the same batch.
+
+\subsubsection{Average-Case Scenarios}\label{sec:results-longbatcher-avgcase}
+
+
+
+
 
 
 
 \subsection{Channel Pinning}\label{sec:results-channelpinner}
-
-
 \subsection{Bipartite-Graph Aided Shuffling}\label{sec:results-smartsort}
-
-
-
 
 \section{A Comment on Swap Channels}\label{sec:results-swap-channels}
 
