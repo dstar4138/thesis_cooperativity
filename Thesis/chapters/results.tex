@@ -469,7 +469,7 @@ process is a short-running process (as it would spawn a new process before it wo
 hit it's time quantum). Therefore, while it does have a higher chance to get stolen,
 it will also have a higher chance of staying batched until it reaches the point where it hanges
 for completion. This obviously limits our chances at immediate parallelism. The 
-conclusion that Longevity-Based Batching is $MTRRWS$-$WS$ in the worst-case scenario 
+conclusion that Longevity-Based Batching is $MTRRWS$-$SQ$ in the worst-case scenario 
 is therefore not quite true.
 
 However, that being said, the spawning mechanism differences do point to 
@@ -478,7 +478,7 @@ for this application start up, it may not be for all. For example, a program whi
 rapidly spawns micro processes to get multiple small tasks done, may find the
 `push-back' batching mode to be preferred.
 
-\begin{table}[ht!]
+\begin{table}[htp!]
     \centering
     \begin{tabular}{@{}cccc}
         & \multicolumn{3}{c}{$PRing_N$} \\ \cline{2-4}
@@ -498,8 +498,8 @@ with Absorption Channels turned on. We note the obvious agreement with our
 assumption that the entire $PRing_N$ would get absorbed into a single batch and thus be
 contained to a single core. The spill-over at the beginning of the $PRing_{20}$
 execution was due to the spawning of more than $B$ processes. However, after
-their absorption due to communication, the Longevity-Based Batcher was free to
-absorb all processes into the same batch.
+their absorption via communication, the Longevity-Based Batcher was free to
+maintain all processes in the same batch without harming parallelism.
 
 While the scheduler does not reduce exactly to $MTRRWS$-$*$ as planned, this result 
 shows an improvement over alternative batching approaches as we explicitly
@@ -522,54 +522,88 @@ $ClusterComm_{(N,M)}$.
 
 \subsection{Channel Pinning}\label{sec:results-channelpinner}
 
-This cooperativity-conscious scheduler attempts to group channels based on the 
-channels they communicate frequently with. It does so by pinning the channels
-based on a spreading algorithm. This should compensate ahead of time for 
-frequently communicating processes, as long as they are consistent in who they
-communicate with. 
+This cooperativity-conscious scheduler attempts to group processes based on the 
+channels they communicate frequently with. It does so by pinning the channels to
+the set of LPUs based on a particular spreading algorithm, and then piggy backs
+on the channel implementation to relocate the processes using absorption. This 
+has the potential effect of compensating for frequent, and especially uniform,
+communicating processes ahead of time.
 
 As mentioned in section~\ref{sec:channel pinning}, our primary interest in this 
-scheduler is the selective stealing technique used. It's design is based 
-explicitly in recognizing cooperativity where it exists, and optimizing the
-saturation based on it. As such, we will now highlight the scheduler's ability to 
-consistently saturate the cores with work. We leave it for future research to 
-discuss the possible spread techniques and their effects on a feedback system.
+scheduler is the selective stealing technique used along with its ability to 
+maintain LPU saturation with channel pinning and process absorption. Its design 
+is based on recognizing cooperativity where it exists. If two processes communicate
+with different channels, their likelihood of being reliant on one another decreases.
+As such, we will look at the two extremes for communication behaviour, completely random 
+and then completely uniform. That is, a system which has no predicable or
+repeatable behaviour, and then a system were the past will directly inform the future. 
 
-\todo[inline]{
-    This section needs to compare reduction density and queue length of 
-    several different tests. Namely, $ClusterComm_{(N,M)}$ where the number 
-    of channels is equal to the number of processors. We should also
-    include the $Interactivity_{(N,M)}$ tests here where $M=0$ since we only
-    care about communication costs. This is similar to the analysis done in
-    the following section. I refer you to that until this is complete.
-}
+We therefore utilize $ClusterComm_{(N.M)}$ for it's random behaviour, and turn to the 
+$Interactivity_{(N,0)}$ composure to simulate uniform communication. In other words,
+we will have $N$ uniform communicating units which compute and are stolen separately 
+($UserInput_{(T,C)}$). As such, we hope to highlight the scheduler's ability to 
+consistently saturate the cores with work under both the best (uniform) and worst
+case (random) conditions. We leave it to future research for a discussion of the 
+possible channel spreading techniques and work-stealing mechanisms, along with their
+effects in practical feedback schedulers.
 
-\begin{table}[h!]
+
+\subsubsection{Random and Uniform Communication}\label{sec:results-cp-rand-uniform}
+
+We begin our communication behavior tests by observing the queue lengths and reduction
+densities during the execution of a particular pair of tests: 
+$Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$.\footnote{
+            We chose these tests due to being in the upper-bound of process quantity of
+            the tests we ran. They would be the best bet to demonstrate saturation.}
+We subsequently compare results of the Channel Pinning scheduler with those of 
+$MTRRWS$-$SQ$ via table~\ref{tab:cp-compare-rand-uniform-ca}. 
+
+\begin{table}[htp!]
     \centering
 \begin{tabular}{@{}ccccc}
     & \multicolumn{2}{c}{$Interactivity_{(20,0)}$} & \multicolumn{2}{c}{$ClusterComm_{(20,5)}$} \\ \cline{2-5} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c|}{Channel Pinning} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c}{Channel Pinning} \\ \cline{2-5} 
-   
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{Channel State}}} &
-    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0001.pdf}} & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0001.pdf}} &
-    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0001.pdf}} \\ 
- 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{Queue Length}}} &
+  
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~Queue Length}}} &
     \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0003.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0003.pdf}} &
-   \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0003.pdf}} &
-    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0003.pdf}} \\ \cline{2-5}
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0003.pdf}} &
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0003.pdf}} \\
+
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{Reduc. Density}}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0004.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0004.pdf}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0004.pdf}} &
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0004.pdf}} \\ \cline{2-5}
+
 \end{tabular}
 \caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
-the Channel Pinning Scheduler using Absorption Channels.}
+the Channel Pinning Scheduler on Absorption Channels.}
 \label{tab:cp-compare-rand-uniform-ca}
 \end{table}
 
+We will start our discussion with the executions of $Interactivity_{(20,0)}$.
+Starting at the bottom and working up, we notice the level of saturation the 
+channel pinning scheduler achieves over $MTRRWS$-$SQ$. Its slightly denser,
+despite the same general execution time (in tick quantity). However, the channel
+pinning scheduler still maintains the tell-tail signs of the underlying 
+naive work-stealing approach via the single primary LPU. The queue length's
+confirm this with much more activity on all secondary LPUs. Despite the 
+unevenness, we see a much uniform attention to the state of channels. 
 
+However, for $ClusterComm_{(20,5)}$ we see no marked difference in the channel
+pinning scheduler's spread. In fact it looks to take longer to saturate the 
+cores than a normal work-stealer. Possibly due to the work-stealing by channel-id
+didn't match a process until much later. Despite this, it looks as though there 
+was very little detriment as the applications completed in roughly similar time.
 
+Note for these tests we used the $even$ spreading algorithm 
+(section~\ref{sec:channel pinning}) to calculate our next LPU for pinning instead of
+$same$. Our $ClusterComm_{(N,M)}$ test primitive creates all channels in the same
+process before spawning all workers, so pinning all channels to the primary LPU 
+would have been a detriment. Thus to give the tests the best possible chance
+at succeeding, we chose our most efficient spreading algorithm.
 
 \subsection{Bipartite-Graph Aided Sorting}\label{sec:results-smartsort}
 
@@ -581,64 +615,26 @@ in the recognition of cases which lend themselves to sorting, as such we
 leave a critique of sorting algorithms and sorting frequencies to future work
 in this field.
 
-We will first look at the two extremes for communication behaviour, completely
-random (\ie~$ClusterComm_{(N.M)}$) and completely uniform. However, our test
-primitive set does not capture system-wide uniform communication behaviour
-\footnote{Note, $PRing_N$ is not completely uniform as a process alternates 
-on which channel it communicates on, and $UserInput_{(T,C)}$ by itself would
-only make a single channel system.}.
-We therefore rely on the $Interactivity_{(N,0)}$ composure to simulate uniform
-communication, using the $UserInput_{(T,C)}$ behaviour is a single uniform node.
-
+We utilize the same tests as performed in the previous section, to visualize the
+scheduling differences of random and uniform communication behaviors. 
 Although, the Sorting scheduler was the most complicated of the cooperativity 
 conscious schedulers to test and evaluate. In fact, we needed to stray from our 
 test primitives and examine one of our original example applications, the 
-Parallel Fibonacci. As none of our test primitives were as dependent on order, thus
-Parallel Fibonacci was poised to be a key scenario.
+Parallel Fibonacci, to properly test it. This is due to none of our test 
+being dominantly dependent on process order (\ie~the majority of processes in the
+test primitives are worker threads and only $1$ process is waiting on them to
+complete), thus Parallel Fibonacci was poised to be a best-case scenario.
 
 \subsubsection{Random and Uniform Communication}\label{sec:results-smartsort-rand-uniform}
 
-We begin our communication behavior tests by observing the channel states of
-a particular set of tests: $Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$, 
-\footnote{We chose these tests due to being in the upper-bound of process quantity. Note 
-    the sorting scheduler has a minimum limit on it's process queue before it attempts
-    a sort, thus more processes are advantageous.}
-for both the Sorting scheduler and $MTRRWS$-$SQ$ via 
-table~\ref{tab:ss-compare-rand-uniform-cb}. Be aware again of the scaling bias,
-as for both tests the Sorting scheduler ran substantially faster.
+We ran $Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$ like before using Absorption
+channels first. We hypothesized that this channel implementation would provide
+little improvement and the overhead involved with sorting the process queue would
+be wasted as soon as a channel was absorbed and effectively reordered. 
+Table~\ref{tab:ss-compare-rand-uniform-ca} presents these executions, and they
+meet expectation.
 
-\begin{table}[h!]
-    \begin{tabular}{@{}ccc}
-        & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/cb/pg_0001.pdf}} & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$ClusterComm_{(20,5)}$}}}   & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/cb/pg_0001.pdf}} & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
-\end{tabular}
-\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
-the Bipartite-Graph Aided Sortling Scheduler using Blocking Channels.}
-    \label{tab:ss-compare-rand-uniform-cb}
-\end{table}
-
-While these charts seem fairly similar there are two things of note. Random
-communication does not lead to much improvement, despite the apparent
-difference in execution time. \todo{Why did it run faster?}
-Whereas, if there is a uniform set of processes which communicate 
-frequently, the sorting algorithm can place them next to one another in the
-process queue to quickly unblock the channel. This result is consistent 
-with our hypothesis.
-
-Also note that the tests in table~\ref{tab:ss-compare-rand-uniform-cb} utilized
-the Blocking channel implementation. Our second hypothesis, was that the 
-Sorting Scheduler would execute better given the chance to maintain the
-order of the processes in the queue, if the channel absorbs the process, 
-any sorting performed previously has been a wasted effort. We test this
-hypothesis in table~\ref{tab:ss-compare-rand-uniform-ca}, and run all four tests
-again.
-
-\begin{table}[h!]
+\begin{table}[htp!]
     \begin{tabular}{@{}ccc}
         & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
@@ -653,12 +649,35 @@ the Bipartite-Graph Aided Sorting Scheduler using Absorption Channels.}
     \label{tab:ss-compare-rand-uniform-ca}
 \end{table}
 
-TODO: WRITE ABOUT 4.8
+Absorption channels remove any chance the scheduler may have of improving the 
+runtime quality of the application. Blocking channels, on the other hand, leak
+hints to the scheduler which it may use to predict the future.
+Table~\ref{tab:ss-compare-rand-uniform-cb} displays a re-execution of the 
+above tests utilizing Blocking channels instead.
 
-\todo[inline]{ Currently missing the duplicate of table 4.7 for absorption 
-    channels. The tests are completed, it just is a matter of formating and
-    transferring my notes on the topic.
-}
+\begin{table}[htp!]
+    \begin{tabular}{@{}ccc}
+        & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/cb/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$ClusterComm_{(20,5)}$}}}   & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/cb/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
+\end{tabular}
+\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
+the Bipartite-Graph Aided Sorting Scheduler on Blocking Channels.}
+    \label{tab:ss-compare-rand-uniform-cb}
+\end{table}
+
+While these charts seem fairly similar there are two things of note. Random
+communication does not lead to much improvement, despite the apparent
+difference in execution time. Whereas, if there is a uniform set of processes 
+which communicate frequently, the sorting algorithm can place them next to
+one another in the process queue to quickly unblock the channel. This result 
+is consistent with our hypothesis. However, it is much more apparent in the
+following section.
+
 \subsubsection{Optimal-Case Scenario}\label{sec:results-smartsort-optimal}
 
 We now compare the execution of the Parallel Fibonacci application with the
@@ -670,7 +689,7 @@ this comparison. We attempted to find the $10^{th}$ Fibonacci number, using
 the algorithm presented in figure~\ref{fig:fibonacci-channel-demo} using the
 default sort frequency and algorithm.
 
-\begin{table}[ht!]
+\begin{table}[htp!]
     \centering
     \begin{tabular}{@{}ccc}
     & $MTRRWS$-$SQ$ & Sorting Scheduler  \\ \cline{2-3} 
@@ -701,7 +720,7 @@ concept of a swap channel as a language primitive is extremely attractive.
 However, swapping poses some problems for realistic applications which we would
 now like to discuss.
 
-\begin{figure}
+\begin{figure}[tp!]
 \centering
 \inputminted[frame=lines,fontsize=\footnotesize]{csharp}{code/badclustercomm.els}
 \caption{A naive but ineffectual $ClusterComm_{(N,M)}$ implementation.} 
@@ -752,7 +771,7 @@ language with swap channels would be unable to build the asymmetrical constructs
 most user's would like. As such, they have been useful merely for simulation 
 purposes.
 
-However, for further simulation of cooperativity, it may be adventagous to also 
+However, for further simulation of cooperativity, it may be advantageous to also 
 consider the directionality of communication. The recognition of consumer and 
 producer processes may lend itself to further gains as the recognition of 
 communication and computation bound processes did. This is not to say all gains
