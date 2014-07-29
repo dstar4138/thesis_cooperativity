@@ -372,7 +372,7 @@ on which to compare the behaviour of all subsequent feedback-enabled schedulers.
 ErLam also comes with three cooperativity-conscious schedulers: the 
 Longevity-Based Batching Scheduler (section~\ref{sec:longevity based batching}),
 the Channel Pinning Scheduler (section~\ref{sec:channel pinning}), and the
-Bipartite Graph Aided Shuffling Scheduler (section~\ref{sec:bipartite graph aided shuffling}).
+Bipartite Graph Aided Sorting Scheduler (section~\ref{sec:bipartite graph aided sorting}).
 The first two build on the same shared queue module as provided by $MTRRWS-^{*}$, 
 while the third utilizes it's own implementation.
 
@@ -722,8 +722,8 @@ due to the constant re-spawning of processes back to the owner of the primary
 channel. A best case in this scenario would be a $PTree_{(W,N)}$ when $W$ is greater than or equal
 to the number of processing units available.
 
-\subsection{Bipartite Graph Aided Shuffling}
-    \label{sec:bipartite graph aided shuffling}
+\subsection{Bipartite Graph Aided Sorting}
+    \label{sec:bipartite graph aided sorting}
 
 Both of the previous schedulers ignore the effects ordering
 can have on execution behaviour. We hypothesize that order of process execution

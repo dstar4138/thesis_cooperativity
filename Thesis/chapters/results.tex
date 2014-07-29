@@ -316,25 +316,49 @@ in the Blocking channel too (\ie~the single dominate process queue).
 We discuss these channel differences further in the next section as we compare 
 the cooperativity-conscious schedulers. At this point the operation of the 
 blocking scheduler seems unmotivated, however, its effects on the 
-Bipartite-Graph Aided Shuffling scheduler support the additional study.
+Bipartite-Graph Aided Sorting scheduler support the additional study.
 
 
 \section{Cooperativity Mechanics}\label{sec:results-evaluation-feedback}
 
 We now turn to the discussion of cooperativity-conscious scheduling.
 Using our classical scheduler results as a base line we can evaluate 
-the feedback schedulers independently. This will give an indication of what
+the presented scheduler mechanics independently. This will give an indication of what
 may warrant further investigation, and testing. We direct the readers attention
 to appendix~\ref{app:testcases} for full source descriptions of the test 
 primitives used throughout this discussion. For any non-explicitly defined
 parameter selections, the appendix will have their default values.
+
+However, with the mechanics presented in this section, we wish to highlight particular
+attributes of using cooperativity as a metric in a feedback scheduler. Namely,
+\begin{itemize}
+    \item The Longevity-Based Batching scheduler recognizes system interactivity
+        and channel communication to batch processes, and longevity detection to
+        split them. As such, it is an experiment in using process communication
+        behavior to better adapt the system to the level of cooperativity.
+
+    \item The Channel Pinning scheduler is motivation for further examination of
+        the work-stealing mechanism. It looks to adapt to the dynamic nature of
+        cooperativity by spreading the processes based on common synchronization 
+        points.
+
+    \item The Bipartite-Graph Aided Sorting scheduler is motivation to take 
+        another look at the channel implementation. Instead of the common 
+        absoption channels, a blocking channel allows for scheduler decisions 
+        regarding order of process evaluation. This allows for adaptation 
+        to possible future cooperative behavior.
+\end{itemize}
+We therefore restrict the scope of our discussion to the particulars of
+each mechanic which directly pertains to cooperativity recognition and
+adaptation. We leave it for future work to analyze the trade offs of these
+mechanics in practice.
 
 \subsection{Longevity-Based Batching}\label{sec:results-longbatcher}
 
 The Longevity-Based Batcher was an experiment of worst-case scenarios. We
 mention in section~\ref{sec:longevity based batching}, that a worst case 
 scenario would be one where all processes were seen as long running and 
-thus incapable of being batched. Our desire was for it to reduce into 
+thus incapable of being batched. Our desire was for it to degrade into 
 a common work-stealing mechanism in these scenarios, and this should hold despite 
 the channel implementation or time quantum.
 
@@ -342,8 +366,8 @@ We would also like to look at how it would react to a $PRing_N$ execution. This
 would be an optimal case as it would batch all processes up to the point where
 $N$ is larger than the batch cut-off. Effectively, the longevity batcher would
 act like a single threaded scheduler and forgo having to communicate across
-processors. We would subsequently be able to verify this positive result given
-a communication and reduction density chart. If a single LPU were completely
+processors. Subsequently, we would be able to verify a positive result for this, given
+communication and reduction density charts. If a single LPU were completely
 saturated while all others were kept in waiting mode, this would indicate the
 batching process was a success.
 
@@ -352,20 +376,22 @@ common cases and how a batching scheduler would handle such applications.
 Namely, various $ClusterComm_{(N,M)}$ and $PTree_{(W,N)}$ executions would allow 
 for testing of process-absorption based rebatching. We may expect logical
 work-groups to form batches, and only show poorer results in instances where
-the worker thread computes for less than the time quantum. We would be able
+the worker thread computes for longer than the time quantum (as they would be
+repeatedly kicked from the batches). We would be able
 to verify this functionality by observing the process queue size and the work
 load of each LPU. 
 
 
 \subsubsection{Boundary-Case Scenarios}\label{sec:results-longbatcher-worstcase}
 
-We will first consider the case of $ChugMachine_N$ for several values of $N$ near and 
+We will first consider the worst case scenario of all computation bound processes 
+using $ChugMachine_N$ for several values of $N$ near and 
 above $P$, or the max number of LPUs on the machine, which in our case 
 is $8$ \footnote{All testing was performed using an Intel Core i7-2820QM.}.  We will 
 compare it to the graphs of $MTRRWS$-$SQ$ to determine how close to naive
 work-stealing our implementation achieves. We will then subsequently consider
 the case of $PRing_N$ for various values of $N$ surrounding the batch size, $B$,
-to verify the absorption and batching assumptions.
+to verify our absorption and batching assumptions.
 
 \begin{table}[h!]
     \centering
@@ -416,12 +442,12 @@ there are two mechanisms we have implemented for Long. Batcher to handle a spawn
 
     \item In `push-back' batching mode, if a spawn forces a new batch to be made, 
     we push the current batch onto the queue and keep the current process in the 
-    same batch with as the new child. This will keep the parent close to it's 
+    same batch as the new child. This will keep the parent close to it's 
     immediate child and also allow it to be quickly re-tested for more new spawns.
 \end{itemize}
 Note that in `push-back' mode, the scheduler with the primary process will never
 be in a position to give it up until all children are finished being spawned. This
-was our default for the Longevity Batcher in the test. As such, 
+was our default for the Longevity Batcher in the above test. As such, 
 table~\ref{tab:chugmachine-longbatcher-singleton-testing} shows a re-execution of 
 $PRing_{32}$ with `singleton'-mode turned on.
 
@@ -438,13 +464,19 @@ $PRing_{32}$ with `singleton'-mode turned on.
     \label{tab:chugmachine-longbatcher-singleton-testing}
 \end{table}
 
-Despite giving it every opportunity to increase the spread, the catch of the parent
-process being a short-running process (as it would spawn a new process before it would
-hit it's time quantum) is just too great. There is a higher chance for it to get stolen,
-but it will have a higher chance of staying batched until it reaches the point of waiting
-for completion. This obviously limits our chances at immediate parallelism, thus the 
+Despite giving it every opportunity to increase the spread, the parent
+process is a short-running process (as it would spawn a new process before it would
+hit it's time quantum). Therefore, while it does have a higher chance to get stolen,
+it will also have a higher chance of staying batched until it reaches the point where it hanges
+for completion. This obviously limits our chances at immediate parallelism. The 
 conclusion that Longevity-Based Batching is $MTRRWS$-$WS$ in the worst-case scenario 
-is not quite true.
+is therefore not quite true.
+
+However, that being said, the spawning mechanism differences do point to 
+som interesting application behaviors. Namely, while the `singleton'-mode was adventagious 
+for this application start up, it may not be for all. For example, a program which
+rapidly spawns micro processes to get multiple small tasks done, may find the
+`push-back' batching mode to be preferred.
 
 \begin{table}[ht!]
     \centering
@@ -463,7 +495,7 @@ is not quite true.
 Finally, table ~\ref{tab:pring-longbatcher-testing} visualizes the reduction 
 densities of several $PRing_N$ executions using the Longevity-Based Batcher 
 with Absorption Channels turned on. We note the obvious agreement with our 
-assumption that the $PRing_N$ would get absorbed into a single batch and thus
+assumption that the entire $PRing_N$ would get absorbed into a single batch and thus be
 contained to a single core. The spill-over at the beginning of the $PRing_{20}$
 execution was due to the spawning of more than $B$ processes. However, after
 their absorption due to communication, the Longevity-Based Batcher was free to
@@ -498,8 +530,8 @@ communicate with.
 
 As mentioned in section~\ref{sec:channel pinning}, our primary interest in this 
 scheduler is the selective stealing technique used. It's design is based 
-explicitly at recognizing cooperativity where it exists, and optimizing the
-spread based on it. As such, we will now highlight the scheduler's ability to 
+explicitly in recognizing cooperativity where it exists, and optimizing the
+saturation based on it. As such, we will now highlight the scheduler's ability to 
 consistently saturate the cores with work. We leave it for future research to 
 discuss the possible spread techniques and their effects on a feedback system.
 
@@ -512,10 +544,37 @@ discuss the possible spread techniques and their effects on a feedback system.
     the following section. I refer you to that until this is complete.
 }
 
-\subsection{Bipartite-Graph Aided Shuffling}\label{sec:results-smartsort}
+\begin{table}[h!]
+    \centering
+\begin{tabular}{@{}ccccc}
+    & \multicolumn{2}{c}{$Interactivity_{(20,0)}$} & \multicolumn{2}{c}{$ClusterComm_{(20,5)}$} \\ \cline{2-5} 
+ & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c|}{Channel Pinning} 
+ & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c}{Channel Pinning} \\ \cline{2-5} 
+   
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{Channel State}}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0001.pdf}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0001.pdf}} \\ 
+ 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{Queue Length}}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0003.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0003.pdf}} &
+   \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0003.pdf}} &
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0003.pdf}} \\ \cline{2-5}
+\end{tabular}
+\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
+the Channel Pinning Scheduler using Absorption Channels.}
+\label{tab:cp-compare-rand-uniform-ca}
+\end{table}
 
-The Bipartite-Graph Aided Shuffling Scheduler attempts to observe the effects
-process queue order has on the scheduling of the application. It utilizes a mapping
+
+
+
+\subsection{Bipartite-Graph Aided Sorting}\label{sec:results-smartsort}
+
+The Bipartite-Graph Aided Sorting Scheduler attempts to observe the effects
+process queue order has on the scheduling of an application. It utilizes a mapping
 of the process set to the channel set and sorts its process queue based on 
 the known edges between the sets. With this scheduler, our primary focus was
 in the recognition of cases which lend themselves to sorting, as such we 
@@ -531,7 +590,7 @@ only make a single channel system.}.
 We therefore rely on the $Interactivity_{(N,0)}$ composure to simulate uniform
 communication, using the $UserInput_{(T,C)}$ behaviour is a single uniform node.
 
-Although, the Shuffling scheduler was the most complicated of the cooperativity 
+Although, the Sorting scheduler was the most complicated of the cooperativity 
 conscious schedulers to test and evaluate. In fact, we needed to stray from our 
 test primitives and examine one of our original example applications, the 
 Parallel Fibonacci. As none of our test primitives were as dependent on order, thus
@@ -540,17 +599,17 @@ Parallel Fibonacci was poised to be a key scenario.
 \subsubsection{Random and Uniform Communication}\label{sec:results-smartsort-rand-uniform}
 
 We begin our communication behavior tests by observing the channel states of
-a particular set of tests: $Interactivity_{(20,0)}$ and $ClusterComm_{20,5)}$, 
+a particular set of tests: $Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$, 
 \footnote{We chose these tests due to being in the upper-bound of process quantity. Note 
-    the shuffling scheduler has a minimum limit on it's process queue before it attempts
+    the sorting scheduler has a minimum limit on it's process queue before it attempts
     a sort, thus more processes are advantageous.}
-for both the Shuffling scheduler and $MTRRWS$-$SQ$ via 
+for both the Sorting scheduler and $MTRRWS$-$SQ$ via 
 table~\ref{tab:ss-compare-rand-uniform-cb}. Be aware again of the scaling bias,
-as for both tests the Shuffling scheduler ran substantially faster.
+as for both tests the Sorting scheduler ran substantially faster.
 
-\begin{table}[!p]
+\begin{table}[h!]
     \begin{tabular}{@{}ccc}
-        & $MTRRWS$-$SQ$       & Shuffling Scheduler       \\ \cline{2-3} 
+        & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/cb/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
@@ -559,7 +618,7 @@ as for both tests the Shuffling scheduler ran substantially faster.
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
 \end{tabular}
 \caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
-the Bipartite-Graph Aided Shuffling Scheduler using Blocking Channels.}
+the Bipartite-Graph Aided Sortling Scheduler using Blocking Channels.}
     \label{tab:ss-compare-rand-uniform-cb}
 \end{table}
 
@@ -573,30 +632,28 @@ with our hypothesis.
 
 Also note that the tests in table~\ref{tab:ss-compare-rand-uniform-cb} utilized
 the Blocking channel implementation. Our second hypothesis, was that the 
-Shuffling Scheduler would execute better given the chance to maintain the
+Sorting Scheduler would execute better given the chance to maintain the
 order of the processes in the queue, if the channel absorbs the process, 
 any sorting performed previously has been a wasted effort. We test this
 hypothesis in table~\ref{tab:ss-compare-rand-uniform-ca}, and run all four tests
 again.
 
-%
-%\begin{table}[!p]
-%    \begin{tabular}{@{}ccc}
-%     \multicolumn{3}{c}{$Interactivity_{(16,8)}$ } \\ \cline{2-3}
-%        & $MTRRWS$-$SQ$       & Shuffling Scheduler       \\ \cline{2-3} 
-%\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
-%    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/ca/pg_0001.pdf}} & 
-%    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/ca/pg_0001.pdf}} \\ \cline{2-3} 
-%\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$ClusterComm_{(20,5)}$}}}   & 
-%    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/ca/pg_0001.pdf}} & 
-%    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} \\ \cline{2-3} 
-%\end{tabular}
-%\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
-%the Bipartite-Graph Aided Shuffling Scheduler using Absorption Channels.}
-%    \label{tab:ss-compare-rand-uniform-ca}
-%\end{table}
-%
-%
+\begin{table}[h!]
+    \begin{tabular}{@{}ccc}
+        & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/ca/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/ca/pg_0001.pdf}} \\ \cline{2-3} 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$ClusterComm_{(20,5)}$}}}   & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/ca/pg_0001.pdf}} \\ \cline{2-3} 
+\end{tabular}
+\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
+the Bipartite-Graph Aided Sorting Scheduler using Absorption Channels.}
+    \label{tab:ss-compare-rand-uniform-ca}
+\end{table}
+
+TODO: WRITE ABOUT 4.8
 
 \todo[inline]{ Currently missing the duplicate of table 4.7 for absorption 
     channels. The tests are completed, it just is a matter of formating and
@@ -605,9 +662,9 @@ again.
 \subsubsection{Optimal-Case Scenario}\label{sec:results-smartsort-optimal}
 
 We now compare the execution of the Parallel Fibonacci application with the
-Shuffling scheduler and $MTRRWS$-$SQ$. To do so, we look at the Channel State
+Sorting scheduler and $MTRRWS$-$SQ$. To do so, we look at the Channel State
 graphs to examine the lengths of time channels are blocked. A positive result
-would be one where the Shuffling scheduler visually reduces the length of 
+would be one where the Sorting scheduler visually reduces the length of 
 time channels are blocked on average. Table~\ref{tab:ss-compare-fib} presents
 this comparison. We attempted to find the $10^{th}$ Fibonacci number, using 
 the algorithm presented in figure~\ref{fig:fibonacci-channel-demo} using the
@@ -616,19 +673,19 @@ default sort frequency and algorithm.
 \begin{table}[ht!]
     \centering
     \begin{tabular}{@{}ccc}
-    & $MTRRWS$-$SQ$ & Shuffling Scheduler  \\ \cline{2-3} 
+    & $MTRRWS$-$SQ$ & Sorting Scheduler  \\ \cline{2-3} 
         \multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Reduction Density}}}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.30]{tests/pfib/wssq/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.30]{tests/pfib/ss/pg_0001.pdf}} \\ \cline{2-3}
 \end{tabular}
 \caption{Channel State comparison of Parallel Fibonacci executed on $MTRRWS$-$SQ$ 
-    and the Bipartite-Graph Aided Shuffling Scheduler. }
+    and the Bipartite-Graph Aided Sorting Scheduler. }
     \label{tab:ss-compare-fib}
 \end{table}
 
 We mention now, as we did in section~\ref{sec:results-evaluation-classical},
 the effects of scaling in the graph. The number of ticks visualized in the 
-Shuffling scheduler's graph is exactly $51$, whereas in the other it is over
+Sorting scheduler's graph is exactly $51$, whereas in the other it is over
 $1000$. The fact that they look identical at this scale is a testament to the
 fact that the reordering of process queues is an effective means by which to
 speed up execution. \todo{\footnotesize I feel like this is missing something to tie it all up.}
