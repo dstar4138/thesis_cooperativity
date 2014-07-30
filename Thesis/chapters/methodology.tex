@@ -31,7 +31,7 @@ These will be the schedulers we provide our results against.
 
 The ErLam toolkit is itself broken down into three parts, the language and its
 semantics, the Runtime System, and the Scheduler API. We will first lay out the
-language and it's basic semantics, as the finer-details are reliant on the exact
+language and its basic semantics, as the finer-details are reliant on the exact
 selected scheduling solution as well as the chosen swap-channel implementation.
 We will then examine the possible channel implementations and how they effect
 the given semantics. Next, we will discuss the Scheduler API using an example
@@ -57,7 +57,7 @@ as a Simply-Typed Lambda Calculus.
 \end{figure}
 
 Figure~\ref{fig:grammer} expresses ErLam in its simplified BN-Form. The 
-semantics for the language is fairly straight forward, but it's operational 
+semantics for the language is fairly straight forward, but its operational 
 semantics are layed out in appendix~\ref{app:semantics}. All expressions reduce
 to one of the terminal types: Integer, Channel, or Function. To spawn for 
 instance, if any terminal is passed other than a function, it returns a $0$
@@ -374,7 +374,7 @@ Longevity-Based Batching Scheduler (section~\ref{sec:longevity based batching}),
 the Channel Pinning Scheduler (section~\ref{sec:channel pinning}), and the
 Bipartite Graph Aided Sorting Scheduler (section~\ref{sec:bipartite graph aided sorting}).
 The first two build on the same shared queue module as provided by $MTRRWS-^{*}$, 
-while the third utilizes it's own implementation.
+while the third utilizes its own implementation.
 
 For any compiled ErLam script, the runtime installs a command line option for
 selecting the scheduler used (among several other options). We are able to 
@@ -627,7 +627,7 @@ of channels.
 
 The mechanism we just described has been implemented as the Longevity-Based
 Batching Scheduler. A process belongs to a batch as long as it does not exceed
-it's quantum (reduction count). If it is preempted, it is thusly kicked out 
+its quantum (reduction count). If it is preempted, it is thusly kicked out 
 from the batch it's a part of (unless it's a singleton). There are of course
 alternatives to this (\eg~allow for $N$ quantum to pass before kicking a 
 process from a batch), but we, for testing purposes, can just extend the size
@@ -683,7 +683,7 @@ following channel pinning implementations:
 \end{inparaenum}
 
 Note \emph{same} pinning, would not be ideal for an application which creates
-all channels in one process and then hands them out to it's children like in
+all channels in one process and then hands them out to its children like in
 $JumpShip_{(W,P)}$, or $ClusterComm_{(N,M)}$. However, \emph{even} pinning will
 be perfect for them. We expect experimentation with composed application will
 have interesting effects in this scheduler.
@@ -744,7 +744,7 @@ stolen are cooperating.
 Due to this, we hope to show an interesting case where process absorption may 
 not be the preferred channel implementation. The blocking channel, one which will
 immediately return, will allow for the process to stay sorted and allow for the 
-next process following it to unblock it for it's next turn. Thus relying on 
+next process following it to unblock it for its next turn. Thus relying on 
 work-stealing alone to migrate processes in a potentially smarter and 
 more-grouped way.
 
@@ -758,7 +758,7 @@ fairness to suffer. We therefore set a variable, $\Gamma$ which defines how many
 To provide a mechanism for sorting, we structure our process queue as a bipartite 
 graph, where one side is our process queue, and the other is the set of channels.
 We generate a ``pseudo-priority'' based on recency of the communications over
-the number of channels it's communicated with. Namely, we sort the process queue
+the number of channels it has communicated with. Namely, we sort the process queue
 by $\Delta(P_i) = \Sigma E_i / |C_i|$ where $E_i$ is the edge set of timestamps,
 and $C_i$ is the set of channels $P_i$ communicated with. The default priority function, $\Delta$,
 is intended to give our processes which communicate frequently, a head start, and

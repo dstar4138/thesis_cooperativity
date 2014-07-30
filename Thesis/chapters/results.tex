@@ -10,7 +10,7 @@ themselves. We ask:
 \vspace{-3mm}\begin{itemize}
     \item How complex must our implementations be to create our test primitives? 
     \item For each scheduler, does our implementation work as expected, despite a minimalistic scheduler API?
-    \item Does the channel implementation lend itself to scheduling improvements? If so, in what case?
+    \item Does the channel implementation lend itself to scheduling decisions? If so, in what cases?
 \end{itemize}\vspace{-3mm}
 These questions will evaluate ErLam, both as a language and runtime, but also as a 
 simulator for scheduler experimentation, comparison, and evaluation. We attend to
@@ -32,14 +32,14 @@ which may be caused by the implementation details. We hoped to make, for lack of
 term, a concurrent functional assembly language. As such, there was some concern
 as to the level of ease we would be able to implement our testing primitives.
 
-We start with a critique of the first implemented test case: $ChugMachine_N$. It
+We start with a critique of the first test case implemented: $ChugMachine_N$. It
 soon became apparent that we would need to standardize on a successive spawning
-method for producing several of the same process at once. Rather than modifying
-our $spawn$ expression we decided to implement this as a fuction in the language
-as it was. The reasoning behind this was to keep consistent the effects of 
+method for producing several of the same worker process at once. Rather than modifying
+our $spawn$ expression, we decided to implement this as a function in the language
+as it is. The reasoning behind this was to keep consistent the effects of 
 spawning a process into a process queue. If we allowed the process to produce $N$
 processes at once, the lag caused by the runtime to produce them would be 
-more noticable.
+more noticeable as the time between ticks would increase.
 
 \begin{figure}
     \centering
@@ -57,7 +57,7 @@ merge = \textbf{fun} a.(\textbf{let} x = \textbf{newchan} \textbf{in}
              N)
 \end{BVerbatim}
 }
-    \caption{Our implementation for a map-reduce style fork-branch, and it's 
+    \caption{Our implementation for a map-reduce style fork-branch, and its 
     subsequent standardized usage.}
     \label{fig:merge-code}
 \end{figure}
@@ -74,7 +74,7 @@ Also as a side effect of our decision, there is a channel for every process whic
 immediately blocks. This has the added effect of giving us the ability to track when 
 processes terminate, as the long-term blocked channels will start closing. For
 example, figure~\ref{fig:fibonacci-channel-demo}, gives an example parallel
-Fibonacci program written in this style and it's subsequent channel graph. This
+Fibonacci program written in this style and its subsequent channel graph. This
 is reminiscent of a map-reduce style approach, and the language lends itself
 to it. Note on the channel graph, a dark line indicates a channel which 
 becomes blocked until the point at which it becomes unblocked. 
@@ -102,13 +102,12 @@ becomes blocked until the point at which it becomes unblocked.
     \label{fig:fibonacci-channel-demo}
 \end{figure}
 
-You may also note that the chart gives an indication as to the size of the time
-quantum selected for the application's execution. The order in which a channel
-becomes blocked, and it's order in the processes execution give that hint. The
-large block of channels at the top of the graph indicate the last batch of 
-spawned processes got time on the cpu before the one's which spawned it, as the
-scheduler which evaluated the spawn ran out of reductions for that process. 
-These observations will become useful for later scheduler critiques.
+For example, note the bottom three lines. The first one and the third one are 
+all dark until the very end. That first one is the block on the left-hand side
+of the Fibonacci merge call, and the third is the response from its subsequent
+spawns. The second is never blocked until the end, after we hear back from the
+left-hand side. These types of observations will become useful for the later 
+scheduler critiques.
 
 \subsection{Scheduler API}\label{sec:results-evaluation-classical}
 
@@ -126,16 +125,17 @@ during our scheduler comparisons.
         \includegraphics[width=\textwidth]{tick-disparity.png}
         \label{fig:tick-disparity}
     }
+    ~
     \subfigure[Tick disparity consistently matches up with increased computation, 
     which is indicitive of inter-scheduler communication requirements.]{
         \includegraphics[width=\textwidth]{tick-disparity-to-reductions.png}
         \label{fig:tick-disparity-match}
     }
-    \caption{Tick Disparity over nearly $900$ tests.}
+    \caption{The tick-disparity for over nearly $900$ tests.}
 \end{figure}
 
 However,
-wne of the concerns early on, and as described in section~\ref{sec:runtime log reports}, 
+one of the concerns early on, and as described in section~\ref{sec:runtime log reports}, 
 was that the LPUs could greatly differ in the number of ticks they are able to 
 provide their process queue. This could be caused by the OS preempting the 
 ErLam scheduling thread to execute something else. However, from our tests, we
@@ -157,22 +157,22 @@ design.
 Further, to validate that our scheduler implementations functioned as expected 
 after translation was another concern. We gave the example of the CML 
 Dual-Queue translation ($STDQ$) previously in section~\ref{sec:example the cml scheduler}.
-We will now examine it's execution and compare it to $STRR$, a single queue naive
+We will now examine its execution and compare it to $STRR$, a single queue naive
 scheduler to confirm our understanding.
 
-The key differences we would expect to see in a comparison would be that the CML
+The key differences we would expect to see in a comparison would be that the CML scheduler
 prefers to, and attempts to run the interactive processes first. It would push
 all computational processes onto the secondary queue, only promoting them when 
-the need arises. To observe this property, we compose the $UserInput_{(T,C)}$ 
+the need arises. To observe this property, we composed the $UserInput_{(T,C)}$ 
 test with $ChugMachine_N$ to create an interactivity test primitive 
 $Interactivity_{(N,M)}$ (figure~\ref{fig:interactivity-code}). The primitive
-launches $ChugMachine_N$ and $M$ instances of $UserInput_{(5,10)}$ (the values
+launches $ChugMachine_N$ and $M$ instances of $UserInput_{(5,10)}$\footnote{The values
 of which were arbitrarily chosen so as to execute for long enough to collect
-coherent data). We then subsequently ran this primitive with $STRR$ and $STDQ$
+coherent data.}. We then subsequently ran this primitive with $STRR$ and $STDQ$
 using multiple values for $N$ and $M$. Table~\ref{tab:interativity8-16-strr-stdq}
 compares an instance of this test set: $Interactivity_{(8,16)}$.
 
-\begin{table}[!p]
+\begin{table}[htp!]
     \centering
     \begin{tabular}{@{}ccc}
         & \multicolumn{2}{c}{$Interactivity_{(8,16)}$} \\ \cline{2-3}
@@ -194,50 +194,52 @@ compares an instance of this test set: $Interactivity_{(8,16)}$.
 The Reduction Density graphs explain everything we need to know. The darkened portions
 at the beginning of the chart indicate that the $STRR$ scheduler has no regard for the
 interactive processes, whereas the $STDQ$ scheduler remains spread out. This seems to be
-on the opposite if we were to consult the Communication Density charts though. It would appear
+the opposite if we were to consult the Communication Density charts though. It would appear
 here that $STRR$ is getting more frequent communication, and $STDQ$ condenses all 
-synchronizations to the end. This is however an issue of verbiage as Interactivity
-does not correlate to Communication Density. By this we mean, $STRR$ is indeed allowing 
+synchronizations to the end. This is, however, an issue of verbiage, as Interactivity
+does not correlate to Communication Density. By this, we mean, $STRR$ is indeed allowing 
 communication to happen evenly due to a round-robin schedule, but it is not attending to
-spontaneous events (\ie~responses back from $hang$). $STDQ$ on the otherhand pushes all 
+spontaneous events (\ie~responses back from $hang$). $STDQ$ on the other-hand pushes all 
 inter-process communication backwards as it waits to respond to the $hang$ing processes.
 
 We see this effect more clearly once we compare with the Channel State charts. In $STRR$
 we see an even regard for all processes. The tapering of the channel blocks at the 
 beginning of the graph is consistent with our understanding of the $merge$-based
-successive spawning. However, $STDQ$ is completely different, and all $UserInput_{(T,C)}$
-processes seem to be pushed to the beginning of the execution pool. This is infact due
-to another difference between the execution styles of the two schedulers. $STDQ$ replaces
+successive spawning and the round-robin nature of $STRR$. 
+However, $STDQ$ is completely different, and all $UserInput_{(T,C)}$
+processes seem to be pushed to the beginning of the execution pool. This is in-fact due
+to another difference between the execution styles of the two schedulers: $STDQ$ replaces
 the currently running process with the child process it spawned, enqueuing the parent.
 We therefore can confirm our understanding, in this case, that the scheduler is reacting
 to the test primitives as expected.
 
-The work-stealing mechanic is another instance for interesting comparison. We've built
+The work-stealing mechanics of $MTRRWS$-$SQ$ and $MTRRWS$-$IS$ are another instance for interesting comparison. We've built
 two of the cooperativity-conscious schedulers we discuss on top of the $MTRRWS$-$*$ 
 process queue implementation. It is this unified queue implementation which allows 
 us to toggle between the two implementations. With $MTRRWS$-$SQ$, the process queue
 will respond to function calls from schedulers for other LPUs, it will perform a
-quick dequeue from the bottom only blocking the host LPU from accessing the queue
+quick dequeue from the bottom, only blocking the host LPU from accessing the queue
 for a minimal amount of time. With $MTRRWS$-$IS$, the process queue goes untouched
-by other LPUs, instead the scheduler on the LPU itself will receive the messages
-and respond during periods inbetween process operations.
+by other LPUs, instead the scheduler on the LPU itself will receive the thief messages
+and respond during periods between process operations (\eg~during preemption).
 
 To compare these, we would expect to see minor differences in the processes scheduler 
-state as we could expect $MTRRWS$-$IS$ to wait longer for responses from their theif
-messages. But otherwise we would like to make sure the saturation of the cores are 
+state, but we could expect $MTRRWS$-$IS$ to wait longer for responses from their thief
+messages as the victim LPU could be computation-bound. 
+But otherwise we would like to make sure the saturation of the cores are 
 as identical as possible. In other words, if either method is unable to saturate the 
 cores effectually, then it would not be worth further testing (or there is an issue 
 with the implementation). 
 
 However, work-stealing schedulers work best if there is a constant probability of 
 loosing a process by completion. Our test primitives, as they stand, do not account for
-application phases in terms of process quantity. Thus, to effectively examine these
+application phases in terms of process quantity or differing longevity. Thus, to effectively examine these
 stealing mechanisms, we substitute process loss via completion with process loss via 
 channel absorption. Thus, table~\ref{tab:ptree9-10-5-wsis-wssq} gives a comparison of the 
 two work-stealing techniques in terms of scheduler state over time and the process 
-queue length with a run of $PTree_{(9,10)}$ with channel absorption turned on.
+queue length with a run of $PTree_{(9,10)}$ with the Process Absorption channel turned on.
 
-\begin{table}[!p]
+\begin{table}[htp!]
 \centering
     \begin{tabular}{@{}ccc}
         & \multicolumn{2}{c}{$PTree_{(9,10)}$} \\ \cline{2-3}
@@ -253,14 +255,13 @@ queue length with a run of $PTree_{(9,10)}$ with channel absorption turned on.
     \label{tab:ptree9-10-5-wsis-wssq}
 \end{table}
 
-
-Upon review of this comparison, our initial assumptions are validated. The process queue
+Upon review of this comparison, our initial assumptions have been validated. The process queue
 length looks extremely similar. The LPU which owns the initial process maintains the 
 largest queue, where all others work steal a single process and work on it. Any gains in
 queue size for these LPUs are via channel absorption, but this can not compare with the
 initial spawns. We note here that an obvious introduction of smarter work-balancing
 would be critical for a realistic or even practically useful scheduler. However, for our
-purposes of verifying the work-stealing mechanism, this is sufficient.
+purposes of verifying the work-stealing mechanism and any improvements, this naive implementation is sufficient.
 
 Although the scheduler state comparison, in this instance, does not look consistent with 
 the original assumptions. Namely, $MTRRWS$-$IS$ seems not stay in waiting mode as long
@@ -270,19 +271,22 @@ of space as $MTRRWS$-$SQ$ does with $8000$. Additionally, the scheduling reducti
 this execution was $20$ and all processes were set to chug for only $5$ max, this allows the 
 scheduler more opportunity to tend to inter-process communication at a detriment to
 the shared-queue implementation due to higher chance of blocked queue access.
-The simulation's log was able to support the former rational.
+The simulation's log was able to support the former rational. It is due to this 
+minor increase in speed, that we standardize our tests in this document to 
+compare against the $SQ$ stealing mechanism, even if our selected tests showed 
+$IS$ as preferred.
 
 \subsection{Channel Implementations}\label{sec:results-channel-implementations}
 
 The above graphs (\eg~table~\ref{tab:interativity8-16-strr-stdq}, and 
 table~\ref{tab:ptree9-10-5-wsis-wssq}) were generated, using the CML-like Process 
-Absorption channels. We would like to now breifly visualize how a Blocking channel
-may operate and effect our visualization of the application's scheduling. In this example 
+Absorption channels. We would like to now briefly visualize how a Blocking channel
+may operate and effect our visualizations of the application's schedule. In this example 
 (table~\ref{tab:interactivity16-8-sq}), we ran the interactivity composure again
 to test a large sampling of processes, but some with communication so as to see the 
 flow of processes due to absorption.
 
-\begin{table}[!p]
+\begin{table}[htp!]
     \begin{tabular}{@{}ccc}
      \multicolumn{3}{c}{$Interactivity_{(16,8)}$ } \\ \cline{2-3}
         & \textbf{Absorption}       & \textbf{Blocking}       \\ \cline{2-3} 
@@ -303,13 +307,13 @@ shows any attempted communication, even if it results in a block. Thus if a
 process is allowed to continuously check a required channel for a value, the 
 density will increase, as it does for the Blocking channel chart. 
 
-This difference is also apparent in the number of available processes each scheduler has
+The difference is also apparent in the number of available processes each scheduler has
 access to. The lengths of the process queues, fluctuate frequently in both
 charts, however the absorption channel does so to quite a large degree. This
 is to be expected since any communication which results in a block 
 removes a process and any which results in a value returns an extra one.
 Whereas the blocking channel chart, the queue size rapidly switches up and
-down as it adds it's current process and gets the next one. We are also able 
+down as it adds its current process and gets the next one. We are also able 
 to notice the tell-tail signs of the naive shared-queue work-stealing approach 
 in the Blocking channel too (\ie~the single dominate process queue).
 
@@ -330,7 +334,8 @@ primitives used throughout this discussion. For any non-explicitly defined
 parameter selections, the appendix will have their default values.
 
 However, with the mechanics presented in this section, we wish to highlight particular
-attributes of using cooperativity as a metric in a feedback scheduler. Namely,
+distinguishing features of using cooperativity as a metric in a feedback scheduler. 
+Namely,
 \begin{itemize}
     \item The Longevity-Based Batching scheduler recognizes system interactivity
         and channel communication to batch processes, and longevity detection to
@@ -344,13 +349,13 @@ attributes of using cooperativity as a metric in a feedback scheduler. Namely,
 
     \item The Bipartite-Graph Aided Sorting scheduler is motivation to take 
         another look at the channel implementation. Instead of the common 
-        absoption channels, a blocking channel allows for scheduler decisions 
+        absorption channels, a blocking channel allows for scheduler decisions 
         regarding order of process evaluation. This allows for adaptation 
         to possible future cooperative behavior.
 \end{itemize}
 We therefore restrict the scope of our discussion to the particulars of
-each mechanic which directly pertains to cooperativity recognition and
-adaptation. We leave it for future work to analyze the trade offs of these
+each mechanic which directly pertain to cooperativity recognition and
+adaptation. We leave it for future work to improve on the trade offs of these
 mechanics in practice.
 
 \subsection{Longevity-Based Batching}\label{sec:results-longbatcher}
@@ -374,12 +379,12 @@ batching process was a success.
 We also would like to look at a number of other possible tests to see the
 average cases and how a batching scheduler would handle such applications.
 Namely, various $ClusterComm_{(N,M)}$ and $PTree_{(W,N)}$ executions would allow 
-for testing of process-absorption based rebatching. We would expect logical
+for testing of process-absorption based re-batching. We would expect logical
 work-groups to form batches, and only show poorer results in instances where
 the worker thread computes for longer than the time quantum (as they would be
 repeatedly kicked from the batches). Therefore we will instead look at the
-effects varying the time-quantum has on the quality of the batching proceedure.
-We will then look at the proces queue lengths and work loads of each LPU.
+effects varying the time-quantum has on the quality of the batching procedure.
+We will then look at the process queue lengths and work loads of each LPU.
 
 \subsubsection{Boundary-Case Scenarios}\label{sec:results-longbatcher-worstcase}
 
@@ -424,7 +429,7 @@ to verify our absorption and batching assumptions.
 
 First, table~\ref{tab:chugmachine-longbatcher-testing} visualizes a
 $ChugMachine_N$ comparison with the Longevity-Based Batcher and $MTRRWS$-$SQ$. 
-With the Longevity-Batcher, we can observe the common work-stealing behaviour 
+With the Longevity-Batcher, we can observe the common work-stealing behavior 
 with a primary LPU and minimal queue lengths on all others. It initially spreads
 work out as the primary queue continues to chug. However, the $MTRRWS$-$SQ$ seem
 to have an easier time of stealing the primary process which is in the process of
@@ -441,7 +446,7 @@ there are two mechanisms we have implemented for Long. Batcher to handle a spawn
 
     \item In `push-back' batching mode, if a spawn forces a new batch to be made, 
     we push the current batch onto the queue and keep the current process in the 
-    same batch as the new child. This will keep the parent close to it's 
+    same batch as the new child. This will keep the parent close to its 
     immediate child and also allow it to be quickly re-tested for more new spawns.
 \end{itemize}
 Note that in `push-back' mode, the scheduler with the primary process will never
@@ -465,14 +470,14 @@ $PRing_{32}$ with `singleton'-mode turned on.
 
 Despite giving it every opportunity to increase the spread, the parent
 process is a short-running process (as it would spawn a new process before it would
-hit it's time quantum). Therefore, while it does have a higher chance to get stolen,
-it will also have a higher chance of staying batched until it reaches the point where it hanges
+hit its time quantum). Therefore, while it does have a higher chance to get stolen,
+it will also have a higher chance of staying batched until it reaches the point where it hangs
 for completion. This obviously limits our chances at immediate parallelism. The 
 conclusion that Longevity-Based Batching is $MTRRWS$-$SQ$ in the worst-case scenario 
 is therefore not quite true.
 
 However, that being said, the spawning mechanism differences do point to 
-som interesting application behaviors. Namely, while the `singleton'-mode was adventagious 
+some interesting application behaviors. Namely, while the `singleton'-mode was advantageous 
 for this application start up, it may not be for all. For example, a program which
 rapidly spawns micro processes to get multiple small tasks done, may find the
 `push-back' batching mode to be preferred.
@@ -525,7 +530,7 @@ a 2-to-1 number of LPUs to potential batches seemed logical.
 \begin{table}[htp!]
     \centering
     \begin{tabular}{ccccc} & \multicolumn{4}{c}{ $PTree_{(4,8)}$ } \\ \cline{2-5}
-    \multicolumn{1}{c}{\textbf{Time}} & \multicolumn{2}{c|}{ $MTRRWS$-$SQ$ } & \multicolumn{2}{c}{ Long. Batcher} \\ \cline{2-5}
+    \multicolumn{1}{c}{\textbf{Time}} & \multicolumn{2}{c}{ $MTRRWS$-$SQ$ } & \multicolumn{2}{c}{ Long. Batcher} \\ \cline{2-5}
     \multicolumn{1}{c|}{\textbf{Quantum}} & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} 
                                                 & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} \\ \cline{1-5}
     \multicolumn{1}{c|}{$R=30$} &  \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca30r/pg_0003.pdf}} &
@@ -576,11 +581,11 @@ scheduler is the selective stealing technique used along with its ability to
 maintain LPU saturation with channel pinning and process absorption. Its design 
 is based on recognizing cooperativity where it exists. If two processes communicate
 with different channels, their likelihood of being reliant on one another decreases.
-As such, we will look at the two extremes for communication behaviour, completely random 
+As such, we will look at the two extremes for communication behavior, completely random 
 and then completely uniform. That is, a system which has no predicable or
-repeatable behaviour, and then a system were the past will directly inform the future. 
+repeatable behavior, and then a system were the past will directly inform the future. 
 
-We therefore utilize $ClusterComm_{(N,M)}$ for it's random behaviour, and turn to the 
+We therefore utilize $ClusterComm_{(N,M)}$ for its random behavior, and turn to the 
 $Interactivity_{(N,0)}$ composure to simulate uniform communication. In other words,
 we will have $N$ uniform communicating units which compute and are stolen separately 
 ($UserInput_{(T,C)}$). As such, we hope to highlight the scheduler's ability to 
@@ -603,7 +608,7 @@ $MTRRWS$-$SQ$ via table~\ref{tab:cp-compare-rand-uniform-ca}.
 \begin{table}[htp!]
     \centering
 \begin{tabular}{@{}ccccc}
-    & \multicolumn{2}{c}{$Interactivity_{(20,0)}$} & \multicolumn{2}{c}{$ClusterComm_{(20,5)}$} \\ \cline{2-5} 
+    & \multicolumn{2}{c|}{$Interactivity_{(20,0)}$} & \multicolumn{2}{c}{$ClusterComm_{(20,5)}$} \\ \cline{2-5} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c|}{Channel Pinning} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c}{Channel Pinning} \\ \cline{2-5} 
  
@@ -685,14 +690,14 @@ be wasted as soon as a channel was absorbed and effectively reordered.
 Table~\ref{tab:ss-compare-rand-uniform-ca} presents these executions, and they
 meet expectation.
 
-\begin{table}[htp!]
+\begin{table}[tp!]
     \centering
     \begin{tabular}{@{}ccc}
         & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~~~~~~~~~~~$Interactivity_{(20,0)}$}}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/ca/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/ca/pg_0001.pdf}} \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$ClusterComm_{(20,5)}$}}}   & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~~~~~~~~~~~$ClusterComm_{(20,5)}$}}}   & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/ca/pg_0001.pdf}} \\ \cline{2-3} 
 \end{tabular}
@@ -708,14 +713,14 @@ hints to the scheduler, which it may then use to predict the future.
 Table~\ref{tab:ss-compare-rand-uniform-cb} displays a re-execution of the 
 above tests utilizing Blocking channels instead.
 
-\begin{table}[htp!]
+\begin{table}[tp!]
     \centering
     \begin{tabular}{@{}ccc}
         & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~~~~~~~~~~~$Interactivity_{(20,0)}$}}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/wssq/cb/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/interactivity/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{$ClusterComm_{(20,5)}$}}}   & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~~~~~~~~~~~$ClusterComm_{(20,5)}$}}}   & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/cb/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
 \end{tabular}
@@ -743,7 +748,7 @@ this comparison. We attempted to find the $10^{th}$ Fibonacci number, using
 the algorithm presented in figure~\ref{fig:fibonacci-channel-demo} using the
 default sort frequency and algorithm.
 
-\begin{table}[htp!]
+\begin{table}[tp!]
     \centering
     \begin{tabular}{@{}ccc}
     & $MTRRWS$-$SQ$ & Sorting Scheduler  \\ \cline{2-3} 
@@ -761,8 +766,8 @@ the effects of scaling in the graph. The number of ticks visualized in the
 Sorting scheduler's graph is exactly $51$, whereas in the other it is over
 $1000$. The fact that they look identical at this scale is a testament to the
 fact that the reordering of process queues is an effective means by which to
-speed up execution. \todo{\footnotesize I feel like this is missing something to tie it all up.}
-
+speed up execution. Ultimately this prompts further discussion on the channel
+implementation.
 
 \section{A Comment on Swap Channels}\label{sec:results-swap-channels}
 
