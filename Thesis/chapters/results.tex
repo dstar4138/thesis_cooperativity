@@ -372,19 +372,18 @@ saturated while all others were kept in waiting mode, this would indicate the
 batching process was a success.
 
 We also would like to look at a number of other possible tests to see the
-common cases and how a batching scheduler would handle such applications.
+average cases and how a batching scheduler would handle such applications.
 Namely, various $ClusterComm_{(N,M)}$ and $PTree_{(W,N)}$ executions would allow 
-for testing of process-absorption based rebatching. We may expect logical
+for testing of process-absorption based rebatching. We would expect logical
 work-groups to form batches, and only show poorer results in instances where
 the worker thread computes for longer than the time quantum (as they would be
-repeatedly kicked from the batches). We would be able
-to verify this functionality by observing the process queue size and the work
-load of each LPU. 
-
+repeatedly kicked from the batches). Therefore we will instead look at the
+effects varying the time-quantum has on the quality of the batching proceedure.
+We will then look at the proces queue lengths and work loads of each LPU.
 
 \subsubsection{Boundary-Case Scenarios}\label{sec:results-longbatcher-worstcase}
 
-We will first consider the worst case scenario of all computation bound processes 
+We will first consider the worst-case scenario of all computation-bound processes, by 
 using $ChugMachine_N$ for several values of $N$ near and 
 above $P$, or the max number of LPUs on the machine, which in our case 
 is $8$ \footnote{All testing was performed using an Intel Core i7-2820QM.}.  We will 
@@ -396,7 +395,7 @@ to verify our absorption and batching assumptions.
 \begin{table}[h!]
     \centering
     \begin{tabular}{ccccc}
-        \multicolumn{5}{c}{$PRing_N$} \\ \cline{2-5}
+        \multicolumn{5}{c}{$ChugMachine_N$} \\ \cline{2-5}
         & \multicolumn{2}{c}{$MTRRWS$-$SQ$}  & \multicolumn{2}{c}{Long. Batcher}    \\ \cline{2-5}
     \multicolumn{1}{c|}{~} & \multicolumn{1}{c|}{Queue Length} & \multicolumn{1}{c|}{Reduc. Density} & 
         \multicolumn{1}{c|}{Queue Length} & \multicolumn{1}{c|}{Reduc. Density} \\ \cline{2-5}
@@ -454,7 +453,7 @@ $PRing_{32}$ with `singleton'-mode turned on.
 \begin{table}[ht!]
     \centering
     \begin{tabular}{ccc}
-        & \multicolumn{2}{c}{$PRing_N$} \\ \cline{2-3}
+        & \multicolumn{2}{c}{$ChugMachine_N$} \\ \cline{2-3}
         \multicolumn{1}{c|}{~} & \multicolumn{1}{c|}{Queue Length} & \multicolumn{1}{c|}{Reduc. Density} \\ \cline{2-3}
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{$N=P=8$}~} } & 
     \multicolumn{1}{c}{\includegraphics[scale=0.20]{tests/chugmachine/longbatcher/32_singleton/pg_0003.pdf}}&
@@ -492,33 +491,76 @@ rapidly spawns micro processes to get multiple small tasks done, may find the
     \label{tab:pring-longbatcher-testing}
 \end{table}
 
-Finally, table ~\ref{tab:pring-longbatcher-testing} visualizes the reduction 
+Finally, table~\ref{tab:pring-longbatcher-testing} visualizes the reduction 
 densities of several $PRing_N$ executions using the Longevity-Based Batcher 
 with Absorption Channels turned on. We note the obvious agreement with our 
-assumption that the entire $PRing_N$ would get absorbed into a single batch and thus be
-contained to a single core. The spill-over at the beginning of the $PRing_{20}$
+assumption as the entire $PRing_N$ gets absorbed into a single batch and 
+contained to a single core.  The spill-over at the beginning of the $PRing_{20}$
 execution was due to the spawning of more than $B$ processes. However, after
 their absorption via communication, the Longevity-Based Batcher was free to
 maintain all processes in the same batch without harming parallelism.
 
-While the scheduler does not reduce exactly to $MTRRWS$-$*$ as planned, this result 
-shows an improvement over alternative batching approaches as we explicitly
-don't mind if the whole system has been batched. Any lack of parallelism is
-caught by the check for longevity.
+While the scheduler does not reduce exactly to $MTRRWS$-$*$ as hypothesized, this result 
+shows an improvement over alternative batching approaches as we explicitly relax the 
+constraints of system-wide batching. Any lack of parallelism is caught by the check 
+for longevity.
 
-\subsubsection{Average-Case Scenarios}\label{sec:results-longbatcher-avgcase}
+\subsubsection{Time-Quantum Effects}\label{sec:results-longbatcher-timequantum}
 
-We will first consider the case of $ClusterComm_{(N,M)}$ with several values of
-$N$ near and around $B$. We will keep the number of channels constant as 
-$M=\lfloor B/2 \rfloor$ to see the effects of a worst case in terms of batch 
-relocation. We will then look at $M=1$ but several distinct work groups using
-$PTree_{(W,N)}$, with the same modifications to $N$ as we did with 
-$ClusterComm_{(N,M)}$.
+Of the average scenarios we are interested in only the effects of our time quantum
+on the quality and level of batching in each scenario; as batching has been examined 
+before in terms of alternative metrics. We will look at the same test case, 
+$PTree_{(4,8)}$ as the number of work-groups ($4$) is less than the number of LPUs 
+and the number of processes per work-group ($8$) is lower than the batch-size limits 
+($10$). 
 
-\todo[inline]{Compile notes and graphs of $ClusterComm_{(N,M)}$ and $PTree_{(W,N)}$.
-    Show that batching aids in reducing channel block time by comparing it
-    to $MTRRWS$ or $MTGQ$.
-}
+The rational for this seemingly arbitrary test-case selection is two fold. First,
+the supervisory processes are all short-running and may force the logical batches 
+to be inflated in size by at least two (\ie~thus the reduction in processes in 
+work-groups). Then secondly, when we reduce the time quantums to well below the
+worker-thread's execution spawn (before it hits a sync), the number of batches
+will increase substantially and we would like to see the scheduling effects. Having
+a 2-to-1 number of LPUs to potential batches seemed logical.
+
+\begin{table}[htp!]
+    \centering
+    \begin{tabular}{ccccc} & \multicolumn{4}{c}{ $PTree_{(4,8)}$ } \\ \cline{2-5}
+    \multicolumn{1}{c}{\textbf{Time}} & \multicolumn{2}{c|}{ $MTRRWS$-$SQ$ } & \multicolumn{2}{c}{ Long. Batcher} \\ \cline{2-5}
+    \multicolumn{1}{c|}{\textbf{Quantum}} & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} 
+                                                & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} \\ \cline{1-5}
+    \multicolumn{1}{c|}{$R=30$} &  \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca30r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca30r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/lbb/ca30r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/ptree/lbb/ca30r/pg_0004.pdf}} \\ \cline{1-5}
+
+    \multicolumn{1}{c|}{$R=40$} &  \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca40r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca40r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/lbb/ca40r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/ptree/lbb/ca40r/pg_0004.pdf}} \\ \cline{1-5}
+
+    \multicolumn{1}{c|}{$R=50$} &  \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca50r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/ptree/wssq/ca50r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/ptree/lbb/ca50r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/ptree/lbb/ca50r/pg_0004.pdf}} \\ \cline{1-5}
+    \end{tabular}
+    \caption{Comparison of $PTree_{(4,8)}$ running with the Longevity-Based 
+        Batching Scheduler and $MTRRWS$-$SQ$ at different time-quantums.} 
+    \label{tab:ptree-longbatcher-testing}
+\end{table}
+
+Table~\ref{tab:ptree-longbatcher-testing} notes the gradual shift of the number of 
+logical batches formed in the Longevity-Based Batcher. For the lower values of 
+$R$, the max reduction count per round, the number of batches rose substantially and
+began to look like $MTRRWS$-$SQ$. For all subsequent quantum selections there was
+a stead drop in the the sizes of the LPUs' process queues, until at $R=50$ we 
+see that no queue goes above size $1$, indicating each work-group has been clustered.
+
+We close on the note that the selection of the time-quantum can easily be set 
+heuristically, modified between rounds, and possibly on a per-LPU basis. It would
+need to take into account the average distance between synchronization points
+of the processes in its batch queue. Using that, it would be able to determine if
+a particular process posed a greater than average threat to the parallelism of the 
+system, and subsequently push it into a singleton batch.
 
 \subsection{Channel Pinning}\label{sec:results-channelpinner}
 
@@ -538,7 +580,7 @@ As such, we will look at the two extremes for communication behaviour, completel
 and then completely uniform. That is, a system which has no predicable or
 repeatable behaviour, and then a system were the past will directly inform the future. 
 
-We therefore utilize $ClusterComm_{(N.M)}$ for it's random behaviour, and turn to the 
+We therefore utilize $ClusterComm_{(N,M)}$ for it's random behaviour, and turn to the 
 $Interactivity_{(N,0)}$ composure to simulate uniform communication. In other words,
 we will have $N$ uniform communicating units which compute and are stolen separately 
 ($UserInput_{(T,C)}$). As such, we hope to highlight the scheduler's ability to 
@@ -564,7 +606,14 @@ $MTRRWS$-$SQ$ via table~\ref{tab:cp-compare-rand-uniform-ca}.
     & \multicolumn{2}{c}{$Interactivity_{(20,0)}$} & \multicolumn{2}{c}{$ClusterComm_{(20,5)}$} \\ \cline{2-5} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c|}{Channel Pinning} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c}{Channel Pinning} \\ \cline{2-5} 
-  
+ 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~Comm. Density}}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0002.pdf}} & 
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0002.pdf}} &
+    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0002.pdf}} &
+    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0002.pdf}} \\
+
+ 
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~Queue Length}}} &
     \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0003.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0003.pdf}} &
@@ -588,15 +637,17 @@ Starting at the bottom and working up, we notice the level of saturation the
 channel pinning scheduler achieves over $MTRRWS$-$SQ$. Its slightly denser,
 despite the same general execution time (in tick quantity). However, the channel
 pinning scheduler still maintains the tell-tail signs of the underlying 
-naive work-stealing approach via the single primary LPU. The queue length's
+naive work-stealing approach via the single primary LPU. The queue lengths'
 confirm this with much more activity on all secondary LPUs. Despite the 
-unevenness, we see a much uniform attention to the state of channels. 
+unevenness, we see a much uniform attention to the state of channels.
+Communication Densities show an obvious front-loading effect when there is 
+predictable communication happening. 
 
 However, for $ClusterComm_{(20,5)}$ we see no marked difference in the channel
 pinning scheduler's spread. In fact it looks to take longer to saturate the 
 cores than a normal work-stealer. Possibly due to the work-stealing by channel-id
-didn't match a process until much later. Despite this, it looks as though there 
-was very little detriment as the applications completed in roughly similar time.
+not matching a process until much later. Despite this, it looks as though there 
+was very little detriment, as the applications completed in roughly similar time.
 
 Note for these tests we used the $even$ spreading algorithm 
 (section~\ref{sec:channel pinning}) to calculate our next LPU for pinning instead of
@@ -620,14 +671,14 @@ scheduling differences of random and uniform communication behaviors.
 Although, the Sorting scheduler was the most complicated of the cooperativity 
 conscious schedulers to test and evaluate. In fact, we needed to stray from our 
 test primitives and examine one of our original example applications, the 
-Parallel Fibonacci, to properly test it. This is due to none of our test 
+Parallel Fibonacci, to properly test it. This is due to none of our tests
 being dominantly dependent on process order (\ie~the majority of processes in the
 test primitives are worker threads and only $1$ process is waiting on them to
 complete), thus Parallel Fibonacci was poised to be a best-case scenario.
 
 \subsubsection{Random and Uniform Communication}\label{sec:results-smartsort-rand-uniform}
 
-We ran $Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$ like before using Absorption
+We ran $Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$ like before, using Absorption
 channels first. We hypothesized that this channel implementation would provide
 little improvement and the overhead involved with sorting the process queue would
 be wasted as soon as a channel was absorbed and effectively reordered. 
@@ -635,6 +686,7 @@ Table~\ref{tab:ss-compare-rand-uniform-ca} presents these executions, and they
 meet expectation.
 
 \begin{table}[htp!]
+    \centering
     \begin{tabular}{@{}ccc}
         & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
@@ -649,13 +701,15 @@ the Bipartite-Graph Aided Sorting Scheduler using Absorption Channels.}
     \label{tab:ss-compare-rand-uniform-ca}
 \end{table}
 
+Note very little difference in the charts on either side of the median.
 Absorption channels remove any chance the scheduler may have of improving the 
-runtime quality of the application. Blocking channels, on the other hand, leak
-hints to the scheduler which it may use to predict the future.
+runtime quality of the application. Blocking channels, on the other hand, can leak
+hints to the scheduler, which it may then use to predict the future.
 Table~\ref{tab:ss-compare-rand-uniform-cb} displays a re-execution of the 
 above tests utilizing Blocking channels instead.
 
 \begin{table}[htp!]
+    \centering
     \begin{tabular}{@{}ccc}
         & $MTRRWS$-$SQ$       & Sorting Scheduler       \\ \cline{2-3} 
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{$Interactivity_{(20,0)}$}}} & 
