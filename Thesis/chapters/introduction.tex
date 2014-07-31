@@ -2,10 +2,10 @@
 \index{Introduction@\emph{Introduction}}%
 \label{chap:introduction}
 
-Runtime systems can be broken up into multiple distinct parts: the garbage 
-collector, dynamic type-checker, resource allocator, and much more. One 
-sub-system of a language's run-time is the task-scheduler. The scheduler is 
-responsible for order of task evaluation and the distribution of 
+Runtime systems can be broken up into several distinct parts: the garbage 
+collector, dynamic type-checker, resource allocator, \etc. One 
+subsystem of a language's runtime is the {\em task scheduler}. The scheduler is 
+responsible for ordering task evaluation and the distribution of 
 these tasks across the available processing units.
 
 Tasks are typically spawned when there is a chance for parallelism, either 
@@ -22,11 +22,11 @@ tasks need particular resources which other tasks are currently using,
 or perhaps some tasks are waiting for user input and don't have anything to
 do. Still worse, some tasks may be trying to work together to complete an 
 objective, and rely on dynamic dependencies that change over time.
-
-Tasks however, in functional language verbiage, are typically called 
+Tasks however, in functional language jargon, are typically called 
 {\em processes} due to the inherent isolation this term brings and the language 
-paradigm calls for. Instead, message passing is a common alternative to, and 
-sometimes abstraction of, shared
+paradigm calls for. 
+
+Message passing is a common alternative to, and sometimes abstraction of, shared
 memory. Message passing is akin to emailing a colleague a question. You operate
 asynchronously, and your colleague can check her mailbox and then
 respond at her leisure. Meanwhile you are free to operate on an assumption 
@@ -39,34 +39,36 @@ workers are given subsections of the list. Each worker thread will have no
 need to access another's subsection and thus no messages will need to be passed.
 However, what happens when the function being mapped on a particular subsection uses 
 several processes? Each may access a shared resource via message passing. 
-We would see a close coupling in this case.
+We would observe a close coupling of processes in this case.
 This highlights the granularity of process coupling, in that the \texttt{pmap}
-workers exhibit course-grained coupling, which allows the scheduler greater 
+workers exhibit coarse-grained parallelism, which allows the scheduler greater 
 flexibility to run them in parallel. The opposite is true for the processes 
 which show close coupling, like the mapped function. We define this granularity of process
-coupling as \textbf{Process Cooperativity}.
+coupling as {\em Process Cooperativity}.
 
-There exists a large number of mechanisms that scheduling systems can use in an 
-attempt to improve work-load across all processing units. Some of these 
-mechanisms use what's called a feedback system. Namely, they observe the 
-running behaviour of the application as a whole, (i.e. collect {\em metrics}),
+There are many mechanisms that scheduling systems can use to improve workload 
+across all processing units. Some of these 
+mechanisms use what is called a {\em feedback system}. Namely, they observe the 
+running behaviour of the application as a whole, (\ie~collect {\em metrics}),
 and modify themselves to improve operation. 
 
-Process Cooperativity is an interesting metric by which to grade a system. In
+{\em Process Cooperativity} is an interesting metric by which to grade a system. In
 biochemistry the term cooperativity is defined as an increase or decrease
 in the rate of interaction between a reactant and a protein as the reactant
 concentration increases. We can translate this into an information theoretic 
 definition: 
 \begin{newdef}\label{def:degree of cooperativity}
-    The {\bf degree of cooperativity} of a system is the increase or decrease 
-    in the rate of interaction between processes and an inter-process 
-    communication method as the concentration of processes fluctuate.
+    The degree of cooperativity of a {\em process} is the increase or decrease 
+    in its rate of interaction with an inter-process communication method, and
+    subsequently, the degree of cooperativity of the {\em system} is the rate of
+    interaction between the sets of processes and channels as the concentration
+    of both fluctuate.
 \end{newdef}
 
 Thus, when a process attempts to pass a message to another we know it's trying 
 to cooperate on some level. When this frequency of interaction is high, it may
 indicate a tight coupling of processes or fine-grained parallelism. If it is 
-low, this could indicate course-grained parallelism. In either event, a 
+low, this could indicate coarse-grained parallelism. In either event, a 
 scheduler able to recognize these clusters of cooperative and non-cooperative 
 processes should have an edge over those that don't.
 

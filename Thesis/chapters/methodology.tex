@@ -507,7 +507,7 @@ want to have a possible case for partial-system cooperation. We begin this range
 of experiments with a behaviour which acts like a bunch of $ClusterComm_{(N,1)}$
 running in parallel. We call this special case behaviour $PTree_{(W,N)}$ (figure~\ref{fig:PTree}); where $W$ is 
 the number of work groups to run in parallel. This is the cleanest case of 
-partial-system cooperation. We would expect to see obvious clustering of 
+partial-system cooperation. We would expect to observe obvious clustering of 
 processes by work-group affiliation if the scheduler was 
 cooperativity-conscious.
 
@@ -611,7 +611,7 @@ message passing too.
 
 However, this batching mechanism is great when the application is going through
 a phase of frequent communication and thus fine-grained parallelism. But in the
-event the phase changes or the system is course-grained, then a batch actually
+event the phase changes or the system is coarse-grained, then a batch actually
 harms the ability of the scheduler to parallelize to the fullest. This issue 
 however is one we've seen before, the struggle of computation and communication
 bound processes.
