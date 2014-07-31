@@ -141,7 +141,8 @@ system as the interactivity of the system stalls to finish computation.
 
 To solve this problem a scheduler can $preempt$ a process after a certain amount
 of time has passed. This time slice is also called a time interval or a $quantum$
-and has quite a literature involved with its selection. \todo{cite}
+and has quite a literature involved with its selection
+\cite{alam2008finding, mostafa2010finding, saeidi2012determining}.
 Too short, doesn't allow a process enough time to progress and the runtime system
 starts to spend more time context switching than computation. Too long and the
 preemptive-scheduler effectively becomes non-preemptive as all computation-bound
