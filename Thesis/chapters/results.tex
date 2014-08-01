@@ -48,7 +48,7 @@ more noticeable as the time between ticks would increase.
 merge = \textbf{fun} a.(\textbf{let} x = \textbf{newchan} \textbf{in}
                \textbf{let} _ = (\textbf{spawn} \textbf{fun} _.(\textbf{swap} x (a nil))) \textbf{in}
                \textbf{fun} b.(\textbf{let} y = \textbf{newchan} \textbf{in} 
-                      \textbf{let} _ = (\textbf{spawn} \textbf{fun} _.(\textbf{spawn} y (b nil))) \textbf{in}
+                      \textbf{let} _ = (\textbf{spawn} \textbf{fun} _.(\textbf{swap} y (b nil))) \textbf{in}
                       \textbf{fun} m.(m (\textbf{swap} x nil) (\textbf{swap} y nil))))
 // ...
 (omega \textbf{fun} f,n.(\textbf{if} (leq n \textit{1}) 
