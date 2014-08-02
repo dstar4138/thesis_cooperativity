@@ -33,7 +33,7 @@ The ErLam toolkit is itself broken down into three parts, the language and its
 semantics, the Runtime System, and the Scheduler API. We will first lay out the
 language and its basic semantics, as the finer-details are reliant on the exact
 selected scheduling solution as well as the chosen swap-channel implementation.
-We will then examine the possible channel implementations and how they effect
+We will then examine the possible channel implementations and how they affect
 the given semantics. Next, we will discuss the Scheduler API using an example
 scheduler implementation. We conclude this chapter with a summary of each of the 
 classic schedulers that are included in the ErLam toolkit.
@@ -183,7 +183,7 @@ process to get to the channel will get absorbed by it. The scheduler which
 evaluated the swap will be out a process, and but the scheduler which unblocks the channel 
 by arriving second will get back two processes (the one performing the swap, 
 and the absorbed one). In terms of scheduling efficiency this type of message
-passing channel has provided enormous improvements for run-times which do not
+passing channel has provided enormous improvements for runtimes which do not
 wish to introduce channel inspection into their scheduler.
 
 \subsection{The Scheduler API}\label{sec:the scheduler api}
@@ -297,7 +297,7 @@ enqueueAndSwitchCurThread( Process, #state{curThread=T}=State ) ->
 In the original CML scheduler, it defined a quantum which it would let the 
 current process run for, it would preempt it if it attempted to run 
 for longer. The ErLam runtime avoids the use of time based quantum as logging 
-and other factors directly effect the usefulness of this. Instead it uses a 
+and other factors directly affect the usefulness of this. Instead it uses a 
 `tick', which emulates one
 step forward in the execution of the application. Thus to simulate a quantum we
 instead keep track of the number of reductions performed on the current process
@@ -497,7 +497,7 @@ right until it receives a token to continue.
 
 $PRing_N$ also gives an example of full-system cooperation, except we would 
 instead like some degree of parallelism possible. To experiment with that, we 
-would have to throttle the degree of cooperativity. This behaviour is called
+would need to throttle the degree of cooperativity. This behaviour is called
 $ClusterComm_{(N,M)}$ (figure~\ref{fig:ClusterComm}) as it spawns $N$ processes and $M$ channels which can be
 synchronized with by any process. Note for this system to work with swap 
 channels we limit $M$ to be at most $\lfloor N/2 \rfloor$ for all tests. 
@@ -725,11 +725,12 @@ to the number of processing units available.
 \subsection{Bipartite Graph Aided Sorting}
     \label{sec:bipartite graph aided sorting}
 
-Both of the previous schedulers ignore the effects ordering
-can have on execution behaviour. We hypothesize that order of process execution
-could have a drastic consequence on highly cooperative processes by pairing 
-channels such that if a process where to block, the unblock would happen as soon
-as possible (\ie~the scheduler would not choose a process which had no probability of unblocking it).
+Both of the previous schedulers ignore the effects that ordering can have on
+execution behaviour. We hypothesize that order of process execution could have
+a drastic consequence on highly cooperative processes by pairing channels such
+that if a process were to block, the unblock would happen as soon as possible
+(\ie~the scheduler would not choose a process which had no probability of
+unblocking it).
 
 Granted the extreme of this type of scheduler would be excruciatingly unfair, and
 as such we still maintain a round-robin like behaviour, except now we rely on 
@@ -748,12 +749,12 @@ next process following it to unblock it for its next turn. Thus relying on
 work-stealing alone to migrate processes in a potentially smarter and 
 more-grouped way.
 
-There are three metrics which could effect the order of processes, and which would
-subsequently trigger a resorting of the process queue. A process yielding, 
-returning, or spawned could all mean that a particular process or set of 
-processes should to be relocated. However, frequent sorting may cause the scheduler's
-fairness to suffer. We therefore set a variable, $\Gamma$ which defines how many 
-"events" can happen before causing a resort.
+There are three metrics which could affect the order of processes and
+subsequently trigger a resorting of the process queue. A process yielding,
+returning, or spawned could all mean that a particular process or set of
+processes should be relocated. However, frequent sorting may cause the
+scheduler's fairness to suffer. We therefore set a variable, $\Gamma$ which
+defines how many "events" can happen before causing a resort.
 
 To provide a mechanism for sorting, we structure our process queue as a bipartite 
 graph, where one side is our process queue, and the other is the set of channels.
@@ -766,9 +767,9 @@ all other processes can be pushed to the end (and more likely stolen).
 
 If our process queue is long, we maintain preferential treatment for the set of 
 interactive processes. If our process queue is short, then the effects of 
-sorting are negligible. As such, we should only be concerned with sorting 
-a process queue after a particular size. This is another chance for heuristic
-analysis. Due to this though, we would expect to see poorer behaviour on most
-simple simulated applications, but would steadily gain in advantage when 
-subjected to composed applications.
+sorting are negligible. As such, we should only be concerned with sorting a
+process queue after a particular size. This provides another opportunity for
+heuristic analysis. Due to this though, we would expect to see poorer behaviour
+on most simple simulated applications, but would steadily gain in advantage
+when subjected to composed applications.
 

@@ -8,7 +8,7 @@ In concurrent systems, there are a number of methods for inter-process
 communication. Arguably though, one of the more popular abstractions is the 
 idea of message passing. This is especially true in functional languages as the
 language assumes shared-nothing by default. Also, just as compilers can optimize 
-using language constraints, so can a run-time using the language implementation.
+using language constraints, so can a runtime using the language implementation.
 We will therefore examine possible message passing designs and how their 
 implementation might effect our schedulers.
 
@@ -58,7 +58,7 @@ For example, the
 effects of the cache on direct message passing (\eg~a process mailbox) can be 
 substantial if two processes on different cores share a location to store and
 therefore check for content. This shared location, if accessed from two cores
-will have to be updated in possibly multiple locations and validated for 
+will need to be updated in possibly multiple locations and validated for
 consistency at the cache level. However, if the two processes are local to the 
 same cache there will be time saved in context switching and cache-line validation. 
 In indirect message passing the task can be even worse as it's common that more
@@ -136,7 +136,7 @@ which means ordering
 the processes in a queue and running them as they spawn and enqueuing them as they 
 block. However, if a particular
 process is computationally intensive, processes involved with user-interaction 
-for example would have to wait. This results in an obvious lag or hang in the 
+for example would need to wait. This results in an obvious lag or hang in the 
 system as the interactivity of the system stalls to finish computation.
 
 To solve this problem a scheduler can $preempt$ a process after a certain amount
@@ -149,16 +149,16 @@ preemptive-scheduler effectively becomes non-preemptive as all computation-bound
 processes hog the CPU from the interactive ones.
 
 After preempting a process, the scheduler has a choice as to where the process
-is placed. The common choice is to place it at the end of the queue, his 
-behaviour is called Round-Robin. It is a common choice, not necessarily because
-of its simplicity, but due to its fairness. Each process in the queue is 
-guaranteed an equal amount of time on the CPU and starvation of processes can 
-therefore never happen. However, this isn't always the case as it's based on how
-process spawning is implemented. For example, if the newly spawned process
-was placed at the front of the queue or preempts the currently running process,
-a fork-bomb like process could hog the CPU and effectively shut out all other 
-processes. Spawning to the end of the queue is the only effective way to avoid
-these scenarios in Round-Robin.
+is placed. The most common choice is to place it at the end of the queue. This
+strategy is known as $round-robin scheduling$. It is a common choice not
+necessarily due to its simplicity, but its fairness. Each process in the queue
+is guaranteed an equal amount of time on the CPU and starvation of processes
+can therefore never happen. However, this isn't always the case as it's based
+on how process spawning is implemented. For example, if the newly spawned
+process was placed at the front of the queue or preempts the currently running
+process, a fork-bomb like process could hog the CPU and effectively shut out
+all other processes. Spawning to the end of the queue is the only effective way
+to avoid these scenarios with round-robin scheduling.
 
 This, however, has all been using the assumption of a single process queue. While
 it is possible to implement a single global queue for all $P$ processors, we will
@@ -167,18 +167,17 @@ attempting to take or add a process to the queue while another one is. However,
 in the event of multiple process queues there needs to be a mechanism in place 
 for dispersing the processes across them all in an even or fair way.
 
-There are two mechanisms for this, \emph{work-sharing} and 
+There are two mechanisms for this, namely, \emph{work-sharing} and
 \emph{work-stealing}. In work-sharing, the processor with more than enough work
-to do, will offload any new processes onto another (either randomly or by some
-heuristic). In work-stealing, it's the scheduler with the empty or small process 
-queue that contacts another scheduler (either 
-randomly or by some heuristic) so as to steal one or more. In the case of 
+to do, will delegate any new processes to another (either randomly or by some
+heuristic). In work-stealing, it's the scheduler with the empty or small
+process queue that contacts another scheduler (either randomly or by some
+heuristic) so as to steal one or more queued processes. In the case of
 work-stealing the victim processor can be working on a process while another
-processor steals from it. This means that the cost of performing the process
-transfer is potentially hidden by the parallelism gained. However, in the case 
-of work-sharing there is always an additional cost involved on top of the time
-of execution as the overloaded processor must wait to work until after the 
-transfer is complete.
+processor steals from it. In turn, the cost of performing the process transfer
+is potentially masked by the parallelism gained. In the case of work-sharing
+there is always an additional overhead incurred on top of process execution as
+the overloaded processor must wait until the delegated process is transferred.
 
 This is why most schedulers which support multiple processing units utilize 
 some work-stealing implementation. Of the implementations, there are two which 
@@ -214,11 +213,11 @@ metrics is not a new practice \cite{dietz1997use}.
 \end{figure}
 
 There is a big distinction though, which can be made between the effects of 
-control theory in classical cybernetic applications versus that of run-time 
+control theory in classical cybernetic applications versus that of runtime 
 systems. This is primarily in the adaptation of the controller in the generic 
 feedback loop (figure~\ref{fig:controller}).
 
-The classic feedback loop starts by making reading the current state of the 
+The classic feedback loop starts by reading the current state of the 
 system and applying some operation to it (via the controller). The operation in
 some way affects the system which can be observed by measuring particular 
 metrics. These measurements can be fed back to the controller along with 
@@ -238,7 +237,7 @@ the limitations of the physical space in which they are having to work. But
 frequent or extreme damping or can stress physical systems to the point of
 failure as well.
 
-However, in run-time scheduling systems we would very much like to do the 
+However, in runtime scheduling systems we would very much like to do the 
 opposite. We would prefer tight oscillations or consistent behavior of our 
 runtime so as to achieve minimal overhead from our modifications. We can also 
 compensate, to reach our reference signal, as quickly as we need to as there 
