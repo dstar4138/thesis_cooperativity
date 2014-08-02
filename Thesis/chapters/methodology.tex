@@ -93,7 +93,7 @@ document to make our source easier to review.
 
 Also, note the possible steps \emph{swap} can take: either returning a block
 or another expression and a set of functions. On a semantic level,
-either event is transparent and results in blocking behaviour until a successful swap.
+either event is transparent and results in blocking behavior until a successful swap.
 However, in the former case, the channel has blocked and the only course of 
 action for the scheduler is to get another expression to work on. In the 
 later case, we have an expression to work on, but we also may have unblocked 
@@ -138,7 +138,7 @@ from the other end of the swap, $42$.
 
 As ErLam is innately concurrent, we do not know which process will ask to swap
 first. It may even be possible that $0$ asks to swap several times before $42$
-even tries. In fact, the {\sl Blocking} channel allows this behaviour of 
+even tries. In fact, the {\sl Blocking} channel allows this behavior of 
 multiple swap attempts.
 We can see an illustration of this in figure~\ref{fig:blockchan-example}.
 The first row shows the arbitrary time-slice $t_1$ where the process swapping $0$, 
@@ -189,7 +189,7 @@ wish to introduce channel inspection into their scheduler.
 \subsection{The Scheduler API}\label{sec:the scheduler api}
 
 ErLam was written in Erlang, and as such, can take advantage of Erlang's 
-callback behaviour specifications. An \emph{erlam\_scheduler} behaviour was
+callback behavior specifications. An \emph{erlam\_scheduler} behavior was
 defined which requires a minimum of $5$ callback functions 
 (figure~\ref{fig:scheduler-api}).
 
@@ -334,7 +334,7 @@ from other LPUs when in \emph{waiting} mode.
 
 Along with the Single-Threaded Dual-Queue CML scheduler {\sl (STDQ)}, ErLam 
 comes with several basic scheduling mechanics. We utilize these as bases cases 
-on which to compare the behaviour of all subsequent feedback-enabled schedulers.
+on which to compare the behavior of all subsequent feedback-enabled schedulers.
 
 \begin{itemize}
     \item {\bf The Single-Threaded Round-Robin Scheduler {\sl (STRR)}} \\
@@ -482,54 +482,54 @@ ticks to average together, increased the number of samples and thus accuracy.
 \subsection{Cooperativity Testing}\label{sec:cooperativity testing}
 
 As part of the thought experiment, we needed to implement a decent set of test 
-cases which would give us a good coverage of the range of cooperative behaviour
+cases which would give us a good coverage of the range of cooperative behavior
 in common applications. 
 
 On one hand we have an axis depicting the amount of parallelism possible in an 
 application. A system which is completely parallel, would be one where all 
 processes spawned have no dependence on any of the others. For our toolkit, we 
-called this behaviour $ChugMachine_N$ (figure~\ref{fig:ChugMachine}) ; where $N$ depicts the number of parallel 
+called this behavior $ChugMachine_N$ (figure~\ref{fig:ChugMachine}) ; where $N$ depicts the number of parallel 
 processes. On the other side of the axis, we would have a system which had 
-absolutely no parallelism possible. We called this behaviour $PRing_N$ (figure~\ref{fig:PRing}), as it
+absolutely no parallelism possible. We called this behavior $PRing_N$ (figure~\ref{fig:PRing}), as it
 would spawn $N$ processes in a ring formation and pass a token in one direction.
 Each process has a channel to its left and right and would synchronize to the 
 right until it receives a token to continue. 
 
 $PRing_N$ also gives an example of full-system cooperation, except we would 
 instead like some degree of parallelism possible. To experiment with that, we 
-would need to throttle the degree of cooperativity. This behaviour is called
+would need to throttle the degree of cooperativity. This behavior is called
 $ClusterComm_{(N,M)}$ (figure~\ref{fig:ClusterComm}) as it spawns $N$ processes and $M$ channels which can be
 synchronized with by any process. Note for this system to work with swap 
 channels we limit $M$ to be at most $\lfloor N/2 \rfloor$ for all tests. 
 
 $ClusterComm_{(N,M)}$ is also an example of full-system cooperation, we also
 want to have a possible case for partial-system cooperation. We begin this range
-of experiments with a behaviour which acts like a bunch of $ClusterComm_{(N,1)}$
-running in parallel. We call this special case behaviour $PTree_{(W,N)}$ (figure~\ref{fig:PTree}); where $W$ is 
+of experiments with a behavior which acts like a bunch of $ClusterComm_{(N,1)}$
+running in parallel. We call this special case behavior $PTree_{(W,N)}$ (figure~\ref{fig:PTree}); where $W$ is 
 the number of work groups to run in parallel. This is the cleanest case of 
 partial-system cooperation. We would expect to observe obvious clustering of 
 processes by work-group affiliation if the scheduler was 
 cooperativity-conscious.
 
 However, to expand on the concept of partial-system cooperativity, we would 
-also like to experiment with lop-sided behaviours where a work-group exists 
+also like to experiment with lop-sided behaviors where a work-group exists 
 along with other processes which may not be affiliated with one another. An 
 application like this would be the combination of $ClusterComm_{(N,M)}$, 
 $ChugMachine_N$, and/or $PRing_N$ running in parallel. For this reason, we made
-our behaviours composable.
+our behaviors composable.
 
-We are missing two important behaviour simulations: application phase changes,
+We are missing two important behavior simulations: application phase changes,
 and hanging processes (typical of I/O bound processes). In the case of the 
 latter, a simple built-in command $hang$ was provided which would simulate 
 hanging for a random amount of time before allowing the process to proceed with
 evaluation. If a scheduler attempted to reduce the process before the $hang$ 
-time was completed, it would be immediately preempted. The behaviour which 
+time was completed, it would be immediately preempted. The behavior which 
 implements this is called $UserInput_{(T,C)}$ (figure~\ref{fig:UserInput}); where $T$ is the max time in seconds
 the process would hang before continuing, and $C$ is the number of times it 
-would simulate ``waiting for user input''. This simple behaviour would also
+would simulate ``waiting for user input''. This simple behavior would also
 compose with the others.
 
-For the former missing behaviour, phase changes, we decided to make a variation
+For the former missing behavior, phase changes, we decided to make a variation
 of $PTree_{(W,N)}$ called $JumpShip_{(W,P)}$ (figure~\ref{fig:JumpShip}) which would act like $PTree_{(W,N)}$ but would
 ``change phase'' $P$ times before completion. The act of ``changing phase'' would 
 be the successive relocation of all the processes from one work-group to 
@@ -537,7 +537,7 @@ another, effectively having all processes from work-group $X$ ``jump-ship'' to
 $X+1$ \textbf{mod} $N$.
 
 We would have liked to possibly experiment with variations on the ``jump-ship''
-behaviour so as to inject phase changes into $PRing_N$ (by perhaps reversing
+behavior so as to inject phase changes into $PRing_N$ (by perhaps reversing
 direction) or $ClusterComm_{(N,M)}$ (by switching to $ChugMachine_N$ for a 
 brief period before returning to $ClusterComm_{(N,M)}$). Yet time constraints
 have limited us to the aforementioned.
@@ -572,7 +572,7 @@ have limited us to the aforementioned.
     \includegraphics[scale=0.35]{JumpShip.pdf}
     \label{fig:JumpShip}
 }
-\caption{Simulated behaviour examples and test primitives.}
+\caption{Simulated behavior examples and test primitives.}
 \end{figure}
 
 
@@ -580,7 +580,7 @@ have limited us to the aforementioned.
 
 As mentioned previously, ErLam provides a number of feedback-enabled 
 cooperativity-conscious schedulers for comparison purposes. Through our 
-exploration of cooperative behaviour we noticed that
+exploration of cooperative behavior we noticed that
 cooperativity has, on some level, been captured in previous scheduling systems.
 Through techniques keeping in mind cache locality, channel efficiency,
 and work-stealing efficiency, we see a common theme of keeping processes which
@@ -588,7 +588,7 @@ communicate together, in close proximity.
 
 Ultimately cooperativity gives us a mechanism for recognizing when processes 
 may be moving along the spectrum of application parallelism. We would therefore 
-like to look at systems which recognise particular behaviours which utilize this.
+like to look at systems which recognise particular behaviors which utilize this.
 
 \subsection{Longevity-Based Batching}\label{sec:longevity based batching}
 
@@ -648,7 +648,7 @@ An alternative approach to batching, which moves the channels to the processes,
 is to set an affinity to a core based on which channels you cooperate on. We 
 call this mechanism Channel Pinning, as we bind a channel upon creation to a
 particular LPU and force processes to that location to perform a swap. 
-There are a large number of interesting mechanics for this behaviour. But we 
+There are a large number of interesting mechanics for this behavior. But we 
 will look at three: 
 \begin{inparaenum}
 \item How to spread the channel pinnings?
@@ -717,7 +717,7 @@ this work-stealing mechanism.
 We would like to see how this type of mechanism fairs against both a best and
 worst case scenario. We first thought the worst case scenario would be a 
 $ChugMachine_N$ due to the reliance on wild-cards, however after more 
-consideration a single $ClusterComm_{N,1}$ may end up having a worse behaviour
+consideration a single $ClusterComm_{N,1}$ may end up having a worse behavior
 due to the constant re-spawning of processes back to the owner of the primary
 channel. A best case in this scenario would be a $PTree_{(W,N)}$ when $W$ is greater than or equal
 to the number of processing units available.
@@ -726,14 +726,14 @@ to the number of processing units available.
     \label{sec:bipartite graph aided sorting}
 
 Both of the previous schedulers ignore the effects that ordering can have on
-execution behaviour. We hypothesize that order of process execution could have
+execution behavior. We hypothesize that order of process execution could have
 a drastic consequence on highly cooperative processes by pairing channels such
 that if a process were to block, the unblock would happen as soon as possible
 (\ie~the scheduler would not choose a process which had no probability of
 unblocking it).
 
 Granted the extreme of this type of scheduler would be excruciatingly unfair, and
-as such we still maintain a round-robin like behaviour, except now we rely on 
+as such we still maintain a round-robin like behavior, except now we rely on 
 a sorted process queue. Sorting the process queue would allow us the chance to 
 increase the likelihood of immediately unblocking a blocked channel, while still
 maintaining execution fairness. 
@@ -769,7 +769,7 @@ If our process queue is long, we maintain preferential treatment for the set of
 interactive processes. If our process queue is short, then the effects of 
 sorting are negligible. As such, we should only be concerned with sorting a
 process queue after a particular size. This provides another opportunity for
-heuristic analysis. Due to this though, we would expect to see poorer behaviour
+heuristic analysis. Due to this though, we would expect to see poorer behavior
 on most simple simulated applications, but would steadily gain in advantage
 when subjected to composed applications.
 

@@ -263,7 +263,7 @@ subsequently demoted if they ended up running their whole designated quantum.
 However, a process may inadvertently game the system by running just up to the
 quantum before yielding. To fix this, after some time, $S$, the MLFQ is reset 
 and all processes are boosted to the highest priority. This helps with adapting 
-to new system behaviour which may arise as well as coping with process 
+to new system behavior which may arise as well as coping with process 
 starvation.
 
 The goal of the MLFQ model is two-fold: to prefer interactive processes and 
@@ -296,16 +296,16 @@ gets a demotion. However, the demotion process of a marked process is just a
 mark removal. Thus, the primary queue is essentially two queues in one. 
 
 CML's dual-queue system has the effect of reacting to new processes by testing 
-them for longevity. It then makes an assumption about their behaviour immediately, but a
+them for longevity. It then makes an assumption about their behavior immediately, but a
 process can change the scheduler's first impression of them through consistent
-behaviour to the contrary. A marked communication-bound process will, if it
+behavior to the contrary. A marked communication-bound process will, if it
 continues to use its entire quantum, eventually be demoted. A computation-bound
 process can eventually be promoted and marked as a communication-bound if it 
-continues to communicate. Thus the system eventually adapts its behaviour to
+continues to communicate. Thus the system eventually adapts its behavior to
 the new phase of the process.
 
 However, recently an alternative mechanism has been utilized to adapt to system
-behaviour, that of process batching. The occam-$\pi$ language, and specifically 
+behavior, that of process batching. The occam-$\pi$ language, and specifically 
 the Kent Retargetable occam Compiler (KRoC), allows processes which frequently
 communicate to be batched and processed together \cite{ritson2012multicore}. 
 This has two side effects: cache-affinity, and informed work-stealing.
