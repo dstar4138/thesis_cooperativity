@@ -4,48 +4,47 @@
 
 \section{Overview}\label{sec:method overview}
 
-To examine the effects of cooperativity-conscious schedulers we needed to have 
+To examine the effects of cooperativity-conscious schedulers we needed
 a method for comparing several scheduler implementations without needing to 
 modify the underlying implementation of processes, channels, or application
-source code. It would be also beneficial if our solution were able to visualize
-these differences similar to Haskell's ThreadScope \cite{jones2009parallel}.
+source code. It would also be beneficial if our solution could visualize
+these differences as with Haskell's ThreadScope \cite{jones2009parallel}.
 
-Our solution, $ErLam$, is a compiler for an experimental version of Lambda 
-Calculus with Swap Channels and a runtime system which allows for swappable 
-scheduler mechanisms and an optional logging system which can be fed into a 
-custom report generator.
-We break up our solution description into three parts; 
-Section~\ref{sec:erlam}
-will discuss our language syntax and semantics. It will also demonstrate our
-Runtime Scheduler API by breaking down the CML Interactivity scheduler. 
-Section~\ref{sec:simulation and visualization} 
-will go more into depth about
-our testing environment which involves our logging system, the report generator,
-and the set of example applications we used to represent different cooperativity
-levels. 
-Finally, Section~\ref{sec:cooperativity mechanics} will go over our
-example schedulers we wrote which demonstrate cooperative-conscious behavior. 
-These will be the schedulers we provide our results against.
+Our solution, $ErLam$, is a compiler for an experimental version of the lambda
+calculus with swap channels and a runtime system which allows for swappable
+scheduler mechanisms and an optional logging system whose output can be fed
+into a report generator. We have organized the details of our solution into
+three sections.
+Section~\ref{sec:erlam} 
+will discuss the syntax and semantics of the ErLam language and demonstrate the
+scheduler API by breaking down the CML Interactivity Scheduler.
+Section~\ref{sec:simulation and visualization} will detail our testing
+environment which consists of a logging system, a report generator, and a set
+of example applications we used to demonstrate different levels of
+cooperativity.  Finally, Section~\ref{sec:cooperativity mechanics} will detail
+some example schedulers that demonstrate cooperativity-conscious behavior.
+These schedulers will provide a basis for the results presented in
+Chapter~\ref{chap:results}.
 
 \section{ErLam}\label{sec:erlam}
 
 The ErLam toolkit is itself broken down into three parts, the language and its
-semantics, the Runtime System, and the Scheduler API. We will first lay out the
+semantics, the runtime system, and the scheduler API. We will first lay out the
 language and its basic semantics, as the finer-details are reliant on the exact
 selected scheduling solution as well as the chosen swap-channel implementation.
 We will then examine the possible channel implementations and how they affect
-the given semantics. Next, we will discuss the Scheduler API using an example
+the given semantics. Next, we will discuss the scheduler API using an example
 scheduler implementation. We conclude this chapter with a summary of each of the 
 classic schedulers that are included in the ErLam toolkit.
 
 \subsection{The ErLam Language}\label{sec:the erlam language}
 
-The ErLam Language is based on Lambda Calculus, with first-class single 
+The ErLam Language is based on the lambda calculus, with first-class single 
 variable functions, but deviates somewhat in that it provides other first-class 
-entities. It deviates from Church representation to provide Integers, this is
-purely for ease of use. It also provides a symmetric synchronous Channel type 
-for interprocess communication. As a note, this language can also be classified 
-as a Simply-Typed Lambda Calculus.
+entities. It deviates from Church representation to provide integers,
+purely for ease of use. It also provides a symmetric synchronous channel type 
+for inter-process communication. As a note, this language can also be classified 
+as a simply-typed lambda calculus.
 
 \begin{figure} %% THE ERLAM LANGUAGE BNF WITHOUT SYNTAX SUGAR %%
 \centering
@@ -56,25 +55,26 @@ as a Simply-Typed Lambda Calculus.
 \label{fig:grammer}
 \end{figure}
 
-Figure~\ref{fig:grammer} expresses ErLam in its simplified BN-Form. The 
-semantics for the language is fairly straight forward, but its operational 
-semantics are layed out in Appendix~\ref{app:semantics}. All expressions reduce
-to one of the terminal types: Integer, Channel, or Function. To spawn for 
-instance, if any terminal is passed other than a function, it returns a $0$
-(\eg~false). When a function is passed, it is applied with $nil$ to 
-initialize the internal expression in another ErLam process, and evaluates to $1$ (\eg~true) in the parent process.
+Figure~\ref{fig:grammer} expresses ErLam's grammar in simplified BNF. The
+semantics for the language are fairly straightforward. To summarize, each
+expression reduces to one of the following terminal types: $integer$,
+$channel$, or $function$. Each spawn passed an integer or a channel simply
+evaluates to $0$ (\eg~false) without any further effect. Each spawn passed a
+function, evaluates to $1$ (\eg~true) and applies $nil$ to that function within
+a new ErLam process.  For a more detailed overview of ErLam's operational
+semantics, see Appendix~\ref{app:semantics}.
 
-ErLam also makes a number of ease-of-use decisions like providing a default 
-branch operator and a library system for providing a set of built in functions 
-such as numeric operations, type checking, and standard functional behaviors 
-(\eg~combinators, \etc). However, these built-ins will be largely ignored in 
-this document but explained when neccessary. 
+ErLam provides several features for convenience such as a default branch
+operator and a set of built-in functions including numeric operations, type
+checking functions, and standard functional behaviors (\eg~combinators, \etc).
+These built-in functions will be largely ignored throughout this document, but
+explained when occasionally necessary. 
 
-ErLam also extends this base grammar with some useful syntactic sugar (see 
-Figure~\ref{fig:sugar-transform} for syntactic transformations) such as SML 
-style $let$ expressions and multi-variable function definitions (which are 
-curried from left to right). We will use the syntactic sugar throughout this 
-document to make our source easier to review.
+ErLam also extends this basic grammar with some useful syntactic sugar (see
+Figure~\ref{fig:sugar-transform}) including SML-style $let$ expressions and
+multi-variable function definitions which are curried from left to right. We
+will use this syntactic sugar throughout this document to make our source
+easier to review.
 
 \begin{figure}
     \centering
@@ -179,10 +179,10 @@ however we provide a simpler and functionally more common alternative: the proce
 absorption channel.
 
 In the {\sl Absorption} channel (Figure~\ref{fig:absorbchan-example}), the first 
-process to get to the channel will get absorbed by it. The scheduler which 
-evaluated the swap will be out a process, and but the scheduler which unblocks the channel 
-by arriving second will get back two processes (the one performing the swap, 
-and the absorbed one). In terms of scheduling efficiency this type of message
+process to access the channel will be absorbed by it. The scheduler which 
+evaluated the swap will be out a process and the scheduler which unblocks the channel 
+by arriving second will get back two processes: the process performing the swap 
+and the absorbed process. In terms of scheduling efficiency this type of message
 passing channel has provided enormous improvements for runtimes which do not
 wish to introduce channel inspection into their scheduler.
 
