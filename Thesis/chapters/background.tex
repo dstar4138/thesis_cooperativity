@@ -127,7 +127,7 @@ Instead the systems for which we can schedule must be defined differently.
 A runtime scheduler may only have access to the processes which it observes, 
 and can only speculate about their future based on their current state and any
 recorded historical information. These schedulers can be imagined to have a 
-simple step like that of figure~\ref{fig:scheduler-step}. In other words, for
+simple step like that of Figure~\ref{fig:scheduler-step}. In other words, for
 each time step, a scheduler must pick a process using what it knows about the 
 world, and reduce it. 
 
@@ -215,7 +215,7 @@ metrics is not a new practice \cite{dietz1997use}.
 There is a big distinction though, which can be made between the effects of 
 control theory in classical cybernetic applications versus that of runtime 
 systems. This is primarily in the adaptation of the controller in the generic 
-feedback loop (figure~\ref{fig:controller}).
+feedback loop (Figure~\ref{fig:controller}).
 
 The classic feedback loop starts by reading the current state of the 
 system and applying some operation to it (via the controller). The operation in
@@ -261,13 +261,13 @@ The scheduler maintains $N$ separate process queues, for $N$ priority levels.
 All new processes would be spawned to the highest priority and would be 
 subsequently demoted if they ended up running their whole designated quantum. 
 However, a process may inadvertently game the system by running just up to the
-quantum before yielding. To fix this, after some time, $S$, the MLFQ is reset 
-and all processes are boosted to the highest priority. This helps with adapting 
-to new system behaviour which may arise as well as coping with process 
+quantum before yielding. To fix this, after some time $S$, the MLFQ is reset
+and all processes are boosted to the highest priority. This helps with adapting
+to new system behaviour which may arise as well as coping with process
 starvation.
 
 The goal of the MLFQ model is two-fold: to prefer interactive processes and 
-to subsequently reduce the strain of computation bound processes on the overall 
+to subsequently reduce the strain of computation-bound processes on the overall 
 system. This allows the system to prune the short-running processes out quickly
 and also maintain an adequate level of interactivity. A MLFQ implementer would 
 also be able to heuristically set the quantum, $N$, and $S$ based on the needs 
@@ -366,12 +366,11 @@ substructure of the component expressed by the processes cooperation.
 \begin{figure} 
 \centering
 \includegraphics[scale=0.4]{RingVCluster.pdf}
-\caption{Two subcomponents formed by process cooperativity. Black dots 
-represent processes, and the white dots represent a channel.}
-\label{fig:RingVCluster}
-\end{figure}
+\caption{Two subcomponents formed by process cooperativity. Black dots
+represent processes and the white dots represent a channel.}
+\label{fig:RingVCluster} \end{figure}
 
-To illustrate this problem, figure~\ref{fig:RingVCluster} visualizes two 
+To illustrate this problem, Figure~\ref{fig:RingVCluster} visualizes two 
 possible components which may occur naturally. On the left we get a ring like
 structure, where the dependency of one process is the one to its right.
 We can abstractly envision a data-flow like application which acts like
