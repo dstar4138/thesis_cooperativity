@@ -42,10 +42,9 @@ classic schedulers that are included in the ErLam toolkit.
 
 The ErLam Language is based on Lambda Calculus, with first-class single 
 variable functions, but deviates somewhat in that it provides other first-class 
-entities. It deviates from Church representation to provide Integers, this is
-purely for ease of use. It also provides a symmetric synchronous Channel type 
-for interprocess communication. As a note, this language can also be classified 
-as a Simply-Typed Lambda Calculus.
+entities. It deviates from Church representation to provide Integers, however, this is
+purely for ease of use. It also provides a symmetric synchronous channel type 
+for inter-process communication.
 
 \begin{figure} %% THE ERLAM LANGUAGE BNF WITHOUT SYNTAX SUGAR %%
 \centering
@@ -57,18 +56,19 @@ as a Simply-Typed Lambda Calculus.
 \end{figure}
 
 Figure~\ref{fig:grammer} expresses ErLam in its simplified BN-Form. The 
-semantics for the language is fairly straight forward, but its operational 
-semantics are layed out in appendix~\ref{app:semantics}. All expressions reduce
-to one of the terminal types: Integer, Channel, or Function. To spawn for 
+semantics for the language is fairly straight forward. All expressions reduce
+to one of the terminal types: Integer, Channel, or Function. To spawn, for 
 instance, if any terminal is passed other than a function, it returns a $0$
 (\eg~false). When a function is passed, it is applied with $nil$ to 
-initialize the internal expression in another ErLam process, and evaluates to $1$ (\eg~true) in the parent process.
+initialize the internal expression in another ErLam process, and evaluates 
+to $1$ (\eg~true) in the parent process.
 
 ErLam also makes a number of ease-of-use decisions like providing a default 
 branch operator and a library system for providing a set of built in functions 
 such as numeric operations, type checking, and standard functional behaviors 
 (\eg~combinators, \etc). However, these built-ins will be largely ignored in 
-this document but explained when neccessary. 
+this document but explained when necessary. The branching operator works like
+C in that zero is interpreted as false and non-zero is true.
 
 ErLam also extends this base grammar with some useful syntactic sugar (see 
 figure~\ref{fig:sugar-transform} for syntactic transformations) such as SML 
@@ -91,19 +91,12 @@ document to make our source easier to review.
     \label{fig:sugar-transform}
 \end{figure}
 
-Also, note the possible steps \emph{swap} can take: either returning a block
-or another expression and a set of functions. On a semantic level,
-either event is transparent and results in blocking behavior until a successful swap.
-However, in the former case, the channel has blocked and the only course of 
-action for the scheduler is to get another expression to work on. In the 
-later case, we have an expression to work on, but we also may have unblocked 
-other processes by doing so, so we need to reschedule them. 
-Note that in this case the function set may be null and the expression returned may be
-another attempt at swapping (\ie~$e = (\textbf{swap}\:c\:v)$). This would let 
-the scheduler choose whether to retry immediately or reschedule it for a later
-time and work on something in the mean time. Thus, there are several possible
-channel implementations we could provide while still adhering to the above
-semantics.
+Also, note that the semantics of \emph{swap} is to block until a successful swap. 
+However, the implementation of the channel synchronization is free to change as 
+long as it adheres. We take advantage of this to provide multiple channel 
+implementations which will highlight distinct scheduling differences. We 
+demonstrate this, along with an example ErLam application in the following 
+section.
 
 \subsection{Channel Implementations}\label{sec:channel implementations}
 
@@ -364,8 +357,9 @@ on which to compare the behavior of all subsequent feedback-enabled schedulers.
                 When the victim scheduler preempts or yields their current process
                 and selects the next one from the queue, they will instead get a
                 thief process which will syphon a process away to spawn on the thief's home
-                scheduler. This blocks the process for a longer period of time,
-                but does not involve accessing remote memory.
+                scheduler. This blocks the scheduler for a longer period of time,
+                but does not involve accessing remote memory which may be 
+                concurrently accessed.
         \end{itemize}
 \end{itemize}
 
@@ -596,7 +590,7 @@ As we've mentioned before, batching processes together has been a common
 mechanism in capturing some of the lost efficiency of cache locality. To take
 advantage of the cache a message passing language is required to be considerate 
 of their channel implementation to allow for it. For example, occam-$\pi$ makes sure
-their channel fits into a single 32 bit cache line (technically two, as they
+their channel fits into a single 32 word cache line (technically two, as they
 have asymmetrical channels and split it based on send and receive).
 
 However, ErLam elevates the concerns of cache locality into an issue of process 
@@ -691,7 +685,7 @@ have interesting effects in this scheduler.
 We have a couple of possible mechanisms for how a process should be handled when
 it comes time to communicate. In the event it is wanting to communicate on a 
 channel that is not local, we propose the following mechanism: let them anyway
-but if they block, spawn them to the LPU which owns the channel.
+but if they block, migrate them to the LPU which owns the channel.
 
 The theory for this is, in the event of a block, the local LPU won't gain 
 anything from having it in its queue (if process absorption is turned on it would 
@@ -750,17 +744,17 @@ work-stealing alone to migrate processes in a potentially smarter and
 more-grouped way.
 
 There are three metrics which could affect the order of processes and
-subsequently trigger a resorting of the process queue. A process yielding,
+subsequently trigger a re-sorting of the process queue. A process yielding,
 returning, or spawned could all mean that a particular process or set of
 processes should be relocated. However, frequent sorting may cause the
 scheduler's fairness to suffer. We therefore set a variable, $\Gamma$ which
-defines how many "events" can happen before causing a resort.
+defines how many "events" can happen before causing a re-sort.
 
 To provide a mechanism for sorting, we structure our process queue as a bipartite 
 graph, where one side is our process queue, and the other is the set of channels.
 We generate a ``pseudo-priority'' based on recency of the communications over
 the number of channels it has communicated with. Namely, we sort the process queue
-by $\Delta(P_i) = \Sigma E_i / |C_i|$ where $E_i$ is the edge set of timestamps,
+by $\Delta(P_i) = \Sigma E_i / |C_i|$ where $E_i$ is the edge set (\ie~integer timestamps),
 and $C_i$ is the set of channels $P_i$ communicated with. The default priority function, $\Delta$,
 is intended to give our processes which communicate frequently, a head start, and
 all other processes can be pushed to the end (and more likely stolen). 
@@ -768,8 +762,8 @@ all other processes can be pushed to the end (and more likely stolen).
 If our process queue is long, we maintain preferential treatment for the set of 
 interactive processes. If our process queue is short, then the effects of 
 sorting are negligible. As such, we should only be concerned with sorting a
-process queue after a particular size. This provides another opportunity for
-heuristic analysis. Due to this though, we would expect to see poorer behavior
-on most simple simulated applications, but would steadily gain in advantage
-when subjected to composed applications.
+process queue after a particular size. This provides yet another opportunity for
+heuristical analysis. Due to this though, we may expect to see worse behavior
+on most of our simple test primitives, while on more advanced applications
+these behaviors could bring much improvement.
 

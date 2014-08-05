@@ -8,13 +8,13 @@ subsystem of a language's runtime is the {\em task scheduler}. The scheduler is
 responsible for ordering task evaluation and the distribution of 
 these tasks across the available processing units.
 
-Tasks are typically spawned when there is a chance for parallelism, either 
+Tasks\footnote{We will be using the terms {\em task}, {\em job}, and {\em process} interchangeably throughout this document.}
+are typically spawned when there is a chance for parallelism, either 
 explicitly through \texttt{spawn} or \texttt{fork} commands or implicitly 
 through calls to parallel built-in functions like \texttt{pmap}. In either 
-case it is assumed that the job of a task is to perform some action concurrent 
+case it is assumed that the role of a task is to perform some action concurrent 
 to the parent task because it would be quicker if given the chance to be 
 parallel.
-
 It is up to the scheduler of these tasks to try and optimize for where there
 is opportunity for parallelism. However, it's not as simple as evenly 
 distributing the tasks over the set of processing units. Sometimes, these 
@@ -22,15 +22,14 @@ tasks need particular resources which other tasks are currently using,
 or perhaps some tasks are waiting for user input and don't have anything to
 do. Still worse, some tasks may be trying to work together to complete an 
 objective, and rely on dynamic dependencies that change over time.
-Tasks however, in functional language jargon, are typically called 
-{\em processes} due to the inherent isolation this term brings and the language 
-paradigm calls for. 
 
 Message passing is a common alternative to, and sometimes abstraction of, shared
-memory. Message passing is akin to emailing a colleague a question. You operate
+memory. Some implementations of message passing are akin to emailing a colleague a question. You operate
 asynchronously, and your colleague can check her mailbox and then
 respond at her leisure. Meanwhile you are free to operate on an assumption 
 until proven wrong, wait until she gets back to you, or even ask someone else.
+Other implementations require you to wait on your colleague's reply before
+continuing.
 
 While message passing is a good method for inter-process communication, it is
 also a nice mechanism for catching when two processes are working together.

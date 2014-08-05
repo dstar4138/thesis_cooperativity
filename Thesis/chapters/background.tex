@@ -29,22 +29,31 @@ implementation might effect our schedulers.
 \end{figure}
 
 Message passing in general can be broken down into two types based on the 
-language's implementation; asynchronous or synchronous. In asynchronous message 
-passing, a process can send the message directly to another process like 
-in our example of emailing a coworker; these implementations are aptly named 
-mailbox message passing. Another implementation sends the message indirectly  
-via a rendezvous point, like a socket.
+language's implementation; asynchronous or synchronous. Asynchronous message
+passing is like our example of emailing a coworker. The two actors 
+in the scenario can perform their communication operations at different times
+and do not rely on the other's completion. Synchronous message passing however,
+requires that the two actors be bound by time. For a message to be successfully
+passed the result returned, {\sl both} actors must complete their operations first.
+
+In {\em direct} asynchronous message passing, a process can send the message 
+directly to another process like in our example of emailing a coworker; these 
+implementations are aptly named mailbox message passing. An alternative implementation 
+may send the message {\em indirectly} via a rendezvous point, like a socket.
 
 To send a message in either case requires pushing/copying the 
 message into a shared or global memory space for another process to access 
 (possibly) at a later time. This push/copy can be done in a lock free manner 
 with some lower level atomic data structures such as a double-ended queue. But 
 in either a locked or lock-free manner, the process performing the send still 
-forces a block somewhere along in the operation, to push the message into some
-shared storage. Asynchronous operations require the additional capabilities 
-to both store and resend a message at a later time, so at some point, a process
-will need to synchronize; this will therefore, inevitably need to be behind the 
-scenes.
+forces a block somewhere along in the operation, to push the message into
+shared storage. While asynchronous operations free user-code to continue, its
+implementation now requires the additional capabilities 
+to both store and resend a message at a later time. So at some point, a process
+will need to synchronize with a block of memory to enforce exclusive access.
+If the implementation were to ignore this, contention could occur between two 
+internal processes attempting communication operations with the same block;
+either overwriting or corrupting what was already there.
 
 In terms of scheduling, a language with asynchronous message passing will not 
 hint much in regard to whether progress is being made. If a consumer process
@@ -78,7 +87,7 @@ Communicating Systems \cite{milner1982calculus} or standard $\Pi$-Calculus
 \cite{palamidessi1997comparing}, in that you have a sender, and then a receiver 
 which will both block on their respective functions around an anonymous channel 
 until the pass has been completed. This differs from symmetrical message 
-passing in that the only operation on the channel is a blocking function which 
+passing, where the only operation on the channel is a blocking function which 
 swaps values with the process at the other end.
 
 It's worth noting that asynchronous message-passing can be simulated using 
@@ -98,13 +107,13 @@ scheduler regarding their queue position.
 
 For the alternative, symmetrical message passing or swap channels, the order is 
 directly handled by the scheduling of the system (\ie~the order at which the 
-channels evaluate the $swap$ command can be directly governed). And it is for 
+scheduler evaluate the $swap$ command can be directly governed). And it is for 
 this purpose along with simplifying our core language we have chosen to base our
 semantics on symmetric synchronous message-passing. 
 
 \section{Classic Runtime Scheduling}
 
-Operating Systems research have long been the leading front for scheduling topics. 
+Operating Systems research has long been the leading front for scheduling topics. 
 However, most of the early concern in scheduling was devoted to job scheduling 
 over a group/shared system. As such, their concerns were largely devoted to 
 fairness and job priority. They frequently had {\sl a priori} knowledge regarding
@@ -113,27 +122,53 @@ beforehand.
 
 \begin{figure}
     \[
-        \inference{ P \xRightarrow{\sigma} P_i \uplus P' &
-                    P_i \Downarrow \sigma \rightarrow (P_i',\sigma') &
-                    \{ P_i' \}  \uplus_{\sigma'} P' \rightarrow P''
+        \inference{ P \xRightarrow{\sigma} P_i \uplus P_r &
+                    P_i \Downarrow (\sigma, c) \rightarrow (P_i',P_j,\sigma',c') &
+                    \{P_i',P_j\} \uplus_{\sigma'} P_r \rightarrow P'
                   }
-                  { S(\sigma, P ) \rightarrow S(\sigma', P'') }
+                  { S(\sigma, c, P ) \rightarrow S(\sigma',c', P') }
     \]
     \caption{A Runtime scheduler semantics.}
     \label{fig:scheduler-step}
 \end{figure}
 
-Instead the systems for which we can schedule must be defined differently.
+Instead, the systems for which we can schedule must be defined differently.
 A runtime scheduler may only have access to the processes which it observes, 
 and can only speculate about their future based on their current state and any
 recorded historical information. These schedulers can be imagined to have a 
-simple step like that of figure~\ref{fig:scheduler-step}. In other words, for
-each time step, a scheduler must pick a process using what it knows about the 
-world, and reduce it. 
+generalized simple step like that of figure~\ref{fig:scheduler-step}. 
 
-One possible selection mechanism could be to use a First-Come, First-Serve method, 
+A scheduler's operations can be defined in a discrete set of time-steps where,
+through our definition, must perform three operations for each step. First, it takes 
+the set of processes $P$ and chooses one, $P_i$. This selection operation 
+($\xRightarrow{\sigma}$) can be as simple as popping from the top of a queue but
+is defined by the state of the scheduler $\sigma$. As such it can change with 
+time or based on the recorded historical state of the processes. 
+ 
+Next, it will perform some reduction action ($\Downarrow$) on the chosen process
+taking into account the scheduler and global channel state ($(\sigma,c)$). This
+reduction could result in a modification of the scheduler's state, the global channel
+state (\ie~with the creation of a new message passing channel), or possibly the 
+generation of another process, $P_j$, in the case of a process spawn. 
+Finally, the scheduler will update the process set, $\uplus_{\sigma'}$, with the
+reduced process. This update is also based on the state of the scheduler, which
+could be influenced by the process's history as a result of its previous reduction.
+In either case, this will set it up for the next step.
+
+We base our Scheduler API (section~\ref{sec:the scheduler api}) on this 
+idea of a constant tick function, which maps the state of the scheduler's world 
+to the world after one time-step. Multiple schedulers can then be run in parallel 
+using the same step semantics, except now the total process queue must be shared 
+or partitioned depending on the scheduler's unique implementation.
+
+However, outside of this unique formalism, there is a large set of classical
+methodologies for these operations (\eg~selection, reduction, process set update).
+We now turn to a description of some of these to lay a basis for our later 
+design discussion.
+
+One popular selection operation is the First-Come, First-Serve method, 
 which means ordering 
-the processes in a queue and running them as they spawn and enqueuing them as they 
+the processes in a queue and running them continuously as they spawn and enqueuing them only as they 
 block. However, if a particular
 process is computationally intensive, processes involved with user-interaction 
 for example would need to wait. This results in an obvious lag or hang in the 
@@ -148,12 +183,18 @@ starts to spend more time context switching than computation. Too long and the
 preemptive-scheduler effectively becomes non-preemptive as all computation-bound
 processes hog the CPU from the interactive ones.
 
-After preempting a process, the scheduler has a choice as to where the process
-is placed. The most common choice is to place it at the end of the queue. This
-strategy is known as $round-robin scheduling$. It is a common choice not
+We translate this idea of a quantum to the simple step formalism by allowing the
+scheduler to keep track of a reduction count. This reduction count influences 
+where the update operation places the process at the end of the step. If it has
+reached some max reduction count, then it could be enqueued at the end of the 
+process set. Alternatively it can be placed at the beginning to be selected
+again until after preemption.
+
+This strategy, to enqueue at the end upon preemption, 
+is known as $round-robin scheduling$. It is a common choice not
 necessarily due to its simplicity, but its fairness. Each process in the queue
 is guaranteed an equal amount of time on the CPU and starvation of processes
-can therefore never happen. However, this isn't always the case as it's based
+can therefore never happen. However, this isn't always the case as it depends
 on how process spawning is implemented. For example, if the newly spawned
 process was placed at the front of the queue or preempts the currently running
 process, a fork-bomb like process could hog the CPU and effectively shut out
@@ -198,7 +239,9 @@ it during the steal.
 \section{A Note on Control Theory}
 \label{sec:a note on control theory}
 
-There has never been a scheduler which works optimally in all cases. Instead,
+There has never been a scheduler which works optimally in all cases. Since for 
+any scheduler, a program can be feasibly designed for which the scheduler 
+produces a sub-optimal schedule. Instead,
 focus has been the most fruitful when pursuing the optimization of various 
 measurements using some particular objective function 
 \cite{garey1978performance} 
@@ -225,7 +268,7 @@ details about the system's output. If the controller wishes to modify the system
 further via the same or an opposite operation, it may do so. The canonical 
 example is that of an automobile's cruise control. The controller can correct
 the speed of the vehicle by applying or releasing the throttle based on readings
-of the current speed.
+of the current speed so as to maintain a desired speed.
 
 In typical physical feedback loops there are two scenarios which need to be 
 avoided: resonance and rapid compensation. Resonance in physical systems is 
@@ -282,11 +325,11 @@ systems quite well. Concurrent ML (CML), uses this idea of a MLFQ to improve
 application interactivity. 
 
 CML is an extension to SML which adds the \emph{spawn} function, and channel 
-operations, among other things (such as asynchronous events) 
+operations, among other things (such as synchronous events) 
 \cite{reppy1993concurrent}. CML's scheduler defines a MLFQ where $N=2$ and 
 uses a single promotion algorithm instead of a reset. However, there is a key
 difference: CML uses process tagging to mark whether a process has 
-communicated in the past. 
+communicated in its last time quantum.
 
 As all newly spawned processes are appended to the
 primary queue, CML tells the difference between these newcomers and the
@@ -341,8 +384,8 @@ parent spawns a large number of processes (\ie~passed the batch size limit), the
 parent can start a new batch, while the batch of children can be stolen.
 
 While KRoC's primary goal was cache-affinity, and CML's was optimizing 
-interactivity, their feedback systems enabled a closer to optimal schedule than
-would have otherwise been possible with a classical scheduler focused on 
+interactivity, their feedback systems enabled a more efficient schedule than
+would have otherwise been possible with a classical scheduler focused entirely on 
 work-saturation. We now discuss another feedback metric, 
 \emph{Process Cooperativity}, 
 which KRoC's scheduler, and our algorithms presented later, were able to 
@@ -384,7 +427,7 @@ KRoC batch. This is optimal for the ring component, no matter how large the
 ring may be. There is nothing to be gained from splitting it into multiple 
 batches, and by doing so, we may actually hinder it. However, the cluster 
 component may improve if given the chance for more parallelism, this would
-depend entirely on the longevity of the processes.
+depend entirely on the {\em longevity} of the processes (\ie the extent the process is computation-bound).
 KRoC attempts to account for this by recognizing if there are multiple active
 processes in a batch, and splitting an arbitrary one into a new batch (which
 ever happens to be at the head of the process queue). 
@@ -400,9 +443,9 @@ a single processor, as all singleton batches would need to wait for the large ba
 Inevitably, the worst-case scenario for KRoC is below that of the work-stealing scheduler.
 
 From this we can take that the longevity of a process can affect its 
-cooperativity. In fact, looking at 
-definition~\ref{def:degree of cooperativity}, we can apply it to a single 
-process too. Now, a \emph{process' degree of cooperativity} can be defined as 
+cooperativity. In fact, we can look back at 
+definition~\ref{def:degree of cooperativity}, and its application to a single 
+process. A process' \emph{degree of cooperativity} can be defined as 
 its \emph{frequency} of interaction with a set of channels.
 Thus, a cooperativity-conscious scheduler should also want to consider both
 the longevity of a process, and which channels it communicates with. This would

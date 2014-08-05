@@ -24,6 +24,14 @@ Then in section~\ref{sec:results-channel-implementations}, we discuss our findin
 regarding channel implementation differences and their subsequent effects on 
 scheduling behavior.
 
+All testing was done on a Ubuntu 12.10 machine with Linux kernel version 3.5.0.  
+The machine has 8GB of RAM and the processor was an Intel Core i7-2820QM at 
+2.3 GHz, which has $4$ cores with HyperThreading.This puts the number of logical 
+processing units (LPUs) at $8$ for all multi-threaded scheduling tests. 
+The test machine ran the ErLam runtime on the 64-bit Erlang R15B03 VM 
+with SMP turned on for all tests.
+
+
 \subsection{Test Case Implementation}\label{sec:results-test-case-implementation}
 
 Our intentions when choosing our base language constructs were primarily focused on 
@@ -244,10 +252,10 @@ queue length with a run of $PTree_{(9,10)}$ with the Process Absorption channel 
     \begin{tabular}{@{}ccc}
         & \multicolumn{2}{c}{$PTree_{(9,10)}$} \\ \cline{2-3}
         & \textbf{$MTRRWS$-$IS$}       & \textbf{$MTRRWS$-$SQ$}       \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Scheduler State}}}} & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{~~~~~Scheduler State}}}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0005.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0005.pdf}} \\ \cline{2-3} 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Process Queue Length}}}}   & 
+\multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{~~~~~Process Queue Length}}}}   & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wsis/pg_0003.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/ptree/wssq/pg_0003.pdf}} \\ \cline{2-3} 
 \end{tabular}
@@ -282,7 +290,7 @@ The above graphs (\eg~table~\ref{tab:interativity8-16-strr-stdq}, and
 table~\ref{tab:ptree9-10-5-wsis-wssq}) were generated, using the CML-like Process 
 Absorption channels. We would like to now briefly visualize how a Blocking channel
 may operate and effect our visualizations of the application's schedule. In this example 
-(table~\ref{tab:interactivity16-8-sq}), we ran the interactivity composure again
+(table~\ref{tab:interactivity16-8-sq}), we ran the interactivity application again
 to test a large sampling of processes, but some with communication so as to see the 
 flow of processes due to absorption.
 
@@ -391,7 +399,7 @@ We will then look at the process queue lengths and work loads of each LPU.
 We will first consider the worst-case scenario of all computation-bound processes, by 
 using $ChugMachine_N$ for several values of $N$ near and 
 above $P$, or the max number of LPUs on the machine, which in our case 
-is $8$ \footnote{All testing was performed using an Intel Core i7-2820QM.}.  We will 
+is $8$.  We will 
 compare it to the graphs of $MTRRWS$-$SQ$ to determine how close to naive
 work-stealing our implementation achieves. We will then subsequently consider
 the case of $PRing_N$ for various values of $N$ surrounding the batch size, $B$,
@@ -586,7 +594,7 @@ and then completely uniform. That is, a system which has no predicable or
 repeatable behavior, and then a system were the past will directly inform the future. 
 
 We therefore utilize $ClusterComm_{(N,M)}$ for its random behavior, and turn to the 
-$Interactivity_{(N,0)}$ composure to simulate uniform communication. In other words,
+$Interactivity_{(N,0)}$ composition to simulate uniform communication. In other words,
 we will have $N$ uniform communicating units which compute and are stolen separately 
 ($UserInput_{(T,C)}$). As such, we hope to highlight the scheduler's ability to 
 consistently saturate the cores with work under both the best (uniform) and worst
@@ -611,13 +619,6 @@ $MTRRWS$-$SQ$ via table~\ref{tab:cp-compare-rand-uniform-ca}.
     & \multicolumn{2}{c|}{$Interactivity_{(20,0)}$} & \multicolumn{2}{c}{$ClusterComm_{(20,5)}$} \\ \cline{2-5} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c|}{Channel Pinning} 
  & \multicolumn{1}{c}{$MTRRWS$-$SQ$}       & \multicolumn{1}{c}{Channel Pinning} \\ \cline{2-5} 
- 
-\multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~Comm. Density}}} &
-    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0002.pdf}} & 
-    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/interactivity/20/cp/ca/pg_0002.pdf}} &
-    \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/clustercomm/20/wssq/ca/pg_0002.pdf}} &
-    \multicolumn{1}{c|}{\includegraphics[scale=0.15]{tests/clustercomm/20/cp/ca/pg_0002.pdf}} \\
-
  
 \multicolumn{1}{c|}{\rotatebox{90}{\rlap{~~Queue Length}}} &
     \multicolumn{1}{c}{\includegraphics[scale=0.15]{tests/interactivity/20/wssq/ca/pg_0003.pdf}} & 
@@ -645,8 +646,6 @@ pinning scheduler still maintains the tell-tail signs of the underlying
 naive work-stealing approach via the single primary LPU. The queue lengths'
 confirm this with much more activity on all secondary LPUs. Despite the 
 unevenness, we see a much uniform attention to the state of channels.
-Communication Densities show an obvious front-loading effect when there is 
-predictable communication happening. 
 
 However, for $ClusterComm_{(20,5)}$ we see no marked difference in the channel
 pinning scheduler's spread. In fact it looks to take longer to saturate the 
@@ -706,7 +705,7 @@ the Bipartite-Graph Aided Sorting Scheduler using Absorption Channels.}
     \label{tab:ss-compare-rand-uniform-ca}
 \end{table}
 
-Note very little difference in the charts on either side of the median.
+Note very little difference in the charts for either scheduler.
 Absorption channels remove any chance the scheduler may have of improving the 
 runtime quality of the application. Blocking channels, on the other hand, can leak
 hints to the scheduler, which it may then use to predict the future.
@@ -752,7 +751,7 @@ default sort frequency and algorithm.
     \centering
     \begin{tabular}{@{}ccc}
     & $MTRRWS$-$SQ$ & Sorting Scheduler  \\ \cline{2-3} 
-        \multicolumn{1}{c|}{\rotatebox{90}{\rlap{\textbf{Reduction Density}}}} & 
+        \multicolumn{1}{c|}{~}  & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.30]{tests/pfib/wssq/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.30]{tests/pfib/ss/pg_0001.pdf}} \\ \cline{2-3}
 \end{tabular}
