@@ -261,7 +261,9 @@ until another process is demoted).
 
 Spawning a process in the CML scheduler (figure~\ref{fig:cml-spawn-process}) 
 does not go onto the primary queue, instead we enqueue the current process and 
-start evaluating the new process. This is a fairly simplistic example, but it 
+start evaluating the new process\footnote{This scheduler therefore ignores the 
+possibility of a fork-bomb like application in favor of a spawn mechanism which caters 
+to average applications.}. This is a fairly simplistic example, but it 
 shows how one would go about updating the state between ticks. Note also, that
 the \emph{spawn\_process/2} call happens on the same scheduler instance which
 evaluated the $spawn$. While this is not of consequence for this scheduler, a
@@ -330,16 +332,18 @@ comes with several basic scheduling mechanics. We utilize these as bases cases
 on which to compare the behavior of all subsequent feedback-enabled schedulers.
 
 \begin{itemize}
-    \item {\bf The Single-Threaded Round-Robin Scheduler {\sl (STRR)}} \\
-        This scheduler uses a single FIFO queue which all processes are spawned 
-        to. There is no rearrangement of order, and the single-thread scheduler 
-        will just round-robin the queue performing a set number of reductions
-        per process before enqueuing and poping the next one.
-
     \item {\bf The Multi-Threaded Round-Robin Global-Queue Scheduler {\sl (MTRRGQ)}} \\
-        A multi-core version of the previous scheduler. This uses a single global
-        process queue which all schedulers share and attempt to work from.
-
+        This scheduler uses a single global process queue which all schedulers 
+        share and attempt to work from. There is no rearrangement of order, and
+        all threads will round-robin the queue (performing a set number of
+        reductions per process before enqueuing and poping the top one).
+        \begin{itemize}
+            \item {\bf The Single-Threaded Round-Robin Scheduler {\sl (STRR)}} \\
+                This scheduler is a special case where $P=1$. This will be our
+                simplest scheduler test case, and will be compared against 
+                {\sl STDQ}.
+        \end{itemize}  
+ 
     \item {\bf The Multi-Threaded Round-Robin Work-Stealing Scheduler {\sl (MTRRWS)}} \\
         An improvement on the previous scheduler. Instead of a global process 
         queue, each scheduler maintains their own. A waiting scheduler will randomly 
@@ -350,16 +354,16 @@ on which to compare the behavior of all subsequent feedback-enabled schedulers.
                 Stealing a process involves performing an atomic dequeue from 
                 the bottom (rather than the top) of another scheduler's process 
                 queue. This will only block the other scheduler from performing
-                a dequeue for a very short window of time, but involves 
-                accessing "remote" memory.
+                a dequeue for a very short window of time, and involves 
+                synchronizing on another LPUs queue.
             \item {\bf Interrupting-Steal {\sl (MTRRWS-IS)}} \\
                 Simulates sending a thief-process over to another scheduler.
                 When the victim scheduler preempts or yields their current process
                 and selects the next one from the queue, they will instead get a
                 thief process which will syphon a process away to spawn on the thief's home
                 scheduler. This blocks the scheduler for a longer period of time,
-                but does not involve accessing remote memory which may be 
-                concurrently accessed.
+                but uses ErLam's inter-scheduler message-queue rather than
+                synchronizing on another LPUs process queue. 
         \end{itemize}
 \end{itemize}
 
@@ -367,7 +371,7 @@ ErLam also comes with three cooperativity-conscious schedulers: the
 Longevity-Based Batching Scheduler (section~\ref{sec:longevity based batching}),
 the Channel Pinning Scheduler (section~\ref{sec:channel pinning}), and the
 Bipartite Graph Aided Sorting Scheduler (section~\ref{sec:bipartite graph aided sorting}).
-The first two build on the same shared queue module as provided by $MTRRWS-^{*}$, 
+The first two build on the same shared queue module as provided by $MTRRWS$-$*$, 
 while the third utilizes its own implementation.
 
 For any compiled ErLam script, the runtime installs a command line option for
@@ -444,10 +448,10 @@ generated log file for processing. This script dynamically loads chart
 creation scripts based on the types of events it sees in the log file. The
 toolkit comes with five charting scripts which should work for all schedulers: 
 Channel Usage (Communication Density) over time,
-Channel State (blocked vs. unblocked) over time,
+Channel State (blocked vs.~unblocked) over time,
 Process Queue Length per LPU over time,
 Reductions (Computation Density) over time, and
-Scheduler State (running vs waiting) over time.
+Scheduler State (running vs.~waiting) over time.
 
 %\begin{wrapfigure}{r}{0.5\textwidth}
 \begin{figure}

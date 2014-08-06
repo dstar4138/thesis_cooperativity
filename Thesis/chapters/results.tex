@@ -120,11 +120,19 @@ scheduler critiques.
 \subsection{Scheduler API}\label{sec:results-evaluation-classical}
 
 The ErLam Scheduler API was minimally constructed around the single-step 
-scheduling semantics presented earlier in figure~\ref{fig:scheduler-step}.
+scheduling semantics presented earlier in section~\ref{sec:classic runtime scheduling}.
 We were motivated by the simplicity of the description and thus the ability
-to bring some formalism to the implementations. That being said, we would still
+to bring some consistency to the implementations. That being said, we would still
 require the option to observe practical statistics such as runtime overhead 
 during our scheduler comparisons. 
+
+However,
+one of the concerns early on, and as described in section~\ref{sec:runtime log reports}, 
+was that the LPUs could greatly differ in the number of ticks they are able to 
+provide their process queue. This could be caused by the OS preempting the 
+ErLam scheduling thread to execute something else. However, from our tests, we
+found these gaps to be minimal and mainly caused by the scheduling implementation
+itself. 
 
 \begin{figure}[h!]
     \subfigure[Tick disparity, or the average time between scheduler ticks per 
@@ -135,20 +143,12 @@ during our scheduler comparisons.
     }
     ~
     \subfigure[Tick disparity consistently matches up with increased computation, 
-    which is indicitive of inter-scheduler communication requirements.]{
+    which is indicative of inter-scheduler communication requirements.]{
         \includegraphics[width=\textwidth]{tick-disparity-to-reductions.png}
         \label{fig:tick-disparity-match}
     }
     \caption{The tick-disparity for over nearly $900$ tests.}
 \end{figure}
-
-However,
-one of the concerns early on, and as described in section~\ref{sec:runtime log reports}, 
-was that the LPUs could greatly differ in the number of ticks they are able to 
-provide their process queue. This could be caused by the OS preempting the 
-ErLam scheduling thread to execute something else. However, from our tests, we
-found these gaps to be minimal and mainly caused by the scheduling implementation
-itself. 
 
 Figure~\ref{fig:tick-disparity} shows the average time between ticks averaged over
 the LPUs for a large subsection of the tests we ran. We call this average time 
@@ -686,8 +686,8 @@ We ran $Interactivity_{(20,0)}$ and $ClusterComm_{(20,5)}$ like before, using Ab
 channels first. We hypothesized that this channel implementation would provide
 little improvement and the overhead involved with sorting the process queue would
 be wasted as soon as a channel was absorbed and effectively reordered. 
-Table~\ref{tab:ss-compare-rand-uniform-ca} presents these executions, and they
-meet expectation.
+Table~\ref{tab:ss-compare-rand-uniform-ca} presents these executions, but they
+don't all meet expectations. 
 
 \begin{table}[tp!]
     \centering
@@ -700,13 +700,23 @@ meet expectation.
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/ca/pg_0001.pdf}} \\ \cline{2-3} 
 \end{tabular}
-\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
+\caption{Channel State comparisons of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
 the Bipartite-Graph Aided Sorting Scheduler using Absorption Channels.}
     \label{tab:ss-compare-rand-uniform-ca}
 \end{table}
 
 Note very little difference in the charts for either scheduler.
-Absorption channels remove any chance the scheduler may have of improving the 
+However we must point out the discrepancy in
+our hypothesis in terms of the Sorting Scheduler's $ClusterComm_{(20,5)}$ run.
+This execution was executed in far less ticks than any of the other runs
+performed by $MTRRWS$-$SQ$. While we cannot explain the positive reaction in
+this case, we must recognize the random nature of $ClusterComm_{(N,M)}$ and the 
+possibility of repeat channel accesses when $M$ is low. We would also like to 
+note here, that the tick count is not an accurate statistic to represent 
+execution time, especially in this case, as the sorting does add an overhead 
+not captured.
+ 
+While, absorption channels can remove chances the scheduler may have of improving the 
 runtime quality of the application. Blocking channels, on the other hand, can leak
 hints to the scheduler, which it may then use to predict the future.
 Table~\ref{tab:ss-compare-rand-uniform-cb} displays a re-execution of the 
@@ -723,7 +733,7 @@ above tests utilizing Blocking channels instead.
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/wssq/cb/pg_0001.pdf}} & 
     \multicolumn{1}{c|}{\includegraphics[scale=0.32]{tests/clustercomm/20/ss/cb/pg_0001.pdf}} \\ \cline{2-3} 
 \end{tabular}
-\caption{Comparison of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
+\caption{Channel State comparisons of Random and Uniform synchronization for $MTRRWS$-$SQ$ and 
 the Bipartite-Graph Aided Sorting Scheduler on Blocking Channels.}
     \label{tab:ss-compare-rand-uniform-cb}
 \end{table}
