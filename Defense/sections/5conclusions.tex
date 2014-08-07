@@ -1,0 +1,44 @@
+\section{Conclusions \& Future Work}
+
+\subsection{ErLam Toolkit}
+
+\begin{slide}
+    \begin{itemize}
+        \item Test Primitives proved to be a good abstraction for 
+            Process behaviours.
+        \item Log generation, lots of overhead, but good observations.
+    \end{itemize}
+
+    \inote{
+        \item Overall pleased with simulator and achieved its goal.
+        \item Future Work: 
+            \begin{itemize}
+                \item Generate more test primitives. 
+                \item Clean up log generation (reduce overhead).
+                \item Process evaluation uses alpha-reduction 
+                      (can be sped up substantially).
+                \item Make schedulers more adjustable (different
+                        spawn/yields/etc).
+                \item More Channel implementations
+            \end{itemize}
+    }
+\end{slide}
+
+
+\subsection{Cooperativity as a Metric}
+
+\begin{slide}
+    \begin{itemize}
+        \item {\bf Longevity Batching:} -  
+        \item {\bf Channel Pinning:} -  
+        \item {\bf Queue Sorting:} Would benefit from merging with
+            Channel Pinning scheduler to increase likelihood that
+            sorting puts channel partners close. 
+    \end{itemize}
+
+    \inote{
+        \item Alternate message-passing types (asymmetric).
+        \item Merging Schedulers
+    }
+\end{slide}
+

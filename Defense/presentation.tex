@@ -1,8 +1,23 @@
 \documentclass{beamer}
+\usepackage{etex}
+\usepackage{url}
+\usepackage{semantic}
+\usepackage{pgfpages}
+\usepackage{multicol}\columnseprule 0.4pt
+\usepackage{subfigure}
+\usepackage{tikz,tikz-qtree}
+\usepackage{verbatim,fancyvrb}
+\usepackage{mathtools,mathrsfs,amsmath,amsthm,amsfonts}
 
+%% Symbolic, relative link to thesis graphics.
+\graphicspath{ {./pics/} }
+
+%% Optional: Turn on Notes Pages:
+\setbeameroption{show notes on second screen}
+
+%% Beamer Theme Options
 \usetheme{Rochester} % Because RIT.
 \usecolortheme[named=black]{structure} % Default
-
 
 %% Document Information:
 \title{Process Cooperativity as a Feedback Metric \\
@@ -15,12 +30,77 @@
 \date{August 12, 2014} % Scheduled Defense Date
 \subject{Thesis Defense}
 
+%% Document Table-Of-Contents, and pacing slides.
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Current Section:}
+        \begin{multicols*}{2}
+            \tableofcontents[sectionstyle=show/hide,
+                             subsectionstyle=show/show/hide]
+        \end{multicols*}
+    \end{frame}
+}
+
+%% Slides have titles based on their section and subsection.
+\newenvironment{slide}
+    {\begin{frame}[environment=slide,fragile]
+            \frametitle{\insertsection: \insertsubsection}
+    }
+    {\end{frame}}
+
+%% Itemized Notes:
+\newcommand{\inote}[1]{\note{\begin{itemize} #1 \end{itemize}}}
 
 \begin{document}
 
-
 % TITLE PAGE:
-\frame{\titlepage}
+\frame{\titlepage
+    \inote{
+        \item Thank Fluet, Heliotis, and Raj.
+        \item Dedicate to parents, who are unable to be present.
+    }
+}
 
+% ToC PAGE:
+\begin{frame}
+    \frametitle{\centering
+                Process Cooperativity as a Feedback Metric
+                in Concurrent Message-Passing Languages}
+    \begin{multicols*}{2}
+        \tableofcontents
+    \end{multicols*}
+    \inote{
+        \item Break apart title = Background.
+        \item Then simulator and test primitives (process behaviours).
+        \item Schedulers and how comparisons are made.
+        \item Results, Conclusions (of both simulator and cooperativity).
+    }
+\end{frame}
+
+% INCLUDE EACH SECTION:
+\input{sections/1background}
+\input{sections/2erlam}
+\input{sections/3schedulers}
+\input{sections/4results}
+\input{sections/5conclusions}
+
+% Questions and Thank you!
+\section*{Questions}
+\begin{frame}
+    \begin{center}
+        {\Huge Questions/Comments?}
+    \end{center}
+
+    \uncover<2->{
+        \begin{center}
+            Thank You!
+        \end{center}
+    }
+\end{frame}
+
+% Bibliography and Links Sections:
+%\input{sections/999bibliography}
+\input{sections/9999links}
 
 \end{document}
