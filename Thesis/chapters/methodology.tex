@@ -107,20 +107,18 @@ We chose two channel implementations the
 for the runtime. We will now look at an example application and its execution
 using both methods for comparison.
 
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{figure}
     \centering
-{\footnotesize
 \begin{BVerbatim}[commandchars=\\\{\}]
 \textbf{let} c = \textbf{newchan in}
 \textbf{let} f = (\textbf{fun} _.(\textbf{swap} c \textit{42})) \textbf{in}
 \textbf{let} _ = (\textbf{spawn} f)
 \textbf{in} (\textbf{swap} c \textit{0})
 \end{BVerbatim}
-}
     \caption{
         A simple ErLam application which swaps on a channel before returning.}
     \label{fig:swap-example}
-\end{wrapfigure}
+\end{figure}
 
 Figure~\ref{fig:swap-example} gives an example ErLam application. It first 
 creates a new channel for processes to communicate on. It then creates a 
@@ -151,14 +149,15 @@ same queue and upon a block, the scheduler chooses the next one, which will
 immediately unblock the channel.
 
 \begin{figure}
-    \makebox[\textwidth][c]{
+\centering 
 \subfigure[t][Process Blocking Swap]{
-    \includegraphics[scale=0.25]{BlockingSwap.pdf}
+    \includegraphics[scale=0.4]{BlockingSwap.pdf}
     \label{fig:blockchan-example}
-}  \subfigure[t][Process Absorption Swap]{
-    \includegraphics[scale=0.25]{AbsorbSwap2.pdf}
+}
+\subfigure[b][Process Absorption Swap]{
+    \includegraphics[scale=0.4]{AbsorbSwap.pdf}
     \label{fig:absorbchan-example}
-}}
+}
 \caption{Channel operation over time. Note arbitrary time-slice $t_1$ is when the 
 first swap operation is evaluated.}
 \end{figure}
@@ -336,12 +335,13 @@ on which to compare the behavior of all subsequent feedback-enabled schedulers.
         This scheduler uses a single global process queue which all schedulers 
         share and attempt to work from. There is no rearrangement of order, and
         all threads will round-robin the queue (performing a set number of
-        reductions per process before enqueuing and poping the top one).
+        reductions per process before enqueuing and popping the top one).
         \begin{itemize}
             \item {\bf The Single-Threaded Round-Robin Scheduler {\sl (STRR)}} \\
-                This scheduler is a special case where $P=1$. This will be our
-                simplest scheduler test case, and will be compared against 
-                {\sl STDQ}.
+                This scheduler is a special case where $P=1$. We provide a 
+                simplified implementation which removes all synchronization 
+                of the previous scheduler. This will be our simplest scheduler 
+                test case, and will be compared against {\sl STDQ}.
         \end{itemize}  
  
     \item {\bf The Multi-Threaded Round-Robin Work-Stealing Scheduler {\sl (MTRRWS)}} \\
@@ -354,16 +354,21 @@ on which to compare the behavior of all subsequent feedback-enabled schedulers.
                 Stealing a process involves performing an atomic dequeue from 
                 the bottom (rather than the top) of another scheduler's process 
                 queue. This will only block the other scheduler from performing
-                a dequeue for a very short window of time, and involves 
-                synchronizing on another LPUs queue.
+                a dequeue for a very short window of time, but the other 
+                scheduler must compensate for this concurrent access by 
+                synchronizing on its usage as well, despite the relative 
+                infrequency of steals.
             \item {\bf Interrupting-Steal {\sl (MTRRWS-IS)}} \\
                 Simulates sending a thief-process over to another scheduler.
                 When the victim scheduler preempts or yields their current process
-                and selects the next one from the queue, they will instead get a
-                thief process which will syphon a process away to spawn on the thief's home
+                and selects the next one from the queue, they can instead check for a
+                thief process which may syphon a process away to spawn on the thief's home
                 scheduler. This blocks the scheduler for a longer period of time,
                 but uses ErLam's inter-scheduler message-queue rather than
-                synchronizing on another LPUs process queue. 
+                synchronizing on another LPUs process queue. This secondary queue
+                can be accessed less frequently and at the scheduler's discretion
+                so the synchronization overhead isn't incurred upon standard 
+                usage (as no other scheduler can access the local process queue).
         \end{itemize}
 \end{itemize}
 
@@ -754,11 +759,19 @@ processes should be relocated. However, frequent sorting may cause the
 scheduler's fairness to suffer. We therefore set a variable, $\Gamma$ which
 defines how many "events" can happen before causing a re-sort.
 
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{BipartiteGraph.pdf}
+    \caption{Bipartite Graph of Processes ($Ps$) to Channels ($Cs$).}
+    \label{fig:bipartite-graph}
+\end{figure}
+
 To provide a mechanism for sorting, we structure our process queue as a bipartite 
-graph, where one side is our process queue, and the other is the set of channels.
+graph (figure~\ref{fig:bipartite-graph}), where one side is our process queue, 
+and the other is the set of channels.
 We generate a ``pseudo-priority'' based on recency of the communications over
 the number of channels it has communicated with. Namely, we sort the process queue
-by $\Delta(P_i) = \Sigma E_i / |C_i|$ where $E_i$ is the edge set (\ie~integer timestamps),
+by $\Delta(P_i) = \Sigma E_i / |C_i|$ where $E_i$ is the edge set (\ie~integer timestamps, $e_j$),
 and $C_i$ is the set of channels $P_i$ communicated with. The default priority function, $\Delta$,
 is intended to give our processes which communicate frequently, a head start, and
 all other processes can be pushed to the end (and more likely stolen). 

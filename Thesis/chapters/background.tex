@@ -141,10 +141,11 @@ the global channel state (\ie~with the creation of a new message passing channel
 or possibly the 
 generation of another process, in the case of a process spawn. 
 
-Finally, the scheduler will update the process set, with the
-reduced process (and any generated processes). This update is also based on the state of the scheduler, which
-could be influenced by the process's history as a result of its previous reduction.
-In either case, this will set it up for the next step.
+Finally, the scheduler will update the process set with the
+reduced process (and any generated processes). This update may also modify the 
+private state of the scheduler, which could store statistics like a process's 
+historical information. This state update can influence its selection for the
+next step, like choosing the oldest process, or the one last seen, \etc
 
 We base our Scheduler API (section~\ref{sec:the scheduler api}) on this 
 idea of a constant tick function, which maps the state of the scheduler's world 
