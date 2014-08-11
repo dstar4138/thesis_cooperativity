@@ -38,7 +38,8 @@ bile
     \end{figure}
 
     \inote{
-        \item Theres options for built-ins as well as macros.
+        \item There's options for built-ins as well as macros.
+        \item Built-ins are raw Erlang, gets wrapped up into AST, and still "reduces" the same (\ie~no multi-variable functions).
     }
 \end{slide}
 
@@ -79,52 +80,175 @@ fun N.
 
 \begin{slide}
     \begin{figure}
-        \makebox[\textwidth][c]{
-            \subfigure[t][Process Blocking Swap]{
-                \includegraphics[width=0.5\textwidth]{BlockingSwap.pdf}
-                \label{fig:blockchan-example}
-            }  \subfigure[t][Process Absorption Swap]{
-                \includegraphics[width=0.5\textwidth]{AbsorbSwap2.pdf}
-                \label{fig:absorbchan-example}
-            }
-        }
+        \includegraphics[width=0.8\textwidth]{BlockingSwap.pdf}
+        \label{fig:blockchan-example}
     \end{figure}
+    Process Blocking Swap
+    
     \inote{
         \item Blocking: Maintains state of current and previous swap value until swap is completed.
-        \item Absorption: Stores process which initializes the swap and returns it along with completion.
         \item Mention expected effects on scheduler.
-        \item Blocking is default, passing '-a' to els 
+        \begin{itemize}
+            \item Scheduler will keep hold of the process, needs to recheck if blocked.
+            \item If all communicating, large process queue of blocked processes. 
+        \end{itemize}
+        \item Blocking is default, passing '-a' to els for absorb 
     }
 \end{slide}
+\begin{slide}
+    \begin{figure}
+        \includegraphics[width=0.8\textwidth]{AbsorbSwap.pdf}
+        \label{fig:absorbchan-example}
+    \end{figure}
+    Process Absorption Swap
 
+    \inote{
+        \item[] Absorption swap is visually easier to recognize.
+        \item[1.] Whole process gets absorbed by channel, away from scheduler.
+        \item[2.] When the second process completes the swap, the process gets
+                  removed from channel.
+            \begin{itemize}
+                \item The p0 process can go back to its original scheduler, 
+                \item OR to scheduler which unblocked it.
+            \end{itemize}
+        \item Effects on scheduler are obvious.
+    }
+\end{slide}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation \& Visualization}
 
 \begin{slide}
-
+    \begin{itemize}
+        \item System Behaviours:
+            \begin{itemize}
+                \item Degree of Parallelism
+                \item Consistency of Cooperation
+                \item Degree of Longevity/Interactivity
+                \item Partial System Cooperativity
+            \end{itemize}
+        \item Logging \& Report Generation
+    \end{itemize}
 
     \inote{
-        \item Need to talk about Chart types and chart generation.
+        \item We first want to look at four types of system behaviour ranges:
+            \begin{itemize}
+            \item Parallelism: Gets back to Ring vs Cloud, Compare the two. 
+            \item Consistency: Ring/Star=consistent, but if given a random choice.
+            \item Longevity: Ratio of Communicating/Computing processes.
+                \begin{itemize}
+                    \item Longevity = Time spent reducing (low=communicator)
+                    \item Interactivity, also takes into account user interaction.
+                \end{itemize}
+            \item Full vs Partial Cooperation: Multiple groups of Stars or Rings.
+            \end{itemize}
+        \item Definitely won't get to all behaviour tests that were in report, 
+            but will focus on the key ones for each scheduler mechanic.
+        \item Finally, quickly, go over the current report generation that 
+            ErLam can perform.
     }
 \end{slide}
 
+\begin{slide}
+    \framesubtitle{System Behaviours: Degree of Parallelism}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.4]{RingVCluster.pdf}
+        \caption{$PRing_N$, and $ClusterComm_{(N,1)}$ primitives to 
+            test degree of parallelism.}
+    \end{figure}
 
+    \inote{
+        \item Brings back the Ring and Star.
+        \item We call the left, PRing, with the parameter N = number of processes. 
+        \item We call the right, $ClusterComm$ with two parameters, $N$ like 
+                $PRing$, $M=1$ in this cas
+    }
+\end{slide}
 
+\begin{slide}
+    \framesubtitle{System Behaviours: Consistency of Cooperation}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.5]{ClusterComm.pdf}
+        \caption{$ClusterComm_{(N,M)}$ to test effect of consistency on scheduler.}
+    \end{figure}
 
+    \inote{
+        \item We can vary number of channels in relation to processes to 
+            check the effects of inconsistency on Cooperative-Conscious schedulers.
+        \item Worst case scenario for C-C schedulers. 
+    }
+\end{slide}
 
+\begin{slide}
+    \framesubtitle{System Behaviours: Degree of Interactivity}
+    \begin{figure}
+        \centering
+        \only<1>{
+            \includegraphics[scale=0.7]{UserInput.pdf}
+            \caption{$UserInput_{(T,C)}$, simulates user interaction or a number 
+                    ($C$) of external/timed ($T$) events.}
+        }
+        \only<2>{
+            \includegraphics[scale=0.4]{Interactivity.pdf}
+            \caption{$Interactivity_{(N,M)}$, composure of $ChugMachine_N$ (Cloud),
+                    and $M$ instances of $UserInput_{(5,2)}$.}
+        }
+    \end{figure}
+    
+    \inote{
+        \item To test longevity we can just vary the length of time the processes
+            chug for all tests.
+        \item To test interactivity though, we need a way to simulate user 
+            interaction.
+        \item $UserInput$ captures hanging for a single event. We can compose 
+            these: $<NEXT>$
+        \item With our cloud of processes (also called chugmachine) for 
+            simulating a program with consistent working processes and 
+            processes which are interactive.
+    }
+\end{slide}
 
+\begin{slide}
+    \framesubtitle{System Behaviours: Partial System Cooperativity}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.5]{PTree.pdf}
+        \caption{$PTree_{(W,N)}$, a composure of $W$ $ClusterComm_{(N,1)}$ 
+                instances running concurrently.}
+    \end{figure}
 
+    \inote{
+        \item Previously (besides Interactivity), all systems were full system 
+            cooperation.
+        \item We can of course use Interactivity for our partial system 
+            cooperativity tests, but we would instead like to see logical grouping.
+        \item Hence the set of Work groups (or stars). 
+    }
+\end{slide}
 
+\begin{slide}
+    \framesubtitle{Logging \& Report Generation}
 
+    Things we could log:
+    \begin{itemize}
+        \item<2-> Process Queue Size (per LPU)
+        \item<3-> Quantity of Reductions/Yields/Preempts
+        \item<4-> State of the Scheduler (waiting/running)
+        \item<5-> Channel State (Blocked/Unblocked)
+        \item<6-> \ldots
+    \end{itemize}
 
-
-
-
-
-
-
-
-
-
+    \inote{ % Notes are offset X+1 intentionally.
+        \item<3-> Queue-Length: work-stealing mechanics and saturation ability.
+        \item<4-> Tick-Action: Visualize the density of computation/communication.
+        \item<5-> Sched-State: Useful for comparing stealing/process selection 
+                  mechanics.
+        \item<6-> Chan-State: Tracking interactivity, speed of unblock=attentive 
+                  to cooperation. 
+        \item<7-> Of course there are more, but we limited ourselves to the above 
+                  for initial testing purposes. 
+    }
+\end{slide}
 

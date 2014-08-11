@@ -2,5 +2,79 @@
 
 \subsection{Example Schedulers}
 
+\begin{slide}
+    \begin{itemize}
+        \item Single-Thread Dual-Queue
+            \begin{itemize}
+                \item Translation of CML scheduler
+            \end{itemize}
+
+        \item Round-Robin with Single Global Queue (MTRRGQ)
+            \begin{itemize}
+                \item No Work-Stealing
+                \item \# LPUs can vary
+            \end{itemize}
+
+        \item Round-Robin with Work-Stealing (MTRRWS)
+            \begin{itemize}
+                \item Steal via direct access
+                \item Steal via advertisement
+            \end{itemize}
+    \end{itemize}
+
+    \inote{
+        \item First tested translating a known scheduler to the discrete step scheduler semantics.
+        \item MTRRGQ: all synchronization around a single global queue, test P=1 or max.
+        \item MTRRWS-SQ:
+            \begin{itemize}
+                \item Schedulers can access a random LPU's queue end and steal from their bottoms.
+            \end{itemize}
+        \item MTRRWS-IS:
+            \begin{itemize}
+                \item Uses a secondary queue to advertise desire to steal. 
+                \item Scheduler can check secondary queue as desired.
+                \item No requirement for synchronization on private process queue.
+            \end{itemize}
+    }
+\end{slide}
+
 \subsection{Feedback Schedulers}
+
+\begin{slide}
+    \begin{itemize}
+        \item Longevity-Based Batching Scheduler
+        \item Channel Pinning Scheduler
+        \item Bipartite-Graph Aided Sorting Scheduler
+    \end{itemize}
+\end{slide}
+
+
+\begin{slide}
+    \framesubtitle{Longevity-Based Batching Scheduler}
+\end{slide}
+
+
+\begin{slide}
+    \framesubtitle{Channel-Pinning Scheduler}
+\end{slide}
+
+
+\begin{slide}
+    \framesubtitle{Bipartite-Graph Aided Sorting Scheduler}
+\end{slide}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
