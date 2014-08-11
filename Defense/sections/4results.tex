@@ -1,33 +1,34 @@
 \section{Results}
 
 \begin{slide}
-    Longevity-Based Batching Scheduler:
-    \begin{itemize}
-    \item Spawn Mechanism 
-    \item[] ~~~~{\it (Where does a new process go if batch is too big?)}
-    \end{itemize}
-    
-    Channel Pinning Scheduler:
-    \begin{itemize}
-    \item Channel Spread 
-    \item[] ~~~~{\it (How to spread the channels across processors?)}
+    Longevity-Based Batching
+     \begin{itemize}
+         \item {\sl Can batching based on longevity recognize fine/coarse parallelism in an application?}
+        \item[] ~
     \end{itemize}
 
-    Bipartite-Graph Aided Sorting Scheduler:
+    Channel Pinning 
     \begin{itemize}
-    \item Channel Implementation 
-    \item[] ~~~~{\it (Does blocking help to take advantage of sorting?)}
+        \item {\sl Can an {\em even}-like spread increase early saturation?}
+        \item[] ~
+    \end{itemize}
+
+    Bipartite-Graph Aided Sorting
+    \begin{itemize}
+        \item {\sl Are alternate channel implementations worth exploration?}
     \end{itemize}
 
     \inote{
+        \item Remind about the goals of the talk. However there are other things
+            we can of course study now that we have a simulator:
         \item LBB: Can also look at how the batch size effects different types
             of behaviours.
-        \item SS: Could also look at a stealing mechanism.
+        \item CP: Could also look at a stealing mechanism.
     }
 \end{slide}
 
 \begin{slide}
-\framesubtitle{Longevity-Based Batching Scheduler}
+\frametitle{Results: Longevity-Based Batching}
 
         \begin{table}[htp!]
             \centering
@@ -46,22 +47,60 @@
         \end{table}
 
     \inote{
-        \item Before talking about spawn mechanism, pointing out the
-              primary goal and effect of batching to catch the granularity
-              of the application.
+        \item Early tests gave promising results. 
+
+        \item Here is $PRing_N$ which shows the reabsorption and containment on a single LPU as expected and hoped.
+
+        \item So does batching based on longevity really recognize fine/coarse parallelism in an application?
+
+        \item Sort of, if you know what the right time-quantum is to make that distinction.
     }
 \end{slide}
+
 \begin{slide}
-\framesubtitle{Longevity-Based Batching Scheduler}
+\frametitle{Results: Longevity-Based Batching}
+{\scriptsize
+\begin{table}
+    \centering
+    \begin{tabular}{ccccc} & \multicolumn{4}{c}{ $PTree_{(4,8)}$ } \\ \cline{2-5}
+    \multicolumn{1}{c}{\textbf{Time}} & \multicolumn{2}{c}{ $MTRRWS$-$SQ$ } & \multicolumn{2}{c}{ Long. Batcher} \\ \cline{2-5}
+    \multicolumn{1}{c|}{\textbf{Quantum}} & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} 
+                                                & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} \\ \cline{1-5}
+    \multicolumn{1}{c|}{$R=30$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca30r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca30r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca30r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca30r/pg_0004.pdf}} \\ \cline{1-5}
+
+    \multicolumn{1}{c|}{$R=40$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca40r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca40r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca40r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca40r/pg_0004.pdf}} \\ \cline{1-5}
+
+    \multicolumn{1}{c|}{$R=50$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca50r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca50r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca50r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca50r/pg_0004.pdf}} \\ \cline{1-5}
+    \end{tabular}
+\end{table}
+}
     \inote{
-        \item TODO: Get simple $ClusterComm_{(N,1)}$ or the PTree results to contrast with PRING 
-        \item This brings it back to an issue of behaviour recognition.
+        \item Comparison of $PTree_{(4,8)}$ running with the Longevity-Based 
+        Batching Scheduler and $MTRRWS$-$SQ$ at different time-quantums.
+
+        \item At lower time quantums Long. Batcher starts to look like RRWS-SQ, 
+            however batching and absorption channels tend to lead to consolidation.
+
+        \item At higher time quantums Long. Batcher results in the originally expected
+            work-groups. But it turns out to be inefficient due to lost chances of
+            parallelism of each "star" of each group.
+
+        \item Heuristical adjustement of the time-quantum would definitely be possible.
     }
 \end{slide}
 
 
 \begin{slide}
-\framesubtitle{Channel Pinning Scheduler}
+\frametitle{Results: Channel Pinning}
     \begin{table}
     \centering
     \begin{tabular}{@{}ccc}
@@ -89,7 +128,7 @@
 \end{slide}
 
 \begin{slide}
-\framesubtitle{Bipartite-Aided Graph Sorting Scheduler}
+\frametitle{Results: Bipartite-Aided Graph Sorting}
 
     \begin{table}
     \centering
@@ -104,6 +143,8 @@
     \end{table}
 
     \inote{
+        \item Had to deviate from the primitives. No primitive relied on process order.
+        \item PFib has a strong reliance on order of execution.
         \item Channel State comparison of Parallel Fibonacci executed on 
                 $MTRRWS$-$SQ$ and the Bipartite-Graph Aided Sorting Scheduler. 
         \item Note the large reduction in number of ticks.

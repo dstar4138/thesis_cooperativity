@@ -4,8 +4,12 @@
 
 \begin{slide}
     \begin{itemize}
-        \item Test Primitives proved to be a good abstraction for 
-            Process behaviours.
+        \item Test Primitives were nicely composable process behaviours.
+            \begin{itemize}
+                \item More research into generating behaviours.
+                \item More compositions: PTree with Rings.
+            \end{itemize}
+
         \item Log generation, lots of overhead, but good observations.
     \end{itemize}
 
@@ -13,7 +17,12 @@
         \item Overall pleased with simulator and achieved its goal.
         \item Future Work: 
             \begin{itemize}
-                \item Generate more test primitives. 
+                \item Generate more test primitives, a good library of them 
+                        would be nice.
+                \item Compose them easier and more frequently. Perhaps 
+                    generating work groups as PRing might have made a better 
+                    comparison than Interactivity.
+ 
                 \item Clean up log generation (reduce overhead).
                 \item Process evaluation uses alpha-reduction 
                       (can be sped up substantially).
@@ -24,35 +33,61 @@
     }
 \end{slide}
 
+\subsection{Cooperative Schedulers}
+
+\begin{slide}
+    \begin{itemize}
+        \item {\bf Longevity Batching:}
+            \begin{itemize}
+                \item Would benefit from heuristic based Quantum selection.
+                \item As it stands, limited gain from longevity recognition.
+                \item[] ~
+            \end{itemize} 
+        \item {\bf Channel Pinning:}
+            \begin{itemize}
+                \item Promising saturation and work-stealing mechanic.
+                \item[] ~
+            \end{itemize}
+        \item {\bf Bipartite-Graph Aided Sorting:} 
+            \begin{itemize}
+                \item Supprising results on MapReduce style applications.
+                \item Worth studying Blocking-Channels further for gains from 
+                    sorting.
+            \end{itemize}
+    \end{itemize}
+
+    \inote{
+        \item SS: Would benefit from merging with Channel Pinning. Increase 
+            likelihood that sorting puts channel partners close.
+    
+        \item LBB + CP might be interesting as channels could own batches.
+
+        \item Overhead of Sorting? If implemented in a practicle language,
+            would it be worth it? Seems counter-intuitive but promising as is.
+    }
+\end{slide}
+
 \subsection{Cooperativity as a Metric}
 
 \begin{slide}
 
     \begin{itemize}
         \item Possible to recognize and benefit from.
+        \item The three example mechanics are promising and can be extended for
+                practicle modern languages, despite simplistic simulation language.
         \item More to explore:
             \begin{itemize}
                 \item Alternate Message-Passing Types (Asymmetric?)
-                \item ....
+                \item \ldots
             \end{itemize}
-    
-    \end{itemize}
-
-\end{slide}
-
-\subsection{Cooperative Schedulers}
-
-\begin{slide}
-    \begin{itemize}
-        \item {\bf Longevity Batching:} -  
-        \item {\bf Channel Pinning:} -  
-        \item {\bf Queue Sorting:} Would benefit from merging with
-            Channel Pinning scheduler to increase likelihood that
-            sorting puts channel partners close. 
     \end{itemize}
 
     \inote{
-        \item Merging Schedulers
+        \item Promising scheduling mechanics
+        \item More research is necessary in the message-passing implementation
+                for it to be practical in common languages.
+        \item (Asymmetric/Directionality would be first on the list)
     }
 \end{slide}
+
 
