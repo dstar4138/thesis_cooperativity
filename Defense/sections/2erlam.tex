@@ -13,7 +13,7 @@
 
     \inote{
         \item Extremely simple on purpose (5 keywords).
-        \item Issue now began to be how to build up test primitives
+        \item Issue now began to be how to build up primitive test behaviours.
         \item Made a library which allowed for built ins.
     }
 \end{slide}
@@ -150,31 +150,25 @@ bile
 \subsection{Simulation \& Visualization}
 
 \begin{slide}
-    System Behaviours:
+    Primitive Testing Behaviours:
             \begin{itemize}
                 \item Degree of Parallelism
-                \item Consistency of Cooperation
-                \item Degree of Longevity/Interactivity
                 \item Partial System Cooperativity
+                \item[] ~ %Spacing
             \end{itemize}
     Logging \& Report Generation
 
     \inote{
-        \item We first want to look at four types of system behaviour ranges:
+        \item To test cooperativity, we need a set of test behaviours.
+        \item We want to analyize a large number of structure types.
+        \item Two of them that I studied are:
             \begin{itemize}
-            \item Parallelism: Gets back to Ring vs Cloud, Compare the two. 
-            \item Consistency: Ring/Star=consistent, but if given a random choice.
-            \item Longevity: Ratio of Communicating/Computing processes.
-                \begin{itemize}
-                    \item Longevity = Time spent reducing (low=communicator)
-                    \item Interactivity, also takes into account user interaction.
-                \end{itemize}
+            \item Parallelism: Gets back to Ring vs Star, compare the two. 
             \item Full vs Partial Cooperation: Multiple groups of Stars or Rings.
-            \end{itemize}
-        \item Definitely won't get to all behaviour tests that were in report, 
-            but will focus on the key ones for each scheduler mechanic.
-        \item Finally, quickly, go over the current report generation that 
-            ErLam can perform.
+           \end{itemize}
+           
+        \item Finally, quickly, go over the current report generation that
+            ErLam performs.
     }
 \end{slide}
 
@@ -188,10 +182,13 @@ bile
     \end{figure}
 
     \inote{
-        \item Brings back the Ring and Star.
+        \item Here are our Ring and Star behaviours, we call them by different 
+                names.
         \item We call the left, PRing, with the parameter N = number of processes. 
         \item We call the right, $ClusterComm$ with two parameters, $N$ like 
-                $PRing$, $M=1$ in this cas
+                $PRing$, $M=1$ in this case.
+        \item Note the generalization of the Star is a set of M channels
+            that are randomly accessed.
     }
 \end{slide}
 
@@ -204,19 +201,19 @@ bile
     \end{figure}
 
     \inote{
-        \item We can vary number of channels in relation to processes to 
-            check the effects of inconsistency on Cooperative-Conscious schedulers.
-        \item Worst case scenario for C-C schedulers. 
+        \item Worst case scenario for C-C schedulers.
+        \item However, this is still full system cooperativity. We want some
+            minor work groups.
     }
 \end{slide}
 
 \begin{slide}
-    \framesubtitle{System Behaviours: Degree of Interactivity}
+    \framesubtitle{System Behaviours: Partial System Cooperativity}
     \begin{figure}
         \centering
         \only<1>{
             \includegraphics[scale=0.7]{UserInput.pdf}
-            \caption{$UserInput_{(T,C)}$, simulates user interaction or a number 
+            \caption{$UserInput_{(T,C)}$, simulates user interaction for a number 
                     ($C$) of external/timed ($T$) events.}
         }
         \only<2>{
@@ -227,15 +224,19 @@ bile
     \end{figure}
     
     \inote{
-        \item To test longevity we can just vary the length of time the processes
-            chug for all tests.
-        \item To test interactivity though, we need a way to simulate user 
-            interaction.
-        \item $UserInput$ captures hanging for a single event. We can compose 
-            these: $<NEXT>$
-        \item With our cloud of processes (also called chugmachine) for 
-            simulating a program with consistent working processes and 
-            processes which are interactive.
+        \item So we can make tiny work groups of two processes, like our
+            simple swapping program earlier.
+
+        \item The difference here is minor, we call this test UserInput because
+            one process can hang for a set amount of time before triggering an
+            event (effectively simulating user interation).
+        
+        \item But we need multiple of these work groups, running concurrently.
+
+        \item[] ~
+
+        \item Run a set of them in parallel, and we could even inject a bit of
+            overhead at will by running any number of extra processes.
     }
 \end{slide}
 
@@ -249,11 +250,7 @@ bile
     \end{figure}
 
     \inote{
-        \item Previously (besides Interactivity), all systems were full system 
-            cooperation.
-        \item We can of course use Interactivity for our partial system 
-            cooperativity tests, but we would instead like to see logical grouping.
-        \item Hence the set of Work groups (or stars). 
+        \item But we can run ClusterComm or PRing in parallel. 
     }
 \end{slide}
 

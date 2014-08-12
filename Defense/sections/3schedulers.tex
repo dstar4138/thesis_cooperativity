@@ -88,6 +88,8 @@
                 \item Make push-back, parent can get another chance
                     to spawn more children sooner.
             \end{itemize}
+        \item GOAL here is to analyze the effects of grouping the frequently 
+                communicating.
     }
 \end{slide}
 
@@ -114,6 +116,9 @@
                       LPU based on the channels it uses.
                 \item Work-Stealing works like Go-Fish.
             \end{itemize}
+        \item Absorption channels would work well here to relocate processes
+                based on channel usage.
+        \item GOAL: can we improve on work-stealing by being selective.
     }
 \end{slide}
 
@@ -145,7 +150,13 @@
     \end{itemize}
 
     \inote{
+        \item Based on RR and WS.
         \item Keep a list of all communications as a graph between set of processes and channels.
+        \item Keep track of all queue events: Spawn, Block, Steal
+        \item We can resort using some function with these edges.
+        \item GOAL: If we block, we wont loose order. If we had absorption
+                channels like the previous two schedulers, all sorting would be
+                in vain.
     }
 \end{slide}
 

@@ -129,6 +129,52 @@
     }
 \end{slide}
 
+
+
+\begin{slide}
+    \framesubtitle{Results: Bipartite-Aided Graph Sorting}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.4]{RingVCluster.pdf}
+    \end{figure}
+
+    \inote{
+        \item There is an issue with our next test.
+        \item Our base primitive behaviours don't have a preferred order of
+            execution.
+        \item Ring does, but there is nothing parallel about it.
+    }
+
+\end{slide}
+
+\begin{SaveVerbatim}[commandchars=\\\{\}]{FibCode}
+fun N.
+    (omega \textbf{fun} f,m.(
+        \textbf{if} (leq m 1) 
+           m
+           (merge \textbf{fun} _.(f f (sub m 1))
+                  \textbf{fun} _.(f f (sub m 2))
+                  add)) \textit{N})
+\end{SaveVerbatim}
+\begin{slide}
+    \framesubtitle{Results: Bipartite-Aided Graph Sorting}
+    \begin{figure}
+        \centering
+        {\small
+            \BUseVerbatim{FibCode}
+        } 
+    \end{figure}
+    
+    \inote{
+        \item We therefore used a parallel Fibonacci program.
+        \item Merge function waits for each sub process to finish before
+                running Add.
+        \item If we sort based on who hasn't had a chance to communicate yet,
+            we can preferentialize these MapReduce style applications, while
+            not decrementing possible execution in parents.
+    }
+\end{slide}
+
 \begin{slide}
 \frametitle{Results: Bipartite-Aided Graph Sorting}
 
@@ -145,7 +191,6 @@
     \end{table}
 
     \inote{
-        \item Had to deviate from the primitives. No primitive relied on process order.
         \item PFib has a strong reliance on order of execution.
         \item Channel State comparison of Parallel Fibonacci executed on 
                 $MTRRWS$-$SQ$ and the Bipartite-Graph Aided Sorting Scheduler. 
