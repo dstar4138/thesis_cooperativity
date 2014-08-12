@@ -4,41 +4,35 @@
 
 \begin{slide}
     \begin{itemize}
-        \item Single-Thread Dual-Queue
+        \item (MTRRGQ) - Round-Robin with Single Global Queue
             \begin{itemize}
-                \item Translation of CML scheduler
+                \item All LPUs share a Process Queue.
             \end{itemize}
 
-        \item Round-Robin with Single Global Queue (MTRRGQ)
+        \item (MTRRWS-SQ) - Round-Robin with Work-Stealing via Direct Access
             \begin{itemize}
-                \item No Work-Stealing
-                \item \# LPUs can vary
-            \end{itemize}
-
-        \item Round-Robin with Work-Stealing (MTRRWS)
-            \begin{itemize}
-                \item Steal via direct access
-                \item Steal via advertisement
-            \end{itemize}
+                \item All LPUs have their own Process Queue.
+                \item LPUs can steal processes by grabbing them off 
+                    the end of another LPU's queue.
+            \end{itemize} 
     \end{itemize}
-
-    \inote{
-        \item First tested translating a known scheduler to the discrete step scheduler semantics.
-        \item MTRRGQ: all synchronization around a single global queue, test P=1 or max.
-        \item MTRRWS-SQ:
+    \note{
+        Two of the basic schedulers built where:
+        \begin{enumerate}
+        \item RR w/ Global Queue: all synchronization around a single shared queue
+        \item RR w/ Work-Stealing: each scheduler gets their own queue but,
+                they now need to steal work from others.
             \begin{itemize}
-                \item Schedulers can access a random LPU's queue end and steal from their bottoms.
+                \item Implemented multiple types of work stealing, but we'll
+                    limit talk to one type:
+                \item Stealing directly from another LPUs by accessing the end
+                    of their process queue. 
             \end{itemize}
-        \item MTRRWS-IS:
-            \begin{itemize}
-                \item Uses a secondary queue to advertise desire to steal. 
-                \item Scheduler can check secondary queue as desired.
-                \item No requirement for synchronization on private process queue.
-            \end{itemize}
+        \end{enumerate}
     }
 \end{slide}
 
-\subsection{Feedback Schedulers}
+\subsection{Feedback Mechanisms}
 
 \begin{slide}
     Three types of mechanics:

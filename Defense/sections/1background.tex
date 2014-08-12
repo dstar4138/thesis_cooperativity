@@ -1,6 +1,47 @@
 \section{Background}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Runtime Scheduling}
+
+\begin{slide}
+    \begin{itemize}
+        \item<1-> Schedulers can be defined in a discrete manner:
+            \begin{enumerate}
+                \item {\em Choose} a process from set,
+                \item {\em Reduce} it,
+                \item {\em Update} private scheduler state.
+            \end{enumerate}
+        \item<2-> Statistics can be gathered at every step about process:
+            \begin{itemize}
+                \item Timestamp of last run,
+                \item Number of reductions, \etc
+            \end{itemize}
+        \item<3-> {\sl What statistics are useful?}
+    \end{itemize}
+    \inote{
+        \item<2-> We can look at process schedulers like a function:
+            \begin{itemize}{\scriptsize
+                \item Takes a set of processes, and some private state.
+                \item Job of the function is to choose a process, and run it for a bit.
+                \item Then, based on what happened while running process, we update the state.
+              }
+            \end{itemize}
+        \item<2-> Big questions: How are we choosing a process? What should effect our decision?
+        \item<3-> Timestamp of last run? $\rightarrow$ 
+            \begin{itemize}{\scriptsize 
+                \item Choose always most recent, it's a batch scheduler.
+                \item Choose oldest, we get something called Round-Robin.
+                }
+            \end{itemize}
+        \item<3-> Number of reductions? $\rightarrow$ longevity = might want to 
+                                                        give someone else a go.
+        \item<3-> What are useful, and what do they tell us about the state of 
+                the system? Well this leads us to cooperativity.
+    }
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cooperativity}
 
 \begin{slide}
@@ -9,28 +50,27 @@
         \subfigure{
             \includegraphics[scale=0.4]{ChugMachine.pdf}
         }
-        \hspace{10mm}
+        \hspace{5mm}
+        \rule{0.8pt}{4cm}
+        \hspace{5mm}
         \subfigure{
             \includegraphics[scale=0.5]{SingleCluster.pdf}
         }
     \end{figure}
 
     \inote{
-        \item Where white represents a channel and black represents a process.
-        \item Channel = Source of synchronization (\ie~locks, abstractions, \etc)
-        \item[] ~
-        \item Left: Cloud of processes with no interaction.
-        \item Right: Some sort of batch job? A bit of shared state amongst all processes
-                these processes could all really be parallel or be competing, but in 
-                either case they cooperate.
-        \item DEGREE OF COOPERATIVITY: 
+        \item What is Process Cooperativity?
+        \item White = channel \& black = a process.
+        \item Can think of channel a mechanism for passing information between processes. 
             \begin{itemize}
-                \item {\em of process:} flux of interaction with inter-proc comm method.
-                \item {\em of system:} rate of interaction between Ps and Cs as both flux in size.
+                \item These are nice functional abstractions of things like locks, shared-memory, \etc 
             \end{itemize}
+        \item Left: Cloud of processes with no interaction.
+        \item Right: We see a definite structure caused by some sharing of information.
+              This is the core of recognizing cooperation, namely, recognizing these 
+                structures when they exist.
     }
 \end{slide}
-
 
 \begin{slide}
     What does Cooperativity give us?
@@ -41,22 +81,31 @@
     \end{figure}
 
     \note{
-        Whats the difference in cooperativity in the left and right
-        set of processes?         \begin{itemize}
-            \item Left: A Ring, the level of parallelism is nearly nil. Each
-                process is cooperating yes, but the granularity of the 
-                application is very fine.
+        What does Cooperativity give us? \hfill
+        What's the difference in the behaviour of cooperation in the left/right 
+            applications?
+        \begin{itemize}
+            \item Left: A Ring, 
+                \begin{itemize}{\scriptsize
+                    \item the level of parallelism is nearly nil. 
+                    \item Each process is cooperating yes, but granularity 
+                        is very fine.
+                    }
+                \end{itemize}
 
-            \item Right: A Star, the level of parallelism is nearly full. Each
-                process is cooperating, and is {\bf not reliant on more than one} 
-                other.
+            \item Right: A Star, 
+                \begin{itemize}{\scriptsize
+                    \item the level of parallelism is nearly full. 
+                    \item Each process is cooperating,
+                        {\bf not reliant on more than one} other process.
+                    }
+                \end{itemize}
+            \item In both, the whole system is communicating, but with 
+                cooperation, we can find the level of parallelism possible.
         \end{itemize}
-        Overall, what can be gained by looking at cooperativity in terms of
-        understanding the applications behaviour? Knowing the granularity of
-        parallelism.\\
-        ~\\
         \hfill
-        Next: what is a minimal inter-proc comm method?
+        Next: Knowing this, how can we recognize cooperativity?
+        Seems to be all about recording interactions with the channel.
     }
 \end{slide}
 
@@ -68,68 +117,23 @@
     We use a Symmetric, Synchronous, Message-Passing Primitive: 
             \begin{center} {\tt\large swap} \end{center}
     \begin{itemize}
-        \item Purely captures cooperation of processes by synchronizing on
-                the shared channel.
-        \item Ultimately can be extended to take into account:
-            \begin{itemize}
-                \item Directionality
-                \item Asynchrony
-            \end{itemize}
+        \item Purely captures cooperation of processes through synchronizing on
+                a shared channel.
     \end{itemize}
     \inote{
-       \item Async: while user code doesn't block, there is blocking
-             in terms of the channel implementation. This is not
-             indicated (in most cases) to the scheduler.
-       \item Sync: The issue of process cooperation has been elevated
-             to the process level for the scheduler to directly involve
-             itself.
-       \item
-        Ultimately there is nothing stopping us from choosing the other
-        types of message passing, but it would conflate the issue of
-        process cooperativity if all we are after is whether two processes
-        are cooperating on some task.\\
-        ~\\
-        \hfill
-        Next: How would we use coop as a feedback metric?\\ 
-        \hfill
-        What does that mean?
+        \item Symmetric, Synchronous, Message-Passing primitive.
+        \item Symmetric:
+            \begin{itemize}
+                \item Only one message passing primitive: SWAP
+            \end{itemize}
+        \item Synchronous:
+            \begin{itemize}
+                \item Blocks until it's partner gets there.
+            \end{itemize}
+        \item Purely captures cooperation: Simple synchronization representation.
+        \item This is really what I based the language on. 
+        \item So, what does the rest of the language look like.
     }
 \end{slide}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Runtime Scheduling}
-
-\begin{slide}
-    \begin{itemize}
-        \item Schedulers can be defined in a discrete manner:
-            \begin{enumerate}
-                \item {\em Choose} a process from set
-                \item {\em Reduce} it
-                \item {\em Update} private scheduler state
-            \end{enumerate}
-        \item Statistics can be gathered at every step about process:
-            \begin{itemize}
-                \item Number of channel partners,
-                \item Timestamp of last run,
-                \item Number of reductions, \etc
-            \end{itemize}
-        \item {\sl What statistics are neccessary for recognizing cooperativity?}
-    \end{itemize}
-
-    \inote{
-        \item Choosing from set: Top Always (batching), Queue (Round-Robin)
-        \item Reductions Return some indication: yield/blocked, unblocked, completed, nothing
-        \item Update state based on historical data.
-            \begin{itemize}
-                \item Timestamp of last run = Separate between batching/round-robin
-                \item Cooperativity metrics: yields, partners, thus longevity and granularity 
-            \end{itemize}
-        \item gets back to why we chose swap:
-            \begin{itemize}
-                \item (if asymmetrical, we would have a harder time with 'partner')
-                \item (if async, we would have a harder time with 'yield' and noticing longevity/progress)
-            \end{itemize}
-    }
-\end{slide}
 

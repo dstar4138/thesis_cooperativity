@@ -10,7 +10,7 @@
 \usepackage{mathtools,mathrsfs,amsmath,amsthm,amsfonts}
 
 %% Symbolic, relative link to thesis graphics.
-\graphicspath{ {./pics/} }
+\graphicspath{ {./pics/}{./extra/} }
 
 %% Optional: Turn on Notes Pages:
 \setbeameroption{show notes on second screen}
@@ -34,11 +34,14 @@
 \AtBeginSection[]
 {
     \begin{frame}
-        \frametitle{Current Section:}
+        \frametitle{\insertsection}
         \begin{multicols*}{2}
             \tableofcontents[sectionstyle=show/hide,
                              subsectionstyle=show/show/hide]
         \end{multicols*}
+        \note{Introduce the new section:\hfill
+              \tableofcontents[sectionstyle=show/hide,
+                               subsectionstyle=show/show/hide]}
     \end{frame}
 }
 
@@ -76,10 +79,24 @@
         \tableofcontents
     \end{multicols*}
     \inote{
-        \item Break apart title = Background.
-        \item Then simulator and test primitives (process behaviours).
-        \item Schedulers and how comparisons are made.
-        \item Results, Conclusions (of both simulator and cooperativity).
+        \item Mouthful of a title, so I'll break it up:
+        \begin{enumerate}{\scriptsize
+            \item Runtime scheduling, to give some grounding in the area of study.
+            \item Cooperativity, what it is and motivation to use it.
+            \item Message Passing, because, as it turns out, it's a nice 
+                abstraction for our purpose of capturing cooperativity.
+            }
+        \end{enumerate}
+        \item The core of the work revolves around the toolkit I built.
+            \begin{itemize}{\scriptsize
+                \item A language/compiler/runtime/testing-framework
+                \item But also a {\sl Simulator} which has a plug-and-play 
+                    scheduler API. It let me test schedulers on a common test 
+                    bed.
+                }
+            \end{itemize}
+        \item Next, go over the list of schedulers \& feedback mechanisms.
+        \item Results, Conclusions, \& Future Work.
     }
 \end{frame}
 

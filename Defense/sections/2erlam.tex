@@ -1,4 +1,4 @@
-\section{ErLam}
+\section{ErLam Toolkit}
 
 \subsection{The Language}
 
@@ -24,6 +24,7 @@
     \begin{BVerbatim}
 elib
     // ...
+    ignore = (fun _.(fun y.y));
     omega = (fun x.(x x));
     // ...
     add = _erl[2]{ fun(X) when is_integer(X) ->
@@ -43,67 +44,94 @@ bile
     }
 \end{slide}
 
-\begin{SaveVerbatim}[commandchars=\\\{\}]{FibCode}
-// pfib.els -
-fun N.
-    (omega \textbf{fun} f,m.(
-        \textbf{if} (leq m 1) 
-           m
-           (merge \textbf{fun} _.(f f (sub m 1))
-                  \textbf{fun} _.(f f (sub m 2))
-                  add)) \textit{N})
+\begin{SaveVerbatim}{SimpleSwap}
+(fun c.
+     (ignore 
+       (spawn (fun _.(swap c 42)))
+       (swap c 0))
+ newchan)
 \end{SaveVerbatim}
 
 \begin{slide}
-\framesubtitle{Example Application: Parallel Fibonacci}
+    \framesubtitle{Example Application: Simple Swap}
     \begin{figure}
-    \centering
-    {\small
-        \BUseVerbatim{FibCode}
-    } 
+        \centering
+        \BUseVerbatim{SimpleSwap}
     \end{figure}
-    \begin{itemize}
-        \item[] {\tt \$ els pfib.els}\hspace{8.65mm}(Compile the script)
-        \item[] {\tt \$ ./pfib.ex -r 10}~~(Finds the 10th Fibonacci number)
-    \end{itemize}
-    
+    \begin{figure}
+        \centering
+        \includegraphics{SimpleSwap.pdf} 
+    \end{figure}
     \inote{
-        \item R option is to run program applied to 10.
-        \item To add more to this presentation than just reading paper
-            I want to also give more detail as to system usage.
-        \item Explain this Common Usage Pattern.
+        \item Here is a simple application which:
+            \begin{itemize}
+                \item Spawns a process to swap the number 42
+                \item Calls swap to get the value from the other process.
+            \end{itemize}
+        \item Build up from here to simulate more complex behaviour.
+        \item We can "do some work" before swaping, \etc
+        \item This is how we built up or primitive test behaviours.
     }
 \end{slide}
 
+%\begin{SaveVerbatim}[commandchars=\\\{\}]{FibCode}
+%// pfib.els -
+%fun N.
+%    (omega \textbf{fun} f,m.(
+%        \textbf{if} (leq m 1) 
+%           m
+%           (merge \textbf{fun} _.(f f (sub m 1))
+%                  \textbf{fun} _.(f f (sub m 2))
+%                  add)) \textit{N})
+%\end{SaveVerbatim}
+%\begin{slide}
+%\framesubtitle{Example Application: Parallel Fibonacci}
+%    \begin{figure}
+%    \centering
+%    {\small
+%        \BUseVerbatim{FibCode}
+%    } 
+%    \end{figure}
+%    \begin{itemize}
+%        \item[] {\tt \$ els pfib.els}\hspace{8.65mm}(Compile the script)
+%        \item[] {\tt \$ ./pfib.ex -r 10}~~(Finds the 10th Fibonacci number)
+%    \end{itemize}
+%    
+%    \inote{
+%        \item R option is to run program applied to 10.
+%        \item To add more to this presentation than just reading paper
+%            I want to also give more detail as to system usage.
+%        \item Explain this Common Usage Pattern.
+%    }
+%\end{slide}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Channel Implementations}
 
 \begin{slide}
-    \begin{figure}
-        \includegraphics[width=0.8\textwidth]{BlockingSwap.pdf}
-        \label{fig:blockchan-example}
+    \framesubtitle{Process Blocking Swap}
+    \begin{figure}[t]
+        \centering
+        \includegraphics[width=0.8\textwidth]{BlockingSwap-verbose.pdf}
     \end{figure}
-    Process Blocking Swap
     
     \inote{
         \item Blocking: Maintains state of current and previous swap value until swap is completed.
         \item Mention expected effects on scheduler.
         \begin{itemize}
             \item Scheduler will keep hold of the process, needs to recheck if blocked.
-            \item If all communicating, large process queue of blocked processes. 
+            \item If all processes are communicating, large process queue of blocked processes. 
         \end{itemize}
-        \item Blocking is default, passing '-a' to els for absorb 
     }
 \end{slide}
 \begin{slide}
-    \begin{figure}
-        \includegraphics[width=0.8\textwidth]{AbsorbSwap.pdf}
-        \label{fig:absorbchan-example}
+    \framesubtitle{Process Absorption Swap}
+    \begin{figure}[t]
+        \centering
+        \includegraphics[width=0.8\textwidth]{AbsorbSwap-verbose.pdf}
     \end{figure}
-    Process Absorption Swap
 
     \inote{
-        \item[] Absorption swap is visually easier to recognize.
         \item[1.] Whole process gets absorbed by channel, away from scheduler.
         \item[2.] When the second process completes the swap, the process gets
                   removed from channel.
@@ -111,7 +139,10 @@ fun N.
                 \item The p0 process can go back to its original scheduler, 
                 \item OR to scheduler which unblocked it.
             \end{itemize}
-        \item Effects on scheduler are obvious.
+        \item Effects on scheduler:
+            \begin{itemize}
+                \item Can loose or gain a extra process during communication.
+            \end{itemize}
     }
 \end{slide}
 
@@ -119,16 +150,14 @@ fun N.
 \subsection{Simulation \& Visualization}
 
 \begin{slide}
-    \begin{itemize}
-        \item System Behaviours:
+    System Behaviours:
             \begin{itemize}
                 \item Degree of Parallelism
                 \item Consistency of Cooperation
                 \item Degree of Longevity/Interactivity
                 \item Partial System Cooperativity
             \end{itemize}
-        \item Logging \& Report Generation
-    \end{itemize}
+    Logging \& Report Generation
 
     \inote{
         \item We first want to look at four types of system behaviour ranges:
@@ -233,22 +262,48 @@ fun N.
 
     Things we could log:
     \begin{itemize}
-        \item<2-> Process Queue Size (per LPU)
-        \item<3-> Quantity of Reductions/Yields/Preempts
-        \item<4-> State of the Scheduler (waiting/running)
-        \item<5-> Channel State (Blocked/Unblocked)
-        \item<6-> \ldots
+        \item Process Queue Size (per LPU)
+        \item Quantity of Reductions/Yields/Preempts
+        \item State of the Scheduler (waiting/running)
+        \item Channel State (Blocked/Unblocked)
+        \item \ldots
     \end{itemize}
 
     \inote{ % Notes are offset X+1 intentionally.
-        \item<3-> Queue-Length: work-stealing mechanics and saturation ability.
-        \item<4-> Tick-Action: Visualize the density of computation/communication.
-        \item<5-> Sched-State: Useful for comparing stealing/process selection 
+        \item Queue-Length: work-stealing mechanics and saturation ability.
+        \item Tick-Action: Visualize the density of computation/communication.
+        \item Sched-State: Useful for comparing stealing/process selection 
                   mechanics.
-        \item<6-> Chan-State: Tracking interactivity, speed of unblock=attentive 
+        \item Chan-State: Tracking interactivity, speed of unblock=attentive 
                   to cooperation. 
-        \item<7-> Of course there are more, but we limited ourselves to the above 
+        \item Of course there are more, but we limited ourselves to the above 
                   for initial testing purposes. 
+    }
+\end{slide}
+
+\begin{slide}
+    \begin{figure}
+        \begin{table}[t]
+            \centering
+            \begin{tabular}{@{}ccc}
+                 \multicolumn{1}{c|}{\textbf{Queue Size}} &
+                 \multicolumn{1}{c|}{\textbf{Reduc. Density}} &
+                 \multicolumn{1}{c}{\textbf{Channel State}} \\ \cline{1-3}
+            \multicolumn{1}{|c|}{\includegraphics[scale=0.18]{tests/clustercomm/20/wssq/ca/pg_0003.pdf}} & 
+            \multicolumn{1}{c|}{\includegraphics[scale=0.18]{tests/clustercomm/20/wssq/ca/pg_0004.pdf}} & 
+            \multicolumn{1}{c|}{\includegraphics[scale=0.18]{tests/clustercomm/20/wssq/ca/pg_0001.pdf}} \\ 
+            \cline{1-3}
+            \end{tabular}
+        \end{table}
+    \end{figure}
+
+    \inote{
+        \item Three types of graphs:
+        \begin{itemize}
+            \item Queue Size: X-axis is time, Y-axis is size of queue
+            \item Density charts: Darkness of the line represents fraction of ticks event happened in.
+            \item Channel State: dark=blocked, light=unblocked. 
+        \end{itemize} 
     }
 \end{slide}
 

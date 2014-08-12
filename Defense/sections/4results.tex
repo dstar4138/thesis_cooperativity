@@ -19,11 +19,9 @@
     \end{itemize}
 
     \inote{
-        \item Remind about the goals of the talk. However there are other things
-            we can of course study now that we have a simulator:
-        \item LBB: Can also look at how the batch size effects different types
-            of behaviours.
-        \item CP: Could also look at a stealing mechanism.
+        \item Remind about the goals of the talk. 
+        \item LBB: Would like to take advantage of the frequency of communication. 
+            
     }
 \end{slide}
 
@@ -66,26 +64,28 @@
     \multicolumn{1}{c}{\textbf{Time}} & \multicolumn{2}{c}{ $MTRRWS$-$SQ$ } & \multicolumn{2}{c}{ Long. Batcher} \\ \cline{2-5}
     \multicolumn{1}{c|}{\textbf{Quantum}} & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} 
                                                 & \textbf{Chan. State} & \multicolumn{1}{c|}{\textbf{Reduc. Density}} \\ \cline{1-5}
-    \multicolumn{1}{c|}{$R=30$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca30r/pg_0003.pdf}} &
-                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca30r/pg_0004.pdf}} &
-                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca30r/pg_0003.pdf}} &
-                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca30r/pg_0004.pdf}} \\ \cline{1-5}
+    \multicolumn{1}{c|}{$R=30$} &  \multicolumn{1}{c}{\includegraphics[scale=0.11]{tests/ptree/wssq/ca30r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.11]{tests/ptree/wssq/ca30r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.11]{tests/ptree/lbb/ca30r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.11]{tests/ptree/lbb/ca30r/pg_0004.pdf}} \\ \cline{1-5}
 
-    \multicolumn{1}{c|}{$R=40$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca40r/pg_0003.pdf}} &
-                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca40r/pg_0004.pdf}} &
-                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca40r/pg_0003.pdf}} &
-                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca40r/pg_0004.pdf}} \\ \cline{1-5}
+%    \multicolumn{1}{c|}{$R=40$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca40r/pg_0003.pdf}} &
+%                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca40r/pg_0004.pdf}} &
+%                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca40r/pg_0003.pdf}} &
+%                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca40r/pg_0004.pdf}} \\ \cline{1-5}
 
-    \multicolumn{1}{c|}{$R=50$} &  \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca50r/pg_0003.pdf}} &
-                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/wssq/ca50r/pg_0004.pdf}} &
-                                   \multicolumn{1}{c}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca50r/pg_0003.pdf}} &
-                                   \multicolumn{1}{c|}{\includegraphics[scale=0.1]{tests/ptree/lbb/ca50r/pg_0004.pdf}} \\ \cline{1-5}
+    \multicolumn{1}{c|}{$R=50$} &  \multicolumn{1}{c}{\includegraphics[scale=0.11]{tests/ptree/wssq/ca50r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.11]{tests/ptree/wssq/ca50r/pg_0004.pdf}} &
+                                   \multicolumn{1}{c}{\includegraphics[scale=0.11]{tests/ptree/lbb/ca50r/pg_0003.pdf}} &
+                                   \multicolumn{1}{c|}{\includegraphics[scale=0.11]{tests/ptree/lbb/ca50r/pg_0004.pdf}} \\ \cline{1-5}
     \end{tabular}
 \end{table}
 }
     \inote{
         \item Comparison of $PTree_{(4,8)}$ running with the Longevity-Based 
         Batching Scheduler and $MTRRWS$-$SQ$ at different time-quantums.
+
+        \item Absorption channels help here to relocate processes.
 
         \item At lower time quantums Long. Batcher starts to look like RRWS-SQ, 
             however batching and absorption channels tend to lead to consolidation.
@@ -94,7 +94,9 @@
             work-groups. But it turns out to be inefficient due to lost chances of
             parallelism of each "star" of each group.
 
-        \item Heuristical adjustement of the time-quantum would definitely be possible.
+        \item Heuristical adjustment of the time-quantum would definitely be possible.
+
+        \item NOTE: We don't capture overhead of stealing. Batching has obvious gains here.
     }
 \end{slide}
 
