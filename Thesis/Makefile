@@ -22,7 +22,7 @@ clean:
 	-rm chapters/*.aux
 	-rm *.aux *.bbl *.blg *.idx *.log *.bak *.dvi *.xml 
 	-rm *.lot *.toc *.lof
-	-rm thesis-blx.bib
+	-rm thesis-blx.bib thesis-anon-blx.bib
 
 distclean: clean
 	-rm *.pdf
